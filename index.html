@@ -472,6 +472,19 @@
             color: var(--text-muted);
             margin-top: 6px;
         }
+        .my-question-card .q-notification {
+            margin-top: 8px;
+            padding: 8px 14px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            border-right: 3px solid #28a745;
+            display: none;
+        }
+        .my-question-card .q-notification.show {
+            display: block;
+        }
 
         .announcement-item {
             padding: 18px 0;
@@ -761,6 +774,10 @@
         }
         .notif-type.prayer {
             background: var(--color-gold);
+            color: #fff;
+        }
+        .notif-type.answer {
+            background: #27ae60;
             color: #fff;
         }
         .notif-list {
@@ -1065,8 +1082,8 @@
         <!-- ====== صفحة تسجيل الدخول/إنشاء حساب للمستخدمين العاديين ====== -->
         <section id="page-user-auth" class="page">
             <div class="login-box">
-                <h2 id="authTitle"><i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب</h2>
-                <p class="subtitle" id="authSubtitle">أنشئ حساباً لتتمكن من متابعة أسئلتك</p>
+                <h2 id="authTitle"><i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
+                <p class="subtitle" id="authSubtitle">سجل الدخول لمتابعة أسئلتك</p>
                 <form id="userAuthForm">
                     <div class="form-group">
                         <label for="authEmail">البريد الإلكتروني</label>
@@ -1076,13 +1093,13 @@
                         <label for="authPassword">كلمة المرور</label>
                         <input type="password" id="authPassword" required placeholder="أدخل كلمة المرور (6 أحرف على الأقل)" minlength="6" />
                     </div>
-                    <div id="authNameGroup" class="form-group">
+                    <div id="authNameGroup" class="form-group" style="display:none;">
                         <label for="authName">الاسم (ظاهر للآخرين)</label>
                         <input type="text" id="authName" placeholder="أدخل اسمك" />
                     </div>
-                    <button type="submit" class="btn" style="width:100%;" id="authSubmitBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+                    <button type="submit" class="btn" style="width:100%;" id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
                     <div id="authError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
-                    <div class="toggle-link" id="authToggleLink">لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span></div>
+                    <div class="toggle-link" id="authToggleLink">ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span></div>
                 </form>
             </div>
         </section>
@@ -1420,6 +1437,7 @@
         let notifications = [];
         let editingQuestionId = null;
         let myQuestionsUnsubscribe = null;
+        let userNotificationsUnsubscribe = null;
 
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
         const ADMIN_PASSWORD = 'wysmic-6cabzu-xiqpeT';
@@ -1469,6 +1487,7 @@
             if (pageId === 'announcements') loadAnnouncements();
             if (pageId === 'my-questions' && currentUser) {
                 startMyQuestionsListener();
+                star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
             }
             if (pageId === 'questions') {
                 if (!currentUser) {
@@ -1518,7 +1537,10 @@
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
                     }
-                    // تحديث واجهة أسئلتي
+                    if (userNotificationsUnsubscribe) {
+                        userNotificationsUnsubscribe();
+                        userNotificationsUnsubscribe = null;
+                    }
                     document.getElementById('myQuestionsList').innerHTML =
                         '<p class="no-questions">تم تسجيل الخروج</p>';
                     document.getElementById('myQuestionsStatus').textContent = '';
@@ -1562,6 +1584,10 @@
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
                     }
+                    if (userNotificationsUnsubscribe) {
+                        userNotificationsUnsubscribe();
+                        userNotificationsUnsubscribe = null;
+                    }
                     loadAdminData();
                     listenToNotifications();
                     if (document.getElementById('page-admin-login').classList.contains('active')) {
@@ -1576,6 +1602,7 @@
                     myQuestionsLink.style.display = 'inline-block';
                     if (document.getElementById('page-my-questions').classList.contains('active')) {
                         startMyQuestionsListener();
+                        star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
                     }
                     if (document.getElementById('page-admin').classList.contains('active')) {
                         window.navigateTo('home');
@@ -1599,7 +1626,10 @@
                     myQuestionsUnsubscribe();
                     myQuestionsUnsubscribe = null;
                 }
-                // تحديث واجهة أسئلتي
+                if (userNotificationsUnsubscribe) {
+                    userNotificationsUnsubscribe();
+                    userNotificationsUnsubscribe = null;
+                }
                 const myQuestionsPage = document.getElementById('page-my-questions');
                 if (myQuestionsPage.classList.contains('active')) {
                     document.getElementById('myQuestionsList').innerHTML =
@@ -1614,30 +1644,39 @@
             }
         });
 
+        // ====== دالة تحديث واجهة تسجيل الدخول ======
+        let isLoginMode = true; // الوضع الافتراضي هو تسجيل الدخول
+
+        function updateAuthUI() {
+            const title = document.getElementById('authTitle');
+            const subtitle = document.getElementById('authSubtitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleLink = document.getElementById('authToggleLink');
+            const nameGroup = document.getElementById('authNameGroup');
+            
+            if (isLoginMode) {
+                title.innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
+                subtitle.textContent = 'سجل الدخول لمتابعة أسئلتك';
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+                toggleLink.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
+                nameGroup.style.display = 'none';
+            } else {
+                title.innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
+                subtitle.textContent = 'أنشئ حساباً لتتمكن من متابعة أسئلتك';
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+                toggleLink.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
+                nameGroup.style.display = 'block';
+            }
+        }
+
         // ====== تسجيل الدخول/إنشاء حساب للمستخدم ======
         const authForm = document.getElementById('userAuthForm');
-        const authTitle = document.getElementById('authTitle');
-        const authSubtitle = document.getElementById('authSubtitle');
-        const authSubmitBtn = document.getElementById('authSubmitBtn');
         const authToggleLink = document.getElementById('authToggleLink');
         const authError = document.getElementById('authError');
-        let isLoginMode = false;
 
         authToggleLink.addEventListener('click', () => {
             isLoginMode = !isLoginMode;
-            if (isLoginMode) {
-                authTitle.innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
-                authSubtitle.textContent = 'سجل الدخول لمتابعة أسئلتك';
-                authSubmitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-                authToggleLink.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
-                document.getElementById('authNameGroup').style.display = 'none';
-            } else {
-                authTitle.innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
-                authSubtitle.textContent = 'أنشئ حساباً لتتمكن من متابعة أسئلتك';
-                authSubmitBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
-                authToggleLink.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
-                document.getElementById('authNameGroup').style.display = 'block';
-            }
+            updateAuthUI();
         });
 
         authForm.addEventListener('submit', async (e) => {
@@ -1686,6 +1725,9 @@
             }
         });
 
+        // استدعاء تحديث الواجهة بعد تحميل الصفحة
+        updateAuthUI();
+
         // ====== تسجيل دخول الأدمن ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -1730,9 +1772,8 @@
             window.navigateTo('home');
         });
 
-        // ====== مستمع أسئلة المستخدم (محسّن بدون orderBy لتجنب الفهارس) ======
+        // ====== مستمع أسئلة المستخدم (محسّن) ======
         function startMyQuestionsListener() {
-            // إلغاء الاشتراك السابق إن وجد
             if (myQuestionsUnsubscribe) {
                 myQuestionsUnsubscribe();
                 myQuestionsUnsubscribe = null;
@@ -1753,7 +1794,6 @@
             statusEl.className = 'status-loading';
 
             try {
-                // استعلام بدون orderBy لتجنب الحاجة لفهرس مركب
                 const q = query(
                     collection(db, 'questions'),
                     where('userId', '==', currentUser.uid)
@@ -1768,14 +1808,12 @@
                         return;
                     }
 
-                    // تجميع البيانات وترتيبها يدوياً حسب createdAt
                     let items = [];
                     snapshot.forEach(doc => {
                         const data = doc.data();
                         items.push({ id: doc.id, ...data });
                     });
 
-                    // ترتيب تنازلي (الأحدث أولاً)
                     items.sort((a, b) => {
                         const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
                         const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
@@ -1789,12 +1827,21 @@
                             '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
                         const published = item.published ? ' (منشور عام)' : ' (خاص)';
                         const dateStr = item.createdAt ? item.createdAt.toDate().toLocaleString('ar-EG') : '';
+                        
+                        // التحقق من وجود إشعار بأن السؤال تمت إجابته
+                        const isAnswered = item.answered;
+                        const notifClass = isAnswered ? 'show' : '';
+                        const notifMessage = isAnswered ? '✅ تمت الإجابة على سؤالك!' : '';
+                        
                         html += `
                             <div class="my-question-card">
                                 <div class="q-details"><strong>السؤال:</strong> ${item.details}</div>
                                 <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''} ${published}</div>
                                 ${answerHtml}
                                 <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${dateStr}</div>
+                                <div class="q-notification ${notifClass}">
+                                    <i class="fas fa-check-circle"></i> ${notifMessage}
+                                </div>
                             </div>
                         `;
                     });
@@ -1815,6 +1862,37 @@
             }
         }
 
+        // ====== مستمع إشعارات المستخدم ======
+        function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
+            if (userNotificationsUnsubscribe) {
+                userNotificationsUnsubscribe();
+                userNotificationsUnsubscribe = null;
+            }
+
+            if (!currentUser) return;
+
+            try {
+                const q = query(
+                    collection(db, 'userNotifications'),
+                    where('userId', '==', currentUser.uid),
+                    where('read', '==', false)
+                );
+
+                userNotificationsUnsubscribe = onSnapshot(q, (snapshot) => {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            const data = change.doc.data();
+                            showToast(`🔔 ${data.message}`, false);
+                        }
+                    });
+                }, (error) => {
+                    console.warn('User notifications listener error:', error);
+                });
+            } catch (error) {
+                console.warn('Could not set up user notifications:', error);
+            }
+        }
+
         // ====== تحديث يدوي لأسئلة المستخدم ======
         window.refreshMyQuestions = function() {
             const statusEl = document.getElementById('myQuestionsStatus');
@@ -1825,14 +1903,13 @@
                 myQuestionsUnsubscribe();
                 myQuestionsUnsubscribe = null;
             }
-            // تأخير بسيط لإعادة الاتصال
             setTimeout(() => {
                 startMyQuestionsListener();
                 showToast('✅ تم تحديث الأسئلة');
             }, 300);
         };
 
-        // ====== الإشعارات ======
+        // ====== الإشعارات (للأدمن) ======
         function listenToNotifications() {
             if (!isAdmin) return;
             onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), (snapshot) => {
@@ -1867,7 +1944,7 @@
             }
             list.innerHTML = notifications.map(n => `
                 <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : 'صلاة'}</span>
+                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
                     <span class="notif-text">${n.message}</span>
                     <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
                     ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
@@ -1915,6 +1992,19 @@
                     createdAt: serverTimestamp()
                 });
             } catch (e) { console.warn('Error adding notification:', e); }
+        }
+
+        // ====== إضافة إشعار للمستخدم عند الإجابة ======
+        async function addUserNotification(userId, message, questionId) {
+            try {
+                await addDoc(collection(db, 'userNotifications'), {
+                    userId,
+                    message,
+                    questionId,
+                    read: false,
+                    createdAt: serverTimestamp()
+                });
+            } catch (e) { console.warn('Error adding user notification:', e); }
         }
 
         // ====== إرسال الأسئلة ======
@@ -2312,14 +2402,39 @@
             if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
             if (!editingQuestionId) { showToast('خطأ: لم يتم تحديد السؤال', true); return; }
             try {
-                await updateDoc(doc(db, 'questions', editingQuestionId), {
+                const questionRef = doc(db, 'questions', editingQuestionId);
+                const snap = await getDoc(questionRef);
+                const questionData = snap.data();
+                
+                await updateDoc(questionRef, {
                     answered: true,
                     answer: answer
                 });
-                showToast('✅ تم حفظ الإجابة');
+
+                // إرسال إشعار للمستخدم إذا كان لديه حساب وليس أدمن
+                if (questionData && questionData.userId) {
+                    const userRef = doc(db, 'users', questionData.userId);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists() || true) { // حتى لو لم يكن في مجموعة users نرسل الإشعار
+                        await addUserNotification(
+                            questionData.userId,
+                            `تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
+                            editingQuestionId
+                        );
+                        // أيضاً نضيف إشعار في لوحة الأدمن
+                        await addNotification(`✅ تمت الإجابة على سؤال للمستخدم ${questionData.userName || 'مستخدم'}`, 'answer');
+                    }
+                }
+
+                showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
                 modal.classList.remove('show');
                 editingQuestionId = null;
                 loadQuestions();
+                renderAnsweredQuestions();
+                // تحديث أسئلتي إذا كانت مفتوحة
+                if (document.getElementById('page-my-questions').classList.contains('active')) {
+                    startMyQuestionsListener();
+                }
             } catch (e) {
                 showToast('❌ خطأ في حفظ الإجابة', true);
                 console.error(e);
@@ -2555,6 +2670,7 @@
         setTimeout(() => {
             if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
                 startMyQuestionsListener();
+                star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
             }
             if (document.getElementById('page-questions').classList.contains('active')) {
                 if (!currentUser) {
@@ -2567,8 +2683,9 @@
         console.log('✅ التطبيق جاهز بالكامل');
         console.log('🔐 تم ضبط استمرار المصادقة محلياً (browserLocalPersistence)');
         console.log('📌 تم إزالة orderBy من استعلام أسئلة المستخدم لتجنب أخطاء الفهارس');
-        console.log(`📧 بريد الأدمن: ${ADMIN_EMAIL}`);
+        console.log('📧 بريد الأدمن: abshadat.church@gmail.com');
         console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
+        console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم');
     </script>
 
 </body>

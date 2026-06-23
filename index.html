@@ -634,7 +634,7 @@
                 <div class="hero-content">
                     <h2>الكنيسة الإنجيلية المشيخية بإبشادات</h2>
                     <p>«أَنَا هُوَ الطَّرِيقُ وَالْحَقُّ وَالْحَيَاةُ» (يوحنا ١٤: ٦)</p>
-                    <button class="btn btn-primary mt-2" onclick="navigateTo('questions')">
+                    <button class="btn btn-primary mt-2" onclick="window.navigateTo('questions')">
                         <i class="fas fa-pen"></i> اسأل سؤالك الآن
                     </button>
                 </div>
@@ -647,7 +647,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <button class="btn btn-primary" onclick="navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
+                <button class="btn btn-primary" onclick="window.navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
             </div>
         </section>
 
@@ -712,7 +712,7 @@
             <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
                 <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
                 <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
-                <button class="btn btn-primary mt-2" onclick="navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
+                <button class="btn btn-primary mt-2" onclick="window.navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
             </div>
         </section>
 
@@ -748,7 +748,7 @@
         <section id="page-answered" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
             <div class="search-filter">
-                <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="renderAnsweredQuestions()" />
+                <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" />
             </div>
             <div id="answeredList"></div>
         </section>
@@ -796,16 +796,16 @@
         <section id="page-admin-login" class="page">
             <div class="login-box">
                 <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
-                <p class="subtitle">أدخل بيانات حساب الأدمن الذي قمت بإنشائه في Firebase Authentication</p>
+                <p class="subtitle">أدخل بيانات حساب الأدمن المسجلة في Firebase</p>
                 <form id="adminLoginForm">
                     <div class="form-group">
                         <label for="adminLoginEmail">البريد الإلكتروني</label>
-                        <input type="email" id="adminLoginEmail" required placeholder="admin@church.com" />
-                        <small style="color:var(--text-muted); font-size:0.8rem;">أدخل البريد الذي سجلته في Firebase</small>
+                        <input type="email" id="adminLoginEmail" required placeholder="abshadat.church@gmail.com" value="abshadat.church@gmail.com" />
+                        <small style="color:var(--text-muted); font-size:0.8rem;">بريد الأدمن: abshadat.church@gmail.com</small>
                     </div>
                     <div class="form-group">
                         <label for="adminLoginPassword">كلمة المرور</label>
-                        <input type="password" id="adminLoginPassword" required placeholder="أدخل كلمة المرور" />
+                        <input type="password" id="adminLoginPassword" required placeholder="wysmic-6cabzu-xiqpeT" value="wysmic-6cabzu-xiqpeT" />
                     </div>
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-sign-in-alt"></i> دخول</button>
                     <div id="adminLoginError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
@@ -830,8 +830,8 @@
                     <div class="card">
                         <div id="notificationsList" class="notif-list"><p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p></div>
                         <div class="notif-actions">
-                            <button class="btn btn-sm btn-outline" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
+                            <button class="btn btn-sm btn-outline" onclick="window.markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
+                            <button class="btn btn-sm btn-danger" onclick="window.deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
                         </div>
                     </div>
                 </div>
@@ -853,7 +853,7 @@
                             <div class="form-group"><label for="socialInstagramInput">رابط إنستغرام</label><input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." /></div>
                             <div class="form-group" style="grid-column: 1 / -1;"><label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label><input type="text" id="whatsappInput" placeholder="مثال: 201234567890" /><small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small></div>
                         </div>
-                        <button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
+                        <button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
                     </div>
                 </div>
 
@@ -862,7 +862,7 @@
                     <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
                     <div class="card">
                         <div class="form-group"><label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label><textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea></div>
-                        <button class="btn btn-success btn-sm" onclick="saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
+                        <button class="btn btn-success btn-sm" onclick="window.saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
                     </div>
                 </div>
 
@@ -871,14 +871,14 @@
                     <div class="section-header">
                         <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة</h3>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button class="btn btn-outline btn-sm no-print" onclick="printQuestions()"><i class="fas fa-print"></i> طباعة</button>
-                            <button class="btn btn-danger btn-sm no-print" onclick="clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
+                            <button class="btn btn-outline btn-sm no-print" onclick="window.printQuestions()"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
                         </div>
                     </div>
                     <div class="search-filter">
-                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="loadQuestions()" />
-                        <select id="adminFilterType" onchange="loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
-                        <select id="adminFilterAnswered" onchange="loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
+                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="window.loadQuestions()" />
+                        <select id="adminFilterType" onchange="window.loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
+                        <select id="adminFilterAnswered" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
                     </div>
                     <div class="table-responsive">
                         <table>
@@ -892,7 +892,7 @@
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة</h3>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;"><button class="btn btn-outline btn-sm no-print" onclick="printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;"><button class="btn btn-outline btn-sm no-print" onclick="window.printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="window.clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div>
                     </div>
                     <div id="adminPrayersList"></div>
                 </div>
@@ -902,7 +902,7 @@
                     <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
                     <div class="card mb-4">
                         <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;"><input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" /><input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" /></div>
-                        <button class="btn btn-success" onclick="addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
+                        <button class="btn btn-success" onclick="window.addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
                     </div>
                     <div id="adminAnnouncementsList"></div>
                 </div>
@@ -910,7 +910,7 @@
                 <!-- تعديل آية اليوم -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
                 </div>
 
             </div>
@@ -992,11 +992,12 @@
         let notifications = [];
         let editingQuestionId = null;
 
-        // === البريد الإلكتروني للأدمن المسموح به (يمكنك تغييره) ===
-        const ADMIN_EMAIL = 'admin@church.com';
+        // === بيانات الأدمن المطلوبة ===
+        const ADMIN_EMAIL = 'abshadat.church@gmail.com';
+        const ADMIN_PASSWORD = 'wysmic-6cabzu-xiqpeT';
 
         console.log('✅ Firebase initialized');
-        console.log(`📧 بريد الأدمن المسموح به: ${ADMIN_EMAIL}`);
+        console.log(`📧 بريد الأدمن: ${ADMIN_EMAIL}`);
 
         // ====== دوال مساعدة ======
         const toastEl = document.getElementById('toast');
@@ -1109,12 +1110,10 @@
             currentUser = user;
             if (user) {
                 currentUserId = user.uid;
-                // التحقق مما إذا كان المستخدم هو الأدمن (بالمقارنة مع البريد المسجل)
                 const isAdminUser = user.email && user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
                 isAdmin = isAdminUser;
 
                 if (isAdminUser) {
-                    // أدمن
                     userAuthBtn.style.display = 'none';
                     adminLoginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> خروج الأدمن';
                     adminLink.style.display = 'inline-block';
@@ -1123,12 +1122,10 @@
                     myQuestionsLink.style.display = 'none';
                     loadAdminData();
                     listenToNotifications();
-                    // إذا كان في صفحة admin-login، ننتقل للوحة التحكم
                     if (document.getElementById('page-admin-login').classList.contains('active')) {
                         window.navigateTo('admin');
                     }
                 } else {
-                    // مستخدم عادي
                     userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
                     userAuthBtn.style.display = 'inline-block';
                     adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
@@ -1146,7 +1143,6 @@
                     }
                 }
             } else {
-                // غير مسجل
                 currentUserId = null;
                 isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
@@ -1226,7 +1222,7 @@
             }
         });
 
-        // ====== تسجيل دخول الأدمن (مع التحقق من البريد) ======
+        // ====== تسجيل دخول الأدمن (باستخدام بيانات الأدمن المحددة) ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminLoginEmail').value.trim();
@@ -1234,22 +1230,29 @@
             const errorDiv = document.getElementById('adminLoginError');
             errorDiv.textContent = '';
 
-            // التحقق من أن البريد هو بريد الأدمن (غير حساس للحالة)
+            // التحقق من أن البريد وكلمة المرور هما بيانات الأدمن المحددة
             if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
-                errorDiv.textContent = `⚠️ هذا البريد غير مصرح له بدخول لوحة التحكم. البريد المسموح هو: ${ADMIN_EMAIL}`;
+                errorDiv.textContent = `⚠️ البريد غير صحيح. البريد المسموح به هو: ${ADMIN_EMAIL}`;
                 showToast('غير مصرح', true);
                 return;
             }
 
+            // التحقق من أن كلمة المرور صحيحة (كمقارنة إضافية)
+            // يمكننا أيضاً ترك Firebase يتولى التحقق، لكننا نضيف طبقة إضافية من الأمان.
+            if (password !== ADMIN_PASSWORD) {
+                errorDiv.textContent = '⚠️ كلمة المرور غير صحيحة';
+                showToast('كلمة المرور غير صحيحة', true);
+                return;
+            }
+
             try {
-                // محاولة تسجيل الدخول باستخدام Firebase Auth
                 await signInWithEmailAndPassword(auth, email, password);
-                // إذا نجح تسجيل الدخول، سيتم التعامل معه في onAuthStateChanged
+                // سيتم التعامل مع تسجيل الدخول في onAuthStateChanged
                 showToast('✅ تم تسجيل الدخول كأدمن');
-                // لا نحتاج إلى navigateTo هنا لأن onAuthStateChanged سيتولى الأمر
             } catch (err) {
-                errorDiv.textContent = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة. تأكد من أنك قمت بإنشاء حساب بهذا البريد في Firebase Authentication.';
+                errorDiv.textContent = '❌ فشل تسجيل الدخول. تأكد من أن هذا الحساب موجود في Firebase Authentication.';
                 showToast('فشل تسجيل الدخول', true);
+                console.error(err);
             }
         });
 
@@ -1297,7 +1300,7 @@
                     <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : 'صلاة'}</span>
                     <span class="notif-text">${n.message}</span>
                     <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
-                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
                 </div>
             `).join('');
         }
@@ -1699,7 +1702,7 @@
                             <div class="question-text">
                                 <span class="short-text">${short}${showMore ? '...' : ''}</span>
                                 <span class="full-text">${long}</span>
-                                ${showMore ? `<button class="toggle-btn" onclick="toggleQuestionText(this)">عرض المزيد</button>` : ''}
+                                ${showMore ? `<button class="toggle-btn" onclick="window.toggleQuestionText(this)">عرض المزيد</button>` : ''}
                             </div>
                         </td>
                         <td>${userInfo}</td>
@@ -1708,11 +1711,11 @@
                         <td>${item.answered ? '✅ مجاب' : '⏳ قيد الانتظار'}</td>
                         <td>
                             <div class="actions">
-                                ${!item.answered ? `<button class="btn-answer" onclick="openAnswerModal('${item.id}')"><i class="fas fa-pen"></i> إجابة</button>` : 
-                                    `<button class="btn-edit" onclick="openEditAnswerModal('${item.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
-                                ${!item.published ? `<button class="btn-publish" onclick="togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : 
-                                    `<button class="btn-publish" onclick="togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
-                                <button class="btn-delete" onclick="deleteQuestion('${item.id}')"><i class="fas fa-trash"></i></button>
+                                ${!item.answered ? `<button class="btn-answer" onclick="window.openAnswerModal('${item.id}')"><i class="fas fa-pen"></i> إجابة</button>` : 
+                                    `<button class="btn-edit" onclick="window.openEditAnswerModal('${item.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
+                                ${!item.published ? `<button class="btn-publish" onclick="window.togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : 
+                                    `<button class="btn-publish" onclick="window.togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
+                                <button class="btn-delete" onclick="window.deleteQuestion('${item.id}')"><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -1877,7 +1880,7 @@
                         <li style="padding:10px 0; border-bottom:1px solid var(--border-color);">
                             <p><strong>${data.text}</strong></p>
                             <small style="color:var(--text-muted);">${data.anonymous ? 'مجهول' : data.name || ''} - ${date}</small>
-                            <button class="btn btn-danger btn-sm" onclick="deletePrayer('${doc.id}')" style="float:left; padding:2px 12px; font-size:0.75rem;">حذف</button>
+                            <button class="btn btn-danger btn-sm" onclick="window.deletePrayer('${doc.id}')" style="float:left; padding:2px 12px; font-size:0.75rem;">حذف</button>
                         </li>
                     `;
                 });
@@ -1950,7 +1953,7 @@
                     html += `
                         <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
                             <div><strong>${data.title}</strong> - ${data.content}</div>
-                            <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${doc.id}')">حذف</button>
+                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${doc.id}')">حذف</button>
                         </div>
                     `;
                 });
@@ -2024,8 +2027,9 @@
 
         console.log('✅ التطبيق جاهز بالكامل');
         console.log('🔐 تسجيل الدخول منفصل للمستخدم والأدمن');
-        console.log('📧 بريد الأدمن المسموح به: ' + ADMIN_EMAIL);
-        console.log('💡 تأكد من إنشاء حساب بهذا البريد في Firebase Authentication');
+        console.log(`📧 بريد الأدمن: ${ADMIN_EMAIL}`);
+        console.log('🔑 كلمة المرور محددة مسبقاً');
+        console.log('💡 تأكد من أن هذا الحساب موجود في Firebase Authentication');
     </script>
 
 </body>

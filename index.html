@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- ====== Firebase SDK ====== -->
     <script type="importmap">
         {
             "imports": {
@@ -22,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط ====== */
+        /* ====== جميع الأنماط (مختصرة) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -59,11 +58,7 @@
             --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.08) 0%, transparent 70%);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: var(--font-family);
             background-color: var(--bg-body);
@@ -72,20 +67,9 @@
             line-height: 1.7;
             min-height: 100vh;
         }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        button {
-            font-family: var(--font-family);
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: inherit;
-        }
-        input,
-        select,
-        textarea {
+        a { text-decoration: none; color: inherit; }
+        button { font-family: var(--font-family); cursor: pointer; border: none; background: none; color: inherit; }
+        input, select, textarea {
             font-family: var(--font-family);
             background: var(--bg-surface);
             color: var(--text-primary);
@@ -96,34 +80,15 @@
             transition: border-color var(--transition), box-shadow var(--transition);
             font-size: 1rem;
         }
-        input:focus,
-        select:focus,
-        textarea:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--color-gold);
             box-shadow: 0 0 0 4px rgba(201, 168, 124, 0.15);
         }
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        label {
-            font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-        @media (max-width: 640px) {
-            .container {
-                padding: 0 16px;
-            }
-        }
+        textarea { resize: vertical; min-height: 120px; }
+        label { font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.95rem; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        @media (max-width: 640px) { .container { padding: 0 16px; } }
 
         .btn {
             display: inline-flex;
@@ -150,41 +115,18 @@
             transform: translateX(-100%);
             transition: transform var(--transition);
         }
-        .btn:hover::after {
-            transform: translateX(0);
-        }
+        .btn:hover::after { transform: translateX(0); }
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px rgba(201, 168, 124, 0.4);
         }
-        .btn-primary {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-        .btn-primary:hover {
-            background: var(--color-primary-light);
-        }
-        .btn-danger {
-            background: #c0392b;
-            border-color: #c0392b;
-        }
-        .btn-success {
-            background: #27ae60;
-            border-color: #27ae60;
-        }
-        .btn-sm {
-            padding: 8px 18px;
-            font-size: 0.85rem;
-        }
-        .btn-outline {
-            background: transparent;
-            border-color: var(--color-gold);
-            color: var(--color-gold);
-        }
-        .btn-outline:hover {
-            background: var(--color-gold);
-            color: #fff;
-        }
+        .btn-primary { background: var(--color-primary); border-color: var(--color-primary); }
+        .btn-primary:hover { background: var(--color-primary-light); }
+        .btn-danger { background: #c0392b; border-color: #c0392b; }
+        .btn-success { background: #27ae60; border-color: #27ae60; }
+        .btn-sm { padding: 8px 18px; font-size: 0.85rem; }
+        .btn-outline { background: transparent; border-color: var(--color-gold); color: var(--color-gold); }
+        .btn-outline:hover { background: var(--color-gold); color: #fff; }
 
         .card {
             background: var(--bg-card);
@@ -194,10 +136,7 @@
             border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-3px);
-        }
+        .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); }
 
         .section-title {
             font-size: 2.2rem;
@@ -217,25 +156,12 @@
             background: var(--color-gold-gradient);
             border-radius: 4px;
         }
-        .section-title.text-center::after {
-            right: 50%;
-            transform: translateX(50%);
-        }
-        .text-center {
-            text-align: center;
-        }
-        .mt-4 {
-            margin-top: 2rem;
-        }
-        .mb-4 {
-            margin-bottom: 2rem;
-        }
-        .mt-2 {
-            margin-top: 1rem;
-        }
-        .mb-2 {
-            margin-bottom: 1rem;
-        }
+        .section-title.text-center::after { right: 50%; transform: translateX(50%); }
+        .text-center { text-align: center; }
+        .mt-4 { margin-top: 2rem; }
+        .mb-4 { margin-bottom: 2rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 1rem; }
 
         /* ====== الهيدر ====== */
         header {
@@ -255,20 +181,14 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .logo-area { display: flex; align-items: center; gap: 14px; }
         .logo-area h1 {
             font-size: 1.3rem;
             font-weight: 800;
             color: var(--color-primary);
             transition: color var(--transition);
         }
-        [data-theme="dark"] .logo-area h1 {
-            color: var(--color-gold);
-        }
+        [data-theme="dark"] .logo-area h1 { color: var(--color-gold); }
 
         nav {
             display: flex;
@@ -284,8 +204,7 @@
             transition: all var(--transition);
             color: var(--text-secondary);
         }
-        nav a:hover,
-        nav a.active {
+        nav a:hover, nav a.active {
             background: var(--color-gold-gradient);
             color: #fff;
             box-shadow: 0 4px 12px rgba(201, 168, 124, 0.25);
@@ -298,12 +217,8 @@
             border: 1px solid var(--border-color);
             transition: all var(--transition);
         }
-        .theme-toggle:hover {
-            background: var(--color-gold);
-            color: #fff;
-        }
+        .theme-toggle:hover { background: var(--color-gold); color: #fff; }
 
-        /* ====== علامة الإشعارات ====== */
         .notification-badge {
             position: relative;
             display: inline-block;
@@ -328,26 +243,13 @@
             100% { transform: scale(1); }
         }
 
-        .page {
-            display: none;
-            padding: 40px 0 60px;
-            animation: fadeIn 0.5s ease;
-        }
-        .page.active {
-            display: block;
-        }
+        .page { display: none; padding: 40px 0 60px; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
         @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* ====== الهيرو ====== */
         .hero {
             position: relative;
             height: 520px;
@@ -372,19 +274,9 @@
             align-items: center;
             gap: 14px;
         }
-        .hero-content h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-            line-height: 1.2;
-        }
-        .hero-content p {
-            font-size: 1.4rem;
-            opacity: 0.95;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        }
+        .hero-content h2 { font-size: 3rem; font-weight: 900; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4); line-height: 1.2; }
+        .hero-content p { font-size: 1.4rem; opacity: 0.95; text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3); }
 
-        /* ====== آية اليوم ====== */
         #dailyVerseDisplay {
             font-size: 1.25rem;
             line-height: 1.9;
@@ -393,15 +285,9 @@
             overflow-y: auto;
             padding: 4px 0;
         }
-        #dailyVerseDisplay::-webkit-scrollbar {
-            width: 4px;
-        }
-        #dailyVerseDisplay::-webkit-scrollbar-thumb {
-            background: var(--color-gold);
-            border-radius: 4px;
-        }
+        #dailyVerseDisplay::-webkit-scrollbar { width: 4px; }
+        #dailyVerseDisplay::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 4px; }
 
-        /* ====== الأسئلة المجاب عنها (عامة) ====== */
         .question-card {
             border-right: 4px solid var(--color-gold);
             padding: 18px 22px;
@@ -411,14 +297,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all var(--transition);
         }
-        .question-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateX(-4px);
-        }
-        .question-card .q-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
+        .question-card:hover { box-shadow: var(--shadow-md); transform: translateX(-4px); }
+        .question-card .q-title { font-weight: 700; font-size: 1.1rem; }
         .question-card .q-answer {
             margin-top: 10px;
             padding: 14px 18px;
@@ -427,13 +307,8 @@
             color: var(--text-secondary);
             border-right: 3px solid var(--color-gold-light);
         }
-        .question-card .q-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
+        .question-card .q-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
 
-        /* ====== أسئلة المستخدم ====== */
         .my-question-card {
             border-right: 4px solid var(--color-gold);
             padding: 18px 22px;
@@ -442,10 +317,7 @@
             border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
-        .my-question-card .q-details {
-            font-size: 1.05rem;
-            margin-bottom: 6px;
-        }
+        .my-question-card .q-details { font-size: 1.05rem; margin-bottom: 6px; }
         .my-question-card .q-answer {
             margin-top: 10px;
             padding: 12px 16px;
@@ -454,13 +326,8 @@
             color: var(--text-secondary);
             border-right: 3px solid var(--color-gold-light);
         }
-        .my-question-card .q-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
+        .my-question-card .q-meta { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
 
-        /* ====== الإعلانات ====== */
         .announcement-item {
             padding: 18px 0;
             border-bottom: 1px solid var(--border-color);
@@ -468,32 +335,13 @@
             gap: 16px;
             align-items: flex-start;
         }
-        .announcement-item:last-child {
-            border-bottom: none;
-        }
-        .announcement-item .announce-content {
-            flex: 1;
-        }
-        .announcement-item h4 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--color-primary);
-        }
-        .announcement-item .date {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-top: 4px;
-        }
+        .announcement-item:last-child { border-bottom: none; }
+        .announcement-item .announce-content { flex: 1; }
+        .announcement-item h4 { font-size: 1.1rem; font-weight: 700; color: var(--color-primary); }
+        .announcement-item .date { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
 
-        /* ====== جدول الأسئلة في لوحة التحكم ====== */
-        .table-responsive {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
         th {
             background: var(--bg-body);
             color: var(--text-secondary);
@@ -509,19 +357,10 @@
             vertical-align: middle;
             max-width: 300px;
         }
-        td .question-text {
-            word-wrap: break-word;
-            line-height: 1.6;
-        }
-        td .question-text .short-text {
-            display: inline;
-        }
-        td .question-text .full-text {
-            display: none;
-        }
-        td .question-text .full-text.show {
-            display: inline;
-        }
+        td .question-text { word-wrap: break-word; line-height: 1.6; }
+        td .question-text .short-text { display: inline; }
+        td .question-text .full-text { display: none; }
+        td .question-text .full-text.show { display: inline; }
         td .question-text .toggle-btn {
             color: var(--color-gold);
             font-weight: 600;
@@ -531,15 +370,9 @@
             border: none;
             padding: 0 4px;
         }
-        td .question-text .toggle-btn:hover {
-            text-decoration: underline;
-        }
+        td .question-text .toggle-btn:hover { text-decoration: underline; }
 
-        .actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .actions button {
             padding: 4px 14px;
             border-radius: 50px;
@@ -547,37 +380,14 @@
             font-weight: 600;
             transition: all 0.2s;
         }
-        .actions .btn-answer {
-            background: var(--color-primary);
-            color: #fff;
-        }
-        .actions .btn-publish {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        .actions .btn-delete {
-            background: #c0392b;
-            color: #fff;
-        }
-        .actions .btn-edit {
-            background: #f39c12;
-            color: #fff;
-        }
+        .actions .btn-answer { background: var(--color-primary); color: #fff; }
+        .actions .btn-publish { background: var(--color-gold); color: #fff; }
+        .actions .btn-delete { background: #c0392b; color: #fff; }
+        .actions .btn-edit { background: #f39c12; color: #fff; }
 
-        .search-filter {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        .search-filter input,
-        .search-filter select {
-            width: auto;
-            flex: 1;
-            min-width: 160px;
-        }
+        .search-filter { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .search-filter input, .search-filter select { width: auto; flex: 1; min-width: 160px; }
 
-        /* ====== نافذة منبثقة للإجابة ====== */
         .modal {
             display: none;
             position: fixed;
@@ -590,9 +400,7 @@
             justify-content: center;
             align-items: center;
         }
-        .modal.show {
-            display: flex;
-        }
+        .modal.show { display: flex; }
         .modal-content {
             background: var(--bg-card);
             border-radius: var(--radius-lg);
@@ -603,27 +411,12 @@
             max-height: 90vh;
             overflow-y: auto;
         }
-        .modal-content h3 {
-            margin-bottom: 16px;
-            color: var(--color-primary);
-        }
-        .modal-content .form-group {
-            margin-bottom: 16px;
-        }
-        .modal-content textarea {
-            min-height: 200px;
-            font-size: 1rem;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
+        .modal-content h3 { margin-bottom: 16px; color: var(--color-primary); }
+        .modal-content .form-group { margin-bottom: 16px; }
+        .modal-content textarea { min-height: 200px; font-size: 1rem; }
+        .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
 
-        /* ====== لوحة التحكم ====== */
-        .admin-section {
-            margin-bottom: 3rem;
-        }
+        .admin-section { margin-bottom: 3rem; }
         .admin-section .section-header {
             display: flex;
             justify-content: space-between;
@@ -632,12 +425,7 @@
             gap: 12px;
             margin-bottom: 1.2rem;
         }
-        .admin-section h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
+        .admin-section h3 { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin: 0; }
 
         .stats-grid {
             display: grid;
@@ -654,22 +442,10 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all var(--transition);
         }
-        .stat-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-4px);
-        }
-        .stat-card .number {
-            font-size: 2.4rem;
-            font-weight: 900;
-            color: var(--color-gold);
-        }
-        .stat-card .label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
+        .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+        .stat-card .number { font-size: 2.4rem; font-weight: 900; color: var(--color-gold); }
+        .stat-card .label { font-size: 0.9rem; color: var(--text-muted); margin-top: 4px; }
 
-        /* ====== تسجيل الدخول ====== */
         .login-box {
             max-width: 420px;
             margin: 60px auto;
@@ -679,29 +455,11 @@
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
             border: 1px solid var(--border-color);
         }
-        .login-box h2 {
-            text-align: center;
-            margin-bottom: 28px;
-            font-weight: 800;
-        }
-        .login-box .subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-        }
-        .login-box .toggle-link {
-            text-align: center;
-            margin-top: 16px;
-            color: var(--color-gold);
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .login-box .toggle-link:hover {
-            text-decoration: underline;
-        }
+        .login-box h2 { text-align: center; margin-bottom: 28px; font-weight: 800; }
+        .login-box .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; }
+        .login-box .toggle-link { text-align: center; margin-top: 16px; color: var(--color-gold); cursor: pointer; font-weight: 600; }
+        .login-box .toggle-link:hover { text-decoration: underline; }
 
-        /* ====== الإشعارات ====== */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -719,12 +477,8 @@
             font-weight: 600;
             max-width: 90%;
         }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
+        .toast.show { transform: translateY(0); opacity: 1; }
 
-        /* ====== الإشعارات في لوحة التحكم ====== */
         .notification-item {
             padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
@@ -732,58 +486,23 @@
             justify-content: space-between;
             align-items: center;
         }
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-        .notification-item .notif-time {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .notification-item .notif-text {
-            flex: 1;
-            margin-left: 12px;
-        }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-item .notif-time { font-size: 0.8rem; color: var(--text-muted); }
+        .notification-item .notif-text { flex: 1; margin-left: 12px; }
         .notification-item .notif-type {
             padding: 2px 10px;
             border-radius: 50px;
             font-size: 0.7rem;
             font-weight: 600;
         }
-        .notif-type.question {
-            background: var(--color-primary);
-            color: #fff;
-        }
-        .notif-type.prayer {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        .notif-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .notif-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
+        .notif-type.question { background: var(--color-primary); color: #fff; }
+        .notif-type.prayer { background: var(--color-gold); color: #fff; }
+        .notif-list { max-height: 300px; overflow-y: auto; }
+        .notif-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 
-        /* ====== وسائل التواصل ====== */
-        .social-links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            font-size: 2.2rem;
-            margin: 16px 0;
-        }
-        .social-links a {
-            transition: all var(--transition);
-            color: var(--text-secondary);
-        }
-        .social-links a:hover {
-            color: var(--color-gold);
-            transform: scale(1.15);
-        }
+        .social-links { display: flex; gap: 20px; justify-content: center; font-size: 2.2rem; margin: 16px 0; }
+        .social-links a { transition: all var(--transition); color: var(--text-secondary); }
+        .social-links a:hover { color: var(--color-gold); transform: scale(1.15); }
 
         footer {
             background: var(--bg-surface);
@@ -795,10 +514,7 @@
             margin-top: 40px;
         }
 
-        .about-text {
-            white-space: pre-wrap;
-            line-height: 1.9;
-        }
+        .about-text { white-space: pre-wrap; line-height: 1.9; }
 
         .whatsapp-btn {
             display: inline-flex;
@@ -815,16 +531,9 @@
             box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
             text-decoration: none;
         }
-        .whatsapp-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
-            color: #fff;
-        }
-        .whatsapp-btn i {
-            font-size: 1.5rem;
-        }
+        .whatsapp-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4); color: #fff; }
+        .whatsapp-btn i { font-size: 1.5rem; }
 
-        /* ====== أزرار المستخدم والأدمن ====== */
         .user-auth-btn {
             background: var(--color-gold);
             color: #fff;
@@ -832,9 +541,7 @@
             padding: 6px 18px;
             font-size: 0.9rem;
         }
-        .user-auth-btn:hover {
-            background: var(--color-primary);
-        }
+        .user-auth-btn:hover { background: var(--color-primary); }
 
         .admin-login-btn {
             background: var(--color-primary);
@@ -843,9 +550,7 @@
             padding: 6px 18px;
             font-size: 0.9rem;
         }
-        .admin-login-btn:hover {
-            background: var(--color-gold);
-        }
+        .admin-login-btn:hover { background: var(--color-gold); }
 
         @media print {
             .no-print { display: none !important; }
@@ -861,11 +566,7 @@
             .admin-section .section-header .btn { display: none !important; }
         }
 
-        @media (max-width: 992px) {
-            .hero { height: 420px; }
-            .hero-content h2 { font-size: 2.4rem; }
-            .section-title { font-size: 1.8rem; }
-        }
+        @media (max-width: 992px) { .hero { height: 420px; } .hero-content h2 { font-size: 2.4rem; } .section-title { font-size: 1.8rem; } }
         @media (max-width: 768px) {
             .hero { height: 380px; }
             .hero-content h2 { font-size: 2rem; }
@@ -913,14 +614,11 @@
                 <a href="#" data-page="announcements"><i class="fas fa-bullhorn"></i> إعلانات</a>
                 <a href="#" data-page="about"><i class="fas fa-info-circle"></i> من نحن</a>
                 <a href="#" data-page="contact"><i class="fas fa-envelope"></i> تواصل</a>
-                <!-- زر لوحة التحكم (للأدمن فقط) -->
                 <a href="#" data-page="admin" id="adminLink" style="display:none;" class="notification-badge">
                     <i class="fas fa-user-shield"></i> لوحة التحكم
                     <span class="badge-count" id="notifBadge" style="display:none;">0</span>
                 </a>
-                <!-- زر تسجيل الدخول/الخروج للمستخدم -->
                 <a href="#" id="userAuthBtn" class="user-auth-btn"><i class="fas fa-user"></i> تسجيل الدخول</a>
-                <!-- زر تسجيل دخول الأدمن -->
                 <a href="#" data-page="admin-login" id="adminLoginBtn" class="admin-login-btn"><i class="fas fa-lock"></i> أدمن</a>
                 <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
             </nav>
@@ -932,11 +630,11 @@
 
         <!-- ====== الرئيسية ====== -->
         <section id="page-home" class="page active">
-            <div class="hero" id="heroSection">
+            <div class="hero">
                 <div class="hero-content">
                     <h2>الكنيسة الإنجيلية المشيخية بإبشادات</h2>
                     <p>«أَنَا هُوَ الطَّرِيقُ وَالْحَقُّ وَالْحَيَاةُ» (يوحنا ١٤: ٦)</p>
-                    <button class="btn btn-primary mt-2" onclick="window.navigateTo('questions')">
+                    <button class="btn btn-primary mt-2" onclick="navigateTo('questions')">
                         <i class="fas fa-pen"></i> اسأل سؤالك الآن
                     </button>
                 </div>
@@ -949,7 +647,7 @@
             </div>
 
             <div class="text-center mt-4">
-                <button class="btn btn-primary" onclick="window.navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
+                <button class="btn btn-primary" onclick="navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
             </div>
         </section>
 
@@ -1014,11 +712,11 @@
             <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
                 <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
                 <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
-                <button class="btn btn-primary mt-2" onclick="window.navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
+                <button class="btn btn-primary mt-2" onclick="navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
             </div>
         </section>
 
-        <!-- ====== أسئلتي (خاصة بالمستخدم) ====== -->
+        <!-- ====== أسئلتي ====== -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي</h2>
             <div id="myQuestionsList"></div>
@@ -1050,7 +748,7 @@
         <section id="page-answered" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
             <div class="search-filter">
-                <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" />
+                <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="renderAnsweredQuestions()" />
             </div>
             <div id="answeredList"></div>
         </section>
@@ -1066,9 +764,7 @@
             <h2 class="section-title text-center" style="display:block; text-align:center;">من نحن</h2>
             <div class="card">
                 <h3 style="color:var(--color-gold);">تاريخ الكنيسة</h3>
-                <div id="aboutContent" class="about-text">
-                    جاري تحميل النبذة...
-                </div>
+                <div id="aboutContent" class="about-text">جاري تحميل النبذة...</div>
                 <h3 style="color:var(--color-gold); margin-top:1.2rem;">خدماتنا</h3>
                 <ul style="padding-right:20px;">
                     <li>اجتماعات العبادة الأسبوعية</li>
@@ -1096,7 +792,7 @@
             </div>
         </section>
 
-        <!-- ====== صفحة تسجيل دخول الأدمن (منفصلة تماماً) ====== -->
+        <!-- ====== صفحة تسجيل دخول الأدمن ====== -->
         <section id="page-admin-login" class="page">
             <div class="login-box">
                 <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
@@ -1116,7 +812,7 @@
             </div>
         </section>
 
-        <!-- ====== لوحة التحكم (للأدمن فقط) ====== -->
+        <!-- ====== لوحة التحكم ====== -->
         <section id="page-admin" class="page">
             <div id="adminDashboard" style="display:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem;">
@@ -1131,12 +827,10 @@
                 <div class="admin-section">
                     <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
                     <div class="card">
-                        <div id="notificationsList" class="notif-list">
-                            <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>
-                        </div>
+                        <div id="notificationsList" class="notif-list"><p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p></div>
                         <div class="notif-actions">
-                            <button class="btn btn-sm btn-outline" onclick="window.markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
-                            <button class="btn btn-sm btn-danger" onclick="window.deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
+                            <button class="btn btn-sm btn-outline" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
                         </div>
                     </div>
                 </div>
@@ -1158,7 +852,7 @@
                             <div class="form-group"><label for="socialInstagramInput">رابط إنستغرام</label><input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." /></div>
                             <div class="form-group" style="grid-column: 1 / -1;"><label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label><input type="text" id="whatsappInput" placeholder="مثال: 201234567890" /><small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small></div>
                         </div>
-                        <button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
+                        <button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
                     </div>
                 </div>
 
@@ -1167,7 +861,7 @@
                     <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
                     <div class="card">
                         <div class="form-group"><label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label><textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea></div>
-                        <button class="btn btn-success btn-sm" onclick="window.saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
+                        <button class="btn btn-success btn-sm" onclick="saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
                     </div>
                 </div>
 
@@ -1176,14 +870,14 @@
                     <div class="section-header">
                         <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة</h3>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button class="btn btn-outline btn-sm no-print" onclick="window.printQuestions()"><i class="fas fa-print"></i> طباعة</button>
-                            <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
+                            <button class="btn btn-outline btn-sm no-print" onclick="printQuestions()"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-danger btn-sm no-print" onclick="clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
                         </div>
                     </div>
                     <div class="search-filter">
-                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="window.loadQuestions()" />
-                        <select id="adminFilterType" onchange="window.loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
-                        <select id="adminFilterAnswered" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
+                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="loadQuestions()" />
+                        <select id="adminFilterType" onchange="loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
+                        <select id="adminFilterAnswered" onchange="loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
                     </div>
                     <div class="table-responsive">
                         <table>
@@ -1197,7 +891,7 @@
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة</h3>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;"><button class="btn btn-outline btn-sm no-print" onclick="window.printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="window.clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;"><button class="btn btn-outline btn-sm no-print" onclick="printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div>
                     </div>
                     <div id="adminPrayersList"></div>
                 </div>
@@ -1207,7 +901,7 @@
                     <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
                     <div class="card mb-4">
                         <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;"><input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" /><input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" /></div>
-                        <button class="btn btn-success" onclick="window.addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
+                        <button class="btn btn-success" onclick="addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
                     </div>
                     <div id="adminAnnouncementsList"></div>
                 </div>
@@ -1215,7 +909,7 @@
                 <!-- تعديل آية اليوم -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
                 </div>
 
             </div>
@@ -1297,6 +991,9 @@
         let notifications = [];
         let editingQuestionId = null;
 
+        // البريد الإلكتروني للأدمن (يمكنك تغييره هنا)
+        const ADMIN_EMAIL = 'admin@church.com';
+
         console.log('✅ Firebase initialized');
 
         // ====== دوال مساعدة ======
@@ -1325,7 +1022,7 @@
             themeToggle.innerHTML = next === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
 
-        // ====== التنقل (جعلها عالمية) ======
+        // ====== التنقل ======
         window.navigateTo = function(pageId) {
             const pages = document.querySelectorAll('.page');
             pages.forEach(p => p.classList.remove('active'));
@@ -1337,7 +1034,7 @@
             });
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            if (pageId === 'answered') window.renderAnsweredQuestions();
+            if (pageId === 'answered') renderAnsweredQuestions();
             if (pageId === 'announcements') loadAnnouncements();
             if (pageId === 'my-questions' && currentUser) loadMyQuestions();
             if (pageId === 'questions') {
@@ -1410,7 +1107,8 @@
             currentUser = user;
             if (user) {
                 currentUserId = user.uid;
-                const isAdminUser = user.email === 'admin@church.com';
+                // التحقق من أن البريد هو بريد الأدمن (غير حساس لحالة الأحرف)
+                const isAdminUser = user.email && user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
                 isAdmin = isAdminUser;
 
                 if (isAdminUser) {
@@ -1420,7 +1118,6 @@
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
-                    // تحميل بيانات الأدمن
                     loadAdminData();
                     listenToNotifications();
                 } else {
@@ -1430,7 +1127,6 @@
                     adminLink.style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'none';
                     myQuestionsLink.style.display = 'inline-block';
-                    // إذا كان في صفحة الأدمن ننتقل للرئيسية
                     if (document.getElementById('page-admin').classList.contains('active')) {
                         window.navigateTo('home');
                     }
@@ -1521,24 +1217,27 @@
             }
         });
 
-        // ====== تسجيل دخول الأدمن ======
+        // ====== تسجيل دخول الأدمن (مع التحقق من البريد) ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminLoginEmail').value.trim();
             const password = document.getElementById('adminLoginPassword').value.trim();
             const errorDiv = document.getElementById('adminLoginError');
             errorDiv.textContent = '';
+
+            // تحقق من أن البريد هو بريد الأدمن (غير حساس للحالة)
+            if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
+                errorDiv.textContent = `⚠️ هذا البريد غير مصرح له بدخول لوحة التحكم. البريد المسموح هو: ${ADMIN_EMAIL}`;
+                showToast('غير مصرح', true);
+                return;
+            }
+
             try {
-                if (email !== 'admin@church.com') {
-                    errorDiv.textContent = 'هذا البريد غير مصرح له بدخول لوحة التحكم';
-                    showToast('غير مصرح', true);
-                    return;
-                }
                 await signInWithEmailAndPassword(auth, email, password);
                 showToast('تم تسجيل الدخول كأدمن');
                 window.navigateTo('admin');
             } catch (err) {
-                errorDiv.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                errorDiv.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة. تأكد من أنك قمت بإنشاء حساب بهذا البريد في Firebase Authentication.';
                 showToast('فشل تسجيل الدخول', true);
             }
         });
@@ -1587,7 +1286,7 @@
                     <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : 'صلاة'}</span>
                     <span class="notif-text">${n.message}</span>
                     <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
-                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
                 </div>
             `).join('');
         }
@@ -1989,7 +1688,7 @@
                             <div class="question-text">
                                 <span class="short-text">${short}${showMore ? '...' : ''}</span>
                                 <span class="full-text">${long}</span>
-                                ${showMore ? `<button class="toggle-btn" onclick="window.toggleQuestionText(this)">عرض المزيد</button>` : ''}
+                                ${showMore ? `<button class="toggle-btn" onclick="toggleQuestionText(this)">عرض المزيد</button>` : ''}
                             </div>
                         </td>
                         <td>${userInfo}</td>
@@ -1998,11 +1697,11 @@
                         <td>${item.answered ? '✅ مجاب' : '⏳ قيد الانتظار'}</td>
                         <td>
                             <div class="actions">
-                                ${!item.answered ? `<button class="btn-answer" onclick="window.openAnswerModal('${item.id}')"><i class="fas fa-pen"></i> إجابة</button>` : 
-                                    `<button class="btn-edit" onclick="window.openEditAnswerModal('${item.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
-                                ${!item.published ? `<button class="btn-publish" onclick="window.togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : 
-                                    `<button class="btn-publish" onclick="window.togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
-                                <button class="btn-delete" onclick="window.deleteQuestion('${item.id}')"><i class="fas fa-trash"></i></button>
+                                ${!item.answered ? `<button class="btn-answer" onclick="openAnswerModal('${item.id}')"><i class="fas fa-pen"></i> إجابة</button>` : 
+                                    `<button class="btn-edit" onclick="openEditAnswerModal('${item.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
+                                ${!item.published ? `<button class="btn-publish" onclick="togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : 
+                                    `<button class="btn-publish" onclick="togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
+                                <button class="btn-delete" onclick="deleteQuestion('${item.id}')"><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
                     </tr>
@@ -2167,7 +1866,7 @@
                         <li style="padding:10px 0; border-bottom:1px solid var(--border-color);">
                             <p><strong>${data.text}</strong></p>
                             <small style="color:var(--text-muted);">${data.anonymous ? 'مجهول' : data.name || ''} - ${date}</small>
-                            <button class="btn btn-danger btn-sm" onclick="window.deletePrayer('${doc.id}')" style="float:left; padding:2px 12px; font-size:0.75rem;">حذف</button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePrayer('${doc.id}')" style="float:left; padding:2px 12px; font-size:0.75rem;">حذف</button>
                         </li>
                     `;
                 });
@@ -2240,7 +1939,7 @@
                     html += `
                         <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
                             <div><strong>${data.title}</strong> - ${data.content}</div>
-                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${doc.id}')">حذف</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${doc.id}')">حذف</button>
                         </div>
                     `;
                 });
@@ -2298,7 +1997,7 @@
         // ====== تهيئة ======
         loadAnnouncements();
         document.getElementById('year').textContent = new Date().getFullYear();
-        window.renderAnsweredQuestions();
+        renderAnsweredQuestions();
         loadSocialLinks();
         loadAbout();
         loadDailyVerse();
@@ -2313,9 +2012,9 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل مع إصلاح الأزرار');
-        console.log('🔐 تسجيل الدخول منفصل للمستخدم والأدمن');
-        console.log('🌙 الوضع الليلي يعمل بشكل صحيح');
+        console.log('✅ التطبيق جاهز بالكامل مع إصلاح مشكلة الأدمن');
+        console.log(`📧 بريد الأدمن المسموح به: ${ADMIN_EMAIL}`);
+        console.log('🔐 تأكد من أن هذا البريد موجود في Firebase Authentication');
     </script>
 
 </body>

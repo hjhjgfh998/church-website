@@ -716,7 +716,7 @@
             </div>
         </section>
 
-        <!-- ====== أسئلتي ====== -->
+        <!-- ====== أسئلتي (مع مستمع حي) ====== -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي</h2>
             <div id="myQuestionsList"></div>
@@ -991,6 +991,7 @@
         let isAdmin = false;
         let notifications = [];
         let editingQuestionId = null;
+        let myQuestionsUnsubscribe = null; // لإلغاء الاشتراك عند الخروج
 
         // === بيانات الأدمن المطلوبة ===
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
@@ -1039,7 +1040,12 @@
 
             if (pageId === 'answered') renderAnsweredQuestions();
             if (pageId === 'announcements') loadAnnouncements();
-            if (pageId === 'my-questions' && currentUser) loadMyQuestions();
+            if (pageId === 'my-questions' && currentUser) {
+                // بدء الاستماع الحي إذا لم يكن مفعلاً
+                if (!myQuestionsUnsubscribe) {
+                    listenToMyQuestions();
+                }
+            }
             if (pageId === 'questions') {
                 if (!currentUser) {
                     document.getElementById('questionFormContainer').style.display = 'none';
@@ -1120,6 +1126,11 @@
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
+                    // إلغاء الاستماع لأسئلة المستخدم إذا كان مفعلاً
+                    if (myQuestionsUnsubscribe) {
+                        myQuestionsUnsubscribe();
+                        myQuestionsUnsubscribe = null;
+                    }
                     loadAdminData();
                     listenToNotifications();
                     if (document.getElementById('page-admin-login').classList.contains('active')) {
@@ -1132,17 +1143,27 @@
                     adminLink.style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'none';
                     myQuestionsLink.style.display = 'inline-block';
+                    // بدء الاستماع لأسئلة المستخدم إذا كانت الصفحة نشطة
+                    if (document.getElementById('page-my-questions').classList.contains('active')) {
+                        if (!myQuestionsUnsubscribe) {
+                            listenToMyQuestions();
+                        }
+                    } else {
+                        // تأكد من إلغاء الاشتراك إذا لم تكن الصفحة نشطة
+                        if (myQuestionsUnsubscribe) {
+                            myQuestionsUnsubscribe();
+                            myQuestionsUnsubscribe = null;
+                        }
+                    }
                     if (document.getElementById('page-admin').classList.contains('active')) {
                         window.navigateTo('home');
                     }
                     if (document.getElementById('page-admin-login').classList.contains('active')) {
                         window.navigateTo('home');
                     }
-                    if (document.getElementById('page-my-questions').classList.contains('active')) {
-                        loadMyQuestions();
-                    }
                 }
             } else {
+                // غير مسجل
                 currentUserId = null;
                 isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
@@ -1153,6 +1174,11 @@
                 document.getElementById('adminDashboard').style.display = 'none';
                 notifications = [];
                 updateNotificationUI();
+                // إلغاء الاشتراك من أسئلة المستخدم
+                if (myQuestionsUnsubscribe) {
+                    myQuestionsUnsubscribe();
+                    myQuestionsUnsubscribe = null;
+                }
                 const activePage = document.querySelector('.page.active');
                 if (activePage && (activePage.id === 'page-my-questions' || activePage.id === 'page-admin' || activePage
                         .id === 'page-admin-login')) {
@@ -1222,7 +1248,7 @@
             }
         });
 
-        // ====== تسجيل دخول الأدمن (باستخدام بيانات الأدمن المحددة) ======
+        // ====== تسجيل دخول الأدمن ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminLoginEmail').value.trim();
@@ -1230,15 +1256,12 @@
             const errorDiv = document.getElementById('adminLoginError');
             errorDiv.textContent = '';
 
-            // التحقق من أن البريد وكلمة المرور هما بيانات الأدمن المحددة
             if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
                 errorDiv.textContent = `⚠️ البريد غير صحيح. البريد المسموح به هو: ${ADMIN_EMAIL}`;
                 showToast('غير مصرح', true);
                 return;
             }
 
-            // التحقق من أن كلمة المرور صحيحة (كمقارنة إضافية)
-            // يمكننا أيضاً ترك Firebase يتولى التحقق، لكننا نضيف طبقة إضافية من الأمان.
             if (password !== ADMIN_PASSWORD) {
                 errorDiv.textContent = '⚠️ كلمة المرور غير صحيحة';
                 showToast('كلمة المرور غير صحيحة', true);
@@ -1247,7 +1270,6 @@
 
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                // سيتم التعامل مع تسجيل الدخول في onAuthStateChanged
                 showToast('✅ تم تسجيل الدخول كأدمن');
             } catch (err) {
                 errorDiv.textContent = '❌ فشل تسجيل الدخول. تأكد من أن هذا الحساب موجود في Firebase Authentication.';
@@ -1409,25 +1431,32 @@
             }
         });
 
-        // ====== أسئلتي ======
-        async function loadMyQuestions() {
+        // ====== الاستماع الحي لأسئلة المستخدم ======
+        function listenToMyQuestions() {
+            // إلغاء الاشتراك السابق إن وجد
+            if (myQuestionsUnsubscribe) {
+                myQuestionsUnsubscribe();
+                myQuestionsUnsubscribe = null;
+            }
             const container = document.getElementById('myQuestionsList');
             if (!currentUser) {
                 container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">يجب تسجيل الدخول لعرض أسئلتك</p>';
                 return;
             }
-            container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
-            try {
-                const q = query(collection(db, 'questions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
-                const snap = await getDocs(q);
-                if (snap.empty) {
+
+            const q = query(collection(db, 'questions'), where('userId', '==', currentUser.uid), orderBy('createdAt',
+            'desc'));
+            myQuestionsUnsubscribe = onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
                     container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد أسئلة حالياً</p>';
                     return;
                 }
                 let html = '';
-                snap.forEach(doc => {
+                snapshot.forEach(doc => {
                     const data = doc.data();
-                    const answerHtml = data.answered ? `<div class="q-answer"><strong>الإجابة:</strong> ${data.answer || 'لم تكتب إجابة بعد'}</div>` : '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
+                    const answerHtml = data.answered ?
+                        `<div class="q-answer"><strong>الإجابة:</strong> ${data.answer || 'لم تكتب إجابة بعد'}</div>` :
+                        '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
                     const published = data.published ? ' (منشور عام)' : ' (خاص)';
                     html += `
                         <div class="my-question-card">
@@ -1439,10 +1468,10 @@
                     `;
                 });
                 container.innerHTML = html;
-            } catch (e) {
-                console.error(e);
-                container.innerHTML = '<p style="color:#c0392b;">فشل تحميل أسئلتك</p>';
-            }
+            }, (error) => {
+                console.error('Error in my questions listener:', error);
+                container.innerHTML = '<p style="color:#c0392b;">حدث خطأ في تحميل أسئلتك. حاول تحديث الصفحة.</p>';
+            });
         }
 
         // ====== الأسئلة المجاب عنها (عامة) ======
@@ -2016,7 +2045,11 @@
         loadAbout();
         loadDailyVerse();
 
+        // بدء الاستماع لأسئلة المستخدم إذا كانت الصفحة نشطة
         setTimeout(() => {
+            if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
+                listenToMyQuestions();
+            }
             if (document.getElementById('page-questions').classList.contains('active')) {
                 if (!currentUser) {
                     document.getElementById('questionFormContainer').style.display = 'none';
@@ -2025,7 +2058,7 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('✅ التطبيق جاهز بالكامل مع تحديث حي لأسئلة المستخدم');
         console.log('🔐 تسجيل الدخول منفصل للمستخدم والأدمن');
         console.log(`📧 بريد الأدمن: ${ADMIN_EMAIL}`);
         console.log('🔑 كلمة المرور محددة مسبقاً');

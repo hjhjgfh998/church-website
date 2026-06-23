@@ -21,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط (مختصرة) ====== */
+        /* ====== جميع الأنماط ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -893,6 +893,54 @@
             color: var(--text-muted);
         }
 
+        /* Pagination */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .pagination-controls .page-info {
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0 8px;
+        }
+        .pagination-controls .btn {
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            min-width: 70px;
+        }
+
+        /* User notification bell */
+        #notifBell {
+            position: relative;
+            display: none;
+            padding: 6px 12px;
+            border-radius: 50px;
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        #notifBell:hover {
+            background: var(--color-gold-gradient);
+            color: #fff;
+        }
+        #notifBell .badge-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+
         @media print {
             .no-print {
                 display: none !important;
@@ -931,6 +979,9 @@
                 display: none !important;
             }
             .admin-section .section-header .btn {
+                display: none !important;
+            }
+            .pagination-controls {
                 display: none !important;
             }
         }
@@ -976,6 +1027,11 @@
             .announcement-item {
                 flex-direction: column;
                 align-items: stretch;
+            }
+            .pagination-controls .btn {
+                padding: 4px 12px;
+                font-size: 0.75rem;
+                min-width: 50px;
             }
         }
         @media (max-width: 480px) {
@@ -1045,6 +1101,10 @@
                 <a href="#" data-page="admin" id="adminLink" style="display:none;" class="notification-badge">
                     <i class="fas fa-user-shield"></i> لوحة التحكم
                     <span class="badge-count" id="notifBadge" style="display:none;">0</span>
+                </a>
+                <a href="#" id="notifBell" title="الإشعارات">
+                    <i class="fas fa-bell" style="font-size:1.3rem;"></i>
+                    <span class="badge-count" id="userNotifBadge" style="display:none;">0</span>
                 </a>
                 <a href="#" id="userAuthBtn" class="user-auth-btn"><i class="fas fa-user"></i> تسجيل الدخول</a>
                 <a href="#" data-page="admin-login" id="adminLoginBtn" class="admin-login-btn"><i class="fas fa-lock"></i> أدمن</a>
@@ -1303,7 +1363,7 @@
                 <!-- الأسئلة الواردة -->
                 <div class="admin-section">
                     <div class="section-header">
-                        <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة</h3>
+                        <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة <span id="questionsCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;">
                             <button class="btn btn-outline btn-sm no-print" onclick="window.printQuestions()"><i class="fas fa-print"></i> طباعة</button>
                             <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
@@ -1319,6 +1379,12 @@
                             <thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
                             <tbody id="adminQuestionsTable"></tbody>
                         </table>
+                    </div>
+                    <!-- Pagination Controls -->
+                    <div class="pagination-controls" id="paginationControls">
+                        <button class="btn btn-sm btn-outline" id="prevPageBtn" onclick="window.changePage(-1)"><i class="fas fa-chevron-right"></i> السابق</button>
+                        <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
+                        <button class="btn btn-sm btn-outline" id="nextPageBtn" onclick="window.changePage(1)">التالي <i class="fas fa-chevron-left"></i></button>
                     </div>
                 </div>
 
@@ -1351,6 +1417,21 @@
         </section>
 
     </main>
+
+    <!-- ====== نافذة إشعارات المستخدم ====== -->
+    <div id="userNotifModal" class="modal">
+        <div class="modal-content" style="max-width:500px;">
+            <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
+            <div id="userNotifList" class="notif-list">
+                <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-sm btn-outline" onclick="window.markAllUserNotifsRead()">تحديد الكل كمقروء</button>
+                <button class="btn btn-sm btn-danger" onclick="window.clearAllUserNotifs()">حذف الكل</button>
+                <button class="btn btn-sm btn-primary" id="closeUserNotifModal">إغلاق</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ====== نافذة منبثقة للإجابة ====== -->
     <div id="answerModal" class="modal">
@@ -1437,7 +1518,13 @@
         let notifications = [];
         let editingQuestionId = null;
         let myQuestionsUnsubscribe = null;
-        let userNotificationsUnsubscribe = null;
+        let userNotifUnsubscribe = null;
+        let userNotifications = [];
+
+        // Pagination variables
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let allQuestionsItems = [];
 
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
         const ADMIN_PASSWORD = 'wysmic-6cabzu-xiqpeT';
@@ -1527,6 +1614,7 @@
         const adminLoginBtn = document.getElementById('adminLoginBtn');
         const myQuestionsLink = document.getElementById('myQuestionsLink');
         const adminLink = document.getElementById('adminLink');
+        const notifBell = document.getElementById('notifBell');
 
         userAuthBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -1537,10 +1625,12 @@
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
                     }
-                    if (userNotificationsUnsubscribe) {
-                        userNotificationsUnsubscribe();
-                        userNotificationsUnsubscribe = null;
+                    if (userNotifUnsubscribe) {
+                        userNotifUnsubscribe();
+                        userNotifUnsubscribe = null;
                     }
+                    userNotifications = [];
+                    updateUserNotifUI();
                     document.getElementById('myQuestionsList').innerHTML =
                         '<p class="no-questions">تم تسجيل الخروج</p>';
                     document.getElementById('myQuestionsStatus').textContent = '';
@@ -1565,6 +1655,31 @@
             }
         });
 
+        // ====== دالة تحديث واجهة تسجيل الدخول ======
+        let isLoginMode = true; // الوضع الافتراضي هو تسجيل الدخول
+
+        function updateAuthUI() {
+            const title = document.getElementById('authTitle');
+            const subtitle = document.getElementById('authSubtitle');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleLink = document.getElementById('authToggleLink');
+            const nameGroup = document.getElementById('authNameGroup');
+
+            if (isLoginMode) {
+                title.innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
+                subtitle.textContent = 'سجل الدخول لمتابعة أسئلتك';
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+                toggleLink.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
+                nameGroup.style.display = 'none';
+            } else {
+                title.innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
+                subtitle.textContent = 'أنشئ حساباً لتتمكن من متابعة أسئلتك';
+                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+                toggleLink.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
+                nameGroup.style.display = 'block';
+            }
+        }
+
         // ====== إدارة المستخدمين ======
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -1577,6 +1692,7 @@
                     userAuthBtn.style.display = 'none';
                     adminLoginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> خروج الأدمن';
                     adminLink.style.display = 'inline-block';
+                    notifBell.style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
@@ -1584,10 +1700,12 @@
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
                     }
-                    if (userNotificationsUnsubscribe) {
-                        userNotificationsUnsubscribe();
-                        userNotificationsUnsubscribe = null;
+                    if (userNotifUnsubscribe) {
+                        userNotifUnsubscribe();
+                        userNotifUnsubscribe = null;
                     }
+                    userNotifications = [];
+                    updateUserNotifUI();
                     loadAdminData();
                     listenToNotifications();
                     if (document.getElementById('page-admin-login').classList.contains('active')) {
@@ -1600,9 +1718,11 @@
                     adminLink.style.display = 'none';
                     document.getElementById('adminDashboard').style.display = 'none';
                     myQuestionsLink.style.display = 'inline-block';
-                    if (document.getElementById('page-my-questions').classList.contains('active')) {
-                        startMyQuestionsListener();
+                    notifBell.style.display = 'inline-block';
+                    if (document.getElementById('page-my-questions').classList.contains('active') ||
+                        document.getElementById('page-home').classList.contains('active')) {
                         star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
+                        startMyQuestionsListener();
                     }
                     if (document.getElementById('page-admin').classList.contains('active')) {
                         window.navigateTo('home');
@@ -1619,16 +1739,19 @@
                 adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
                 myQuestionsLink.style.display = 'none';
                 adminLink.style.display = 'none';
+                notifBell.style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
                 notifications = [];
+                userNotifications = [];
                 updateNotificationUI();
+                updateUserNotifUI();
                 if (myQuestionsUnsubscribe) {
                     myQuestionsUnsubscribe();
                     myQuestionsUnsubscribe = null;
                 }
-                if (userNotificationsUnsubscribe) {
-                    userNotificationsUnsubscribe();
-                    userNotificationsUnsubscribe = null;
+                if (userNotifUnsubscribe) {
+                    userNotifUnsubscribe();
+                    userNotifUnsubscribe = null;
                 }
                 const myQuestionsPage = document.getElementById('page-my-questions');
                 if (myQuestionsPage.classList.contains('active')) {
@@ -1641,33 +1764,11 @@
                         .id === 'page-admin-login')) {
                     window.navigateTo('home');
                 }
+                // إعادة ضبط نموذج تسجيل الدخول
+                isLoginMode = true;
+                updateAuthUI();
             }
         });
-
-        // ====== دالة تحديث واجهة تسجيل الدخول ======
-        let isLoginMode = true; // الوضع الافتراضي هو تسجيل الدخول
-
-        function updateAuthUI() {
-            const title = document.getElementById('authTitle');
-            const subtitle = document.getElementById('authSubtitle');
-            const submitBtn = document.getElementById('authSubmitBtn');
-            const toggleLink = document.getElementById('authToggleLink');
-            const nameGroup = document.getElementById('authNameGroup');
-            
-            if (isLoginMode) {
-                title.innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
-                subtitle.textContent = 'سجل الدخول لمتابعة أسئلتك';
-                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-                toggleLink.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
-                nameGroup.style.display = 'none';
-            } else {
-                title.innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
-                subtitle.textContent = 'أنشئ حساباً لتتمكن من متابعة أسئلتك';
-                submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
-                toggleLink.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
-                nameGroup.style.display = 'block';
-            }
-        }
 
         // ====== تسجيل الدخول/إنشاء حساب للمستخدم ======
         const authForm = document.getElementById('userAuthForm');
@@ -1772,7 +1873,7 @@
             window.navigateTo('home');
         });
 
-        // ====== مستمع أسئلة المستخدم (محسّن) ======
+        // ====== مستمع أسئلة المستخدم ======
         function startMyQuestionsListener() {
             if (myQuestionsUnsubscribe) {
                 myQuestionsUnsubscribe();
@@ -1827,12 +1928,11 @@
                             '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
                         const published = item.published ? ' (منشور عام)' : ' (خاص)';
                         const dateStr = item.createdAt ? item.createdAt.toDate().toLocaleString('ar-EG') : '';
-                        
-                        // التحقق من وجود إشعار بأن السؤال تمت إجابته
+
                         const isAnswered = item.answered;
                         const notifClass = isAnswered ? 'show' : '';
                         const notifMessage = isAnswered ? '✅ تمت الإجابة على سؤالك!' : '';
-                        
+
                         html += `
                             <div class="my-question-card">
                                 <div class="q-details"><strong>السؤال:</strong> ${item.details}</div>
@@ -1864,25 +1964,38 @@
 
         // ====== مستمع إشعارات المستخدم ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
-            if (userNotificationsUnsubscribe) {
-                userNotificationsUnsubscribe();
-                userNotificationsUnsubscribe = null;
+            if (userNotifUnsubscribe) {
+                userNotifUnsubscribe();
+                userNotifUnsubscribe = null;
             }
 
-            if (!currentUser) return;
+            if (!currentUser || isAdmin) {
+                userNotifications = [];
+                updateUserNotifUI();
+                return;
+            }
 
             try {
                 const q = query(
                     collection(db, 'userNotifications'),
                     where('userId', '==', currentUser.uid),
-                    where('read', '==', false)
+                    orderBy('createdAt', 'desc')
                 );
 
-                userNotificationsUnsubscribe = onSnapshot(q, (snapshot) => {
-                    snapshot.docChanges().forEach((change) => {
+                userNotifUnsubscribe = onSnapshot(q, (snapshot) => {
+                    userNotifications = [];
+                    snapshot.forEach(doc => {
+                        userNotifications.push({ id: doc.id, ...doc.data() });
+                    });
+                    updateUserNotifUI();
+
+                    // عرض إشعار منبثق للجديد
+                    snapshot.docChanges().forEach(change => {
                         if (change.type === 'added') {
                             const data = change.doc.data();
-                            showToast(`🔔 ${data.message}`, false);
+                            if (!data.read) {
+                                showToast(`🔔 ${data.message}`, false);
+                            }
                         }
                     });
                 }, (error) => {
@@ -1892,6 +2005,92 @@
                 console.warn('Could not set up user notifications:', error);
             }
         }
+
+        // ====== تحديث واجهة إشعارات المستخدم ======
+        function updateUserNotifUI() {
+            const badge = document.getElementById('userNotifBadge');
+            const bell = document.getElementById('notifBell');
+            const list = document.getElementById('userNotifList');
+            const unread = userNotifications.filter(n => !n.read).length;
+
+            if (currentUser && !isAdmin) {
+                bell.style.display = 'inline-block';
+                if (unread > 0) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = unread > 99 ? '99+' : unread;
+                } else {
+                    badge.style.display = 'none';
+                }
+            } else {
+                bell.style.display = 'none';
+                badge.style.display = 'none';
+            }
+
+            if (list) {
+                if (userNotifications.length === 0) {
+                    list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
+                } else {
+                    list.innerHTML = userNotifications.map(n => `
+                        <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                            <span class="notif-text">${n.message}</span>
+                            <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                            ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markUserNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                        </div>
+                    `).join('');
+                }
+            }
+        }
+
+        // ====== دوال إشعارات المستخدم ======
+        window.markUserNotifRead = async function(id) {
+            try {
+                await updateDoc(doc(db, 'userNotifications', id), { read: true });
+            } catch (e) { console.error(e); }
+        };
+
+        window.markAllUserNotifsRead = async function() {
+            if (!userNotifications.length) { showToast('لا توجد إشعارات', true); return; }
+            try {
+                const batch = writeBatch(db);
+                userNotifications.forEach(n => {
+                    if (!n.read) batch.update(doc(db, 'userNotifications', n.id), { read: true });
+                });
+                await batch.commit();
+                showToast('✅ تم تحديد الكل كمقروء');
+            } catch (e) { showToast('❌ خطأ', true); }
+        };
+
+        window.clearAllUserNotifs = async function() {
+            if (!userNotifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
+            if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
+            try {
+                const batch = writeBatch(db);
+                userNotifications.forEach(n => batch.delete(doc(db, 'userNotifications', n.id)));
+                await batch.commit();
+                userNotifications = [];
+                updateUserNotifUI();
+                showToast('✅ تم حذف جميع الإشعارات');
+            } catch (e) { showToast('❌ خطأ', true); }
+        };
+
+        // ====== نافذة الإشعارات ======
+        document.getElementById('notifBell').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!currentUser || isAdmin) return;
+            const modal = document.getElementById('userNotifModal');
+            modal.classList.add('show');
+            updateUserNotifUI();
+        });
+
+        document.getElementById('closeUserNotifModal').addEventListener('click', () => {
+            document.getElementById('userNotifModal').classList.remove('show');
+        });
+
+        document.getElementById('userNotifModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.remove('show');
+            }
+        });
 
         // ====== تحديث يدوي لأسئلة المستخدم ======
         window.refreshMyQuestions = function() {
@@ -2285,12 +2484,14 @@
             } catch (e) { console.error('Stats error:', e); }
         }
 
+        // ====== تحميل الأسئلة مع ترقيم الصفحات ======
         window.loadQuestions = async function() {
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
             const typeFilter = document.getElementById('adminFilterType').value;
             const answeredFilter = document.getElementById('adminFilterAnswered').value;
-            const tbody = document.getElementById('adminQuestionsTable');
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>';
+            const countEl = document.getElementById('questionsCount');
+            countEl.textContent = 'جاري التحميل...';
+
             try {
                 const snap = await getDocs(collection(db, 'questions'));
                 let items = [];
@@ -2302,26 +2503,59 @@
                         deleteDoc(doc.ref).catch(e => console.warn('Delete failed:', e));
                     }
                 });
+
+                // تطبيق الفلاتر
                 if (typeFilter !== 'all') items = items.filter(item => item.type === typeFilter);
                 if (answeredFilter === 'answered') items = items.filter(item => item.answered === true);
                 else if (answeredFilter === 'unanswered') items = items.filter(item => item.answered !== true);
                 if (search) items = items.filter(item => item.details.toLowerCase().includes(search));
+
+                // ترتيب تنازلي
                 items.sort((a, b) => {
                     const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
                     const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
                     return db - da;
                 });
-                if (items.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>';
-                    return;
-                }
-                tbody.innerHTML = items.map(item => {
-                    const details = item.details || '';
-                    const short = details.substring(0, 100);
-                    const long = details;
-                    const showMore = details.length > 100;
-                    const userInfo = item.userName || 'مستخدم غير معروف';
-                    return `
+
+                // حفظ العناصر الكاملة وعرض الصفحة الأولى
+                allQuestionsItems = items;
+                currentPage = 1;
+                countEl.textContent = `(${items.length} سؤال)`;
+                renderQuestionsPage();
+            } catch (e) {
+                console.error(e);
+                document.getElementById('adminQuestionsTable').innerHTML =
+                    '<tr><td colspan="6" style="color:#c0392b;">فشل التحميل</td></tr>';
+                countEl.textContent = '';
+            }
+        };
+
+        // ====== عرض صفحة الأسئلة ======
+        function renderQuestionsPage() {
+            const tbody = document.getElementById('adminQuestionsTable');
+            const items = allQuestionsItems;
+            const totalPages = Math.ceil(items.length / itemsPerPage) || 1;
+
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, items.length);
+            const pageItems = items.slice(start, end);
+
+            if (items.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>';
+                document.getElementById('pageInfo').textContent = 'صفحة 1 من 1';
+                document.getElementById('prevPageBtn').disabled = true;
+                document.getElementById('nextPageBtn').disabled = true;
+                return;
+            }
+
+            tbody.innerHTML = pageItems.map(item => {
+                const details = item.details || '';
+                const short = details.substring(0, 100);
+                const long = details;
+                const showMore = details.length > 100;
+                const userInfo = item.userName || 'مستخدم غير معروف';
+                return `
                     <tr>
                         <td>
                             <div class="question-text">
@@ -2344,25 +2578,38 @@
                             </div>
                         </td>
                     </tr>
-                `}).join('');
-                window.toggleQuestionText = function(btn) {
-                    const container = btn.parentElement;
-                    const short = container.querySelector('.short-text');
-                    const full = container.querySelector('.full-text');
-                    if (full.classList.contains('show')) {
-                        full.classList.remove('show');
-                        short.style.display = 'inline';
-                        btn.textContent = 'عرض المزيد';
-                    } else {
-                        full.classList.add('show');
-                        short.style.display = 'none';
-                        btn.textContent = 'عرض أقل';
-                    }
-                };
-            } catch (e) {
-                console.error(e);
-                tbody.innerHTML = '<tr><td colspan="6" style="color:#c0392b;">فشل التحميل</td></tr>';
-            }
+                `;
+            }).join('');
+
+            // تحديث معلومات الترقيم
+            document.getElementById('pageInfo').textContent = `صفحة ${currentPage} من ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = currentPage <= 1;
+            document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+
+            // تفعيل دالة عرض النص الكامل
+            window.toggleQuestionText = function(btn) {
+                const container = btn.parentElement;
+                const short = container.querySelector('.short-text');
+                const full = container.querySelector('.full-text');
+                if (full.classList.contains('show')) {
+                    full.classList.remove('show');
+                    short.style.display = 'inline';
+                    btn.textContent = 'عرض المزيد';
+                } else {
+                    full.classList.add('show');
+                    short.style.display = 'none';
+                    btn.textContent = 'عرض أقل';
+                }
+            };
+        }
+
+        // ====== تغيير الصفحة ======
+        window.changePage = function(delta) {
+            const totalPages = Math.ceil(allQuestionsItems.length / itemsPerPage) || 1;
+            const newPage = currentPage + delta;
+            if (newPage < 1 || newPage > totalPages) return;
+            currentPage = newPage;
+            renderQuestionsPage();
         };
 
         // ====== نافذة الإجابة ======
@@ -2405,25 +2652,20 @@
                 const questionRef = doc(db, 'questions', editingQuestionId);
                 const snap = await getDoc(questionRef);
                 const questionData = snap.data();
-                
+
                 await updateDoc(questionRef, {
                     answered: true,
                     answer: answer
                 });
 
-                // إرسال إشعار للمستخدم إذا كان لديه حساب وليس أدمن
+                // إرسال إشعار للمستخدم
                 if (questionData && questionData.userId) {
-                    const userRef = doc(db, 'users', questionData.userId);
-                    const userSnap = await getDoc(userRef);
-                    if (userSnap.exists() || true) { // حتى لو لم يكن في مجموعة users نرسل الإشعار
-                        await addUserNotification(
-                            questionData.userId,
-                            `تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
-                            editingQuestionId
-                        );
-                        // أيضاً نضيف إشعار في لوحة الأدمن
-                        await addNotification(`✅ تمت الإجابة على سؤال للمستخدم ${questionData.userName || 'مستخدم'}`, 'answer');
-                    }
+                    await addUserNotification(
+                        questionData.userId,
+                        `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
+                        editingQuestionId
+                    );
+                    await addNotification(`✅ تمت الإجابة على سؤال للمستخدم ${questionData.userName || 'مستخدم'}`, 'answer');
                 }
 
                 showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
@@ -2431,7 +2673,6 @@
                 editingQuestionId = null;
                 loadQuestions();
                 renderAnsweredQuestions();
-                // تحديث أسئلتي إذا كانت مفتوحة
                 if (document.getElementById('page-my-questions').classList.contains('active')) {
                     startMyQuestionsListener();
                 }
@@ -2686,6 +2927,7 @@
         console.log('📧 بريد الأدمن: abshadat.church@gmail.com');
         console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
         console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم');
+        console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
     </script>
 
 </body>

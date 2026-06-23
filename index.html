@@ -796,11 +796,12 @@
         <section id="page-admin-login" class="page">
             <div class="login-box">
                 <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
-                <p class="subtitle">أدخل بيانات حساب الأدمن للتحكم في الموقع</p>
+                <p class="subtitle">أدخل بيانات حساب الأدمن الذي قمت بإنشائه في Firebase Authentication</p>
                 <form id="adminLoginForm">
                     <div class="form-group">
                         <label for="adminLoginEmail">البريد الإلكتروني</label>
                         <input type="email" id="adminLoginEmail" required placeholder="admin@church.com" />
+                        <small style="color:var(--text-muted); font-size:0.8rem;">أدخل البريد الذي سجلته في Firebase</small>
                     </div>
                     <div class="form-group">
                         <label for="adminLoginPassword">كلمة المرور</label>
@@ -991,10 +992,11 @@
         let notifications = [];
         let editingQuestionId = null;
 
-        // البريد الإلكتروني للأدمن (يمكنك تغييره هنا)
+        // === البريد الإلكتروني للأدمن المسموح به (يمكنك تغييره) ===
         const ADMIN_EMAIL = 'admin@church.com';
 
         console.log('✅ Firebase initialized');
+        console.log(`📧 بريد الأدمن المسموح به: ${ADMIN_EMAIL}`);
 
         // ====== دوال مساعدة ======
         const toastEl = document.getElementById('toast');
@@ -1107,11 +1109,12 @@
             currentUser = user;
             if (user) {
                 currentUserId = user.uid;
-                // التحقق من أن البريد هو بريد الأدمن (غير حساس لحالة الأحرف)
+                // التحقق مما إذا كان المستخدم هو الأدمن (بالمقارنة مع البريد المسجل)
                 const isAdminUser = user.email && user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
                 isAdmin = isAdminUser;
 
                 if (isAdminUser) {
+                    // أدمن
                     userAuthBtn.style.display = 'none';
                     adminLoginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> خروج الأدمن';
                     adminLink.style.display = 'inline-block';
@@ -1120,7 +1123,12 @@
                     myQuestionsLink.style.display = 'none';
                     loadAdminData();
                     listenToNotifications();
+                    // إذا كان في صفحة admin-login، ننتقل للوحة التحكم
+                    if (document.getElementById('page-admin-login').classList.contains('active')) {
+                        window.navigateTo('admin');
+                    }
                 } else {
+                    // مستخدم عادي
                     userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
                     userAuthBtn.style.display = 'inline-block';
                     adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
@@ -1138,6 +1146,7 @@
                     }
                 }
             } else {
+                // غير مسجل
                 currentUserId = null;
                 isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
@@ -1225,7 +1234,7 @@
             const errorDiv = document.getElementById('adminLoginError');
             errorDiv.textContent = '';
 
-            // تحقق من أن البريد هو بريد الأدمن (غير حساس للحالة)
+            // التحقق من أن البريد هو بريد الأدمن (غير حساس للحالة)
             if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
                 errorDiv.textContent = `⚠️ هذا البريد غير مصرح له بدخول لوحة التحكم. البريد المسموح هو: ${ADMIN_EMAIL}`;
                 showToast('غير مصرح', true);
@@ -1233,11 +1242,13 @@
             }
 
             try {
+                // محاولة تسجيل الدخول باستخدام Firebase Auth
                 await signInWithEmailAndPassword(auth, email, password);
-                showToast('تم تسجيل الدخول كأدمن');
-                window.navigateTo('admin');
+                // إذا نجح تسجيل الدخول، سيتم التعامل معه في onAuthStateChanged
+                showToast('✅ تم تسجيل الدخول كأدمن');
+                // لا نحتاج إلى navigateTo هنا لأن onAuthStateChanged سيتولى الأمر
             } catch (err) {
-                errorDiv.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة. تأكد من أنك قمت بإنشاء حساب بهذا البريد في Firebase Authentication.';
+                errorDiv.textContent = '❌ البريد الإلكتروني أو كلمة المرور غير صحيحة. تأكد من أنك قمت بإنشاء حساب بهذا البريد في Firebase Authentication.';
                 showToast('فشل تسجيل الدخول', true);
             }
         });
@@ -2002,7 +2013,6 @@
         loadAbout();
         loadDailyVerse();
 
-        // في حالة عدم تسجيل الدخول في صفحة الأسئلة
         setTimeout(() => {
             if (document.getElementById('page-questions').classList.contains('active')) {
                 if (!currentUser) {
@@ -2012,9 +2022,10 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل مع إصلاح مشكلة الأدمن');
-        console.log(`📧 بريد الأدمن المسموح به: ${ADMIN_EMAIL}`);
-        console.log('🔐 تأكد من أن هذا البريد موجود في Firebase Authentication');
+        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('🔐 تسجيل الدخول منفصل للمستخدم والأدمن');
+        console.log('📧 بريد الأدمن المسموح به: ' + ADMIN_EMAIL);
+        console.log('💡 تأكد من إنشاء حساب بهذا البريد في Firebase Authentication');
     </script>
 
 </body>

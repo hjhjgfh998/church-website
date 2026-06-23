@@ -670,6 +670,12 @@
             max-height: 300px;
             overflow-y: auto;
         }
+        .notif-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
 
         /* ====== وسائل التواصل ====== */
         .social-links {
@@ -1056,16 +1062,21 @@
                     </div>
                 </div>
 
-                <!-- ====== الإشعارات ====== -->
+                <!-- ====== الإشعارات مع زر حذف الكل ====== -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
                     <div class="card">
                         <div id="notificationsList" class="notif-list">
-                            <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات جديدة</p>
+                            <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>
                         </div>
-                        <button class="btn btn-sm btn-outline mt-2" onclick="clearAllNotifications()" style="width:100%;">
-                            <i class="fas fa-check-double"></i> تحديد الكل كمقروء
-                        </button>
+                        <div class="notif-actions">
+                            <button class="btn btn-sm btn-outline" onclick="markAllNotificationsRead()">
+                                <i class="fas fa-check-double"></i> تحديد الكل كمقروء
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteAllNotifications()">
+                                <i class="fas fa-trash"></i> حذف الكل
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1306,7 +1317,7 @@
             themeToggle.innerHTML = next === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
 
-        // ====== الإشعارات ======
+        // ====== الإشعارات (مع دوال الحذف) ======
         async function loadNotifications() {
             if (!currentUser) return;
             try {
@@ -1358,20 +1369,44 @@
             } catch (e) { console.error(e); }
         };
 
-        window.clearAllNotifications = async function() {
-            if (!confirm('تحديد جميع الإشعارات كمقروءة؟')) return;
+        // تحديد الكل كمقروء
+        window.markAllNotificationsRead = async function() {
+            if (!notifications.length) { showToast('لا توجد إشعارات', true); return; }
             try {
                 const batch = writeBatch(db);
-                const snap = await getDocs(collection(db, 'notifications'));
-                snap.forEach(doc => {
-                    if (!doc.data().read) {
-                        batch.update(doc.ref, { read: true });
+                notifications.forEach(n => {
+                    if (!n.read) {
+                        batch.update(doc(db, 'notifications', n.id), { read: true });
                     }
                 });
                 await batch.commit();
                 await loadNotifications();
-                showToast('تم تحديث جميع الإشعارات كمقروءة');
-            } catch (e) { showToast('خطأ', true); }
+                showToast('✅ تم تحديد جميع الإشعارات كمقروءة');
+            } catch (e) { showToast('❌ خطأ', true); }
+        };
+
+        // حذف جميع الإشعارات
+        window.deleteAllNotifications = async function() {
+            if (!notifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
+            if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
+            try {
+                const batch = writeBatch(db);
+                notifications.forEach(n => {
+                    batch.delete(doc(db, 'notifications', n.id));
+                });
+                await batch.commit();
+                notifications = [];
+                updateNotificationUI();
+                showToast('✅ تم حذف جميع الإشعارات');
+            } catch (e) { showToast('❌ خطأ', true); }
+        };
+
+        // تحديد إشعار واحد كمقروء
+        window.markNotifRead = async function(id) {
+            try {
+                await updateDoc(doc(db, 'notifications', id), { read: true });
+                await loadNotifications();
+            } catch (e) { console.error(e); }
         };
 
         function listenToNotifications() {
@@ -2038,6 +2073,7 @@
         console.log('🔗 روابط التواصل مخزنة في Firestore');
         console.log('📝 يمكن تعديل نبذة "من نحن" من لوحة التحكم');
         console.log('🔔 يتم إرسال إشعارات عند وصول سؤال أو طلب صلاة جديد');
+        console.log('🗑️ يمكن حذف الإشعارات من لوحة التحكم');
         console.log('🖨️ يمكن طباعة الأسئلة وطلبات الصلاة');
         console.log('🔐 صفحة تسجيل الدخول فارغة (لا توجد بيانات مسبقة)');
     </script>

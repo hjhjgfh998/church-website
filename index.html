@@ -298,6 +298,31 @@
             color: #fff;
         }
 
+        /* ====== علامة الإشعارات ====== */
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+        .notification-badge .badge-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
         .page {
             display: none;
             padding: 40px 0 60px;
@@ -371,7 +396,7 @@
             border-radius: 4px;
         }
 
-        /* ====== الأسئلة المجاب عنها ====== */
+        /* ====== الأسئلة المجاب عنها (عامة) ====== */
         .question-card {
             border-right: 4px solid var(--color-gold);
             padding: 18px 22px;
@@ -428,7 +453,7 @@
             margin-top: 4px;
         }
 
-        /* ====== جدول الأسئلة ====== */
+        /* ====== جدول الأسئلة في لوحة التحكم ====== */
         .table-responsive {
             overflow-x: auto;
         }
@@ -502,6 +527,10 @@
             background: #c0392b;
             color: #fff;
         }
+        .actions .btn-edit {
+            background: #f39c12;
+            color: #fff;
+        }
 
         .search-filter {
             display: flex;
@@ -514,6 +543,71 @@
             width: auto;
             flex: 1;
             min-width: 160px;
+        }
+
+        /* ====== نافذة منبثقة للإجابة (Modal) ====== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 700px;
+            width: 90%;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+        .modal-content .form-group {
+            margin-bottom: 16px;
+        }
+        .modal-content textarea {
+            min-height: 200px;
+            font-size: 1rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* ====== صفحة الأسئلة الخاصة بالمستخدم ====== */
+        .my-question-card {
+            border-right: 4px solid var(--color-gold);
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .my-question-card .q-details {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+        .my-question-card .q-answer {
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: var(--bg-body);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            border-right: 3px solid var(--color-gold-light);
         }
 
         /* ====== لوحة التحكم ====== */
@@ -565,7 +659,7 @@
             margin-top: 4px;
         }
 
-        /* ====== تسجيل الدخول ====== */
+        /* ====== تسجيل الدخول (العادي والأدمن) ====== */
         .login-box {
             max-width: 420px;
             margin: 60px auto;
@@ -585,6 +679,16 @@
             color: var(--text-muted);
             margin-bottom: 24px;
             font-size: 0.95rem;
+        }
+        .login-box .toggle-link {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--color-gold);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .login-box .toggle-link:hover {
+            text-decoration: underline;
         }
 
         /* ====== الإشعارات ====== */
@@ -610,30 +714,7 @@
             opacity: 1;
         }
 
-        .notification-badge {
-            position: relative;
-            display: inline-block;
-        }
-        .notification-badge .badge-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e74c3c;
-            color: #fff;
-            border-radius: 50%;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
+        /* ====== الإشعارات في لوحة التحكم ====== */
         .notification-item {
             padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
@@ -733,135 +814,62 @@
             font-size: 1.5rem;
         }
 
+        /* ====== زر تسجيل الدخول للمستخدم ====== */
+        .user-auth-btn {
+            background: var(--color-gold);
+            color: #fff;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.9rem;
+        }
+        .user-auth-btn:hover {
+            background: var(--color-primary);
+        }
+
         @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background: #fff !important;
-                color: #000 !important;
-            }
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #ccc !important;
-            }
-            table {
-                font-size: 12px !important;
-            }
-            .actions {
-                display: none !important;
-            }
-            .theme-toggle,
-            nav a,
-            header .logo-area h1 {
-                color: #000 !important;
-            }
-            header {
-                background: #fff !important;
-                border-bottom: 1px solid #ccc !important;
-            }
-            .container {
-                max-width: 100% !important;
-                padding: 0 10px !important;
-            }
-            .page {
-                padding: 20px 0 !important;
-            }
-            .btn {
-                display: none !important;
-            }
-            .admin-section .section-header .btn {
-                display: none !important;
-            }
-            .announcement-item .announce-actions {
-                display: none !important;
-            }
+            .no-print { display: none !important; }
+            body { background: #fff !important; color: #000 !important; }
+            .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+            table { font-size: 12px !important; }
+            .actions { display: none !important; }
+            .theme-toggle, nav a, header .logo-area h1 { color: #000 !important; }
+            header { background: #fff !important; border-bottom: 1px solid #ccc !important; }
+            .container { max-width: 100% !important; padding: 0 10px !important; }
+            .page { padding: 20px 0 !important; }
+            .btn { display: none !important; }
+            .admin-section .section-header .btn { display: none !important; }
+            .announcement-item .announce-actions { display: none !important; }
         }
 
         @media (max-width: 992px) {
-            .hero {
-                height: 420px;
-            }
-            .hero-content h2 {
-                font-size: 2.4rem;
-            }
-            .section-title {
-                font-size: 1.8rem;
-            }
+            .hero { height: 420px; }
+            .hero-content h2 { font-size: 2.4rem; }
+            .section-title { font-size: 1.8rem; }
         }
         @media (max-width: 768px) {
-            .hero {
-                height: 380px;
-            }
-            .hero-content h2 {
-                font-size: 2rem;
-            }
-            .hero-content p {
-                font-size: 1.1rem;
-            }
-            .logo-area h1 {
-                font-size: 1rem;
-            }
-            nav a {
-                padding: 6px 12px;
-                font-size: 0.85rem;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .login-box {
-                padding: 32px 24px;
-                margin: 30px 16px;
-            }
-            td {
-                max-width: 150px;
-            }
-            .announcement-item {
-                flex-direction: column;
-                align-items: stretch;
-            }
+            .hero { height: 380px; }
+            .hero-content h2 { font-size: 2rem; }
+            .hero-content p { font-size: 1.1rem; }
+            .logo-area h1 { font-size: 1rem; }
+            nav a { padding: 6px 12px; font-size: 0.85rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .login-box { padding: 32px 24px; margin: 30px 16px; }
+            td { max-width: 150px; }
+            .announcement-item { flex-direction: column; align-items: stretch; }
         }
         @media (max-width: 480px) {
-            .header-inner {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            nav {
-                justify-content: center;
-            }
-            .hero {
-                height: 300px;
-            }
-            .hero-content h2 {
-                font-size: 1.6rem;
-            }
-            .hero-content p {
-                font-size: 1rem;
-            }
-            .btn {
-                padding: 12px 24px;
-                font-size: 0.9rem;
-            }
-            .card {
-                padding: 18px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.8rem;
-            }
-            .stat-card .number {
-                font-size: 1.8rem;
-            }
-            .section-title {
-                font-size: 1.5rem;
-            }
-            td {
-                max-width: 100px;
-                font-size: 0.85rem;
-            }
-            td .question-text .toggle-btn {
-                font-size: 0.7rem;
-            }
+            .header-inner { flex-direction: column; align-items: stretch; }
+            nav { justify-content: center; }
+            .hero { height: 300px; }
+            .hero-content h2 { font-size: 1.6rem; }
+            .hero-content p { font-size: 1rem; }
+            .btn { padding: 12px 24px; font-size: 0.9rem; }
+            .card { padding: 18px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+            .stat-card .number { font-size: 1.8rem; }
+            .section-title { font-size: 1.5rem; }
+            td { max-width: 100px; font-size: 0.85rem; }
+            td .question-text .toggle-btn { font-size: 0.7rem; }
         }
     </style>
 </head>
@@ -879,15 +887,18 @@
             <nav id="mainNav">
                 <a href="#" data-page="home" class="active"><i class="fas fa-home"></i> الرئيسية</a>
                 <a href="#" data-page="questions"><i class="fas fa-question-circle"></i> اسأل</a>
+                <a href="#" data-page="my-questions" id="myQuestionsLink" style="display:none;"><i class="fas fa-list"></i> أسئلتي</a>
                 <a href="#" data-page="prayer"><i class="fas fa-hands-praying"></i> صلاة</a>
-                <a href="#" data-page="answered"><i class="fas fa-check-circle"></i> أجوبة</a>
+                <a href="#" data-page="answered"><i class="fas fa-check-circle"></i> أجوبة عامة</a>
                 <a href="#" data-page="announcements"><i class="fas fa-bullhorn"></i> إعلانات</a>
                 <a href="#" data-page="about"><i class="fas fa-info-circle"></i> من نحن</a>
                 <a href="#" data-page="contact"><i class="fas fa-envelope"></i> تواصل</a>
-                <a href="#" data-page="admin" id="adminLink" class="notification-badge">
+                <a href="#" data-page="admin" id="adminLink" style="display:none;" class="notification-badge">
                     <i class="fas fa-user-shield"></i> لوحة التحكم
                     <span class="badge-count" id="notifBadge" style="display:none;">0</span>
                 </a>
+                <!-- زر تسجيل الدخول/الخروج للمستخدم -->
+                <a href="#" id="userAuthBtn" class="user-auth-btn"><i class="fas fa-user"></i> تسجيل الدخول</a>
                 <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
             </nav>
         </div>
@@ -919,41 +930,75 @@
             </div>
         </section>
 
-        <!-- ====== الأسئلة ====== -->
+        <!-- ====== صفحة تسجيل الدخول/إنشاء حساب للمستخدم ====== -->
+        <section id="page-user-auth" class="page">
+            <div class="login-box">
+                <h2 id="authTitle"><i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب</h2>
+                <p class="subtitle" id="authSubtitle">أنشئ حساباً لتتمكن من متابعة أسئلتك</p>
+                <form id="userAuthForm">
+                    <div class="form-group">
+                        <label for="authEmail">البريد الإلكتروني</label>
+                        <input type="email" id="authEmail" required placeholder="أدخل بريدك الإلكتروني" />
+                    </div>
+                    <div class="form-group">
+                        <label for="authPassword">كلمة المرور</label>
+                        <input type="password" id="authPassword" required placeholder="أدخل كلمة المرور (6 أحرف على الأقل)" minlength="6" />
+                    </div>
+                    <div id="authNameGroup" class="form-group">
+                        <label for="authName">الاسم (ظاهر للآخرين)</label>
+                        <input type="text" id="authName" placeholder="أدخل اسمك" />
+                    </div>
+                    <button type="submit" class="btn" style="width:100%;" id="authSubmitBtn"><i class="fas fa-user-plus"></i> إنشاء حساب</button>
+                    <div id="authError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
+                    <div class="toggle-link" id="authToggleLink">لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span></div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ====== الأسئلة (للمستخدم المسجل) ====== -->
         <section id="page-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
-            <div class="card" style="max-width:700px; margin:0 auto;">
-                <form id="questionForm">
-                    <div class="form-group">
-                        <label for="qDetails">تفاصيل السؤال</label>
-                        <textarea id="qDetails" required placeholder="اكتب تفاصيل سؤالك هنا..."></textarea>
+            <div id="questionFormContainer">
+                <div class="card" style="max-width:700px; margin:0 auto;">
+                    <form id="questionForm">
+                        <div class="form-group">
+                            <label for="qDetails">تفاصيل السؤال</label>
+                            <textarea id="qDetails" required placeholder="اكتب تفاصيل سؤالك هنا..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="qType">تصنيف السؤال</label>
+                            <select id="qType">
+                                <option value="biblical">أسئلة كتابية</option>
+                                <option value="doctrinal">أسئلة عقائدية</option>
+                                <option value="personal">مشاكل شخصية</option>
+                                <option value="consultation">طلب استشارة</option>
+                                <option value="suggestion">اقتراحات للكنيسة</option>
+                                <option value="prayer">طلب صلاة</option>
+                            </select>
+                        </div>
+                        <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
+                            <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
+                            <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول (لن يظهر اسمك)</label>
+                        </div>
+                        <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
+                    </form>
+                    <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
+                        <i class="fas fa-check-circle" style="font-size:3rem;"></i>
+                        <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
                     </div>
-                    <div class="form-group">
-                        <label for="qType">تصنيف السؤال</label>
-                        <select id="qType">
-                            <option value="biblical">أسئلة كتابية</option>
-                            <option value="doctrinal">أسئلة عقائدية</option>
-                            <option value="personal">مشاكل شخصية</option>
-                            <option value="consultation">طلب استشارة</option>
-                            <option value="suggestion">اقتراحات للكنيسة</option>
-                            <option value="prayer">طلب صلاة</option>
-                        </select>
-                    </div>
-                    <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
-                        <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
-                        <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول</label>
-                    </div>
-                    <div class="form-group" id="nameGroup" style="display:none;">
-                        <label for="qName">الاسم (اختياري)</label>
-                        <input type="text" id="qName" placeholder="اكتب اسمك" />
-                    </div>
-                    <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
-                </form>
-                <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
-                    <i class="fas fa-check-circle" style="font-size:3rem;"></i>
-                    <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
                 </div>
             </div>
+            <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
+                <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
+                <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
+                <button class="btn btn-primary mt-2" onclick="navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
+            </div>
+        </section>
+
+        <!-- ====== أسئلتي (خاصة بالمستخدم) ====== -->
+        <section id="page-my-questions" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي</h2>
+            <div id="myQuestionsList"></div>
         </section>
 
         <!-- ====== طلبات الصلاة ====== -->
@@ -969,10 +1014,6 @@
                         <input type="checkbox" id="prayerAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
                         <label for="prayerAnonymous" style="margin:0; font-weight:400;">إرسال مجهول</label>
                     </div>
-                    <div class="form-group" id="prayerNameGroup" style="display:none;">
-                        <label for="prayerName">الاسم (اختياري)</label>
-                        <input type="text" id="prayerName" placeholder="اكتب اسمك" />
-                    </div>
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال طلب الصلاة</button>
                 </form>
                 <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
@@ -982,9 +1023,9 @@
             </div>
         </section>
 
-        <!-- ====== الأسئلة المجاب عنها ====== -->
+        <!-- ====== أجوبة عامة ====== -->
         <section id="page-answered" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها</h2>
+            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
             <div class="search-filter">
                 <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="renderAnsweredQuestions()" />
             </div>
@@ -1032,11 +1073,11 @@
             </div>
         </section>
 
-        <!-- ====== لوحة التحكم ====== -->
+        <!-- ====== لوحة التحكم (للأدمن فقط) ====== -->
         <section id="page-admin" class="page">
             <div id="adminLoginPanel">
                 <div class="login-box">
-                    <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
+                    <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل الدخول (الأدمن)</h2>
                     <p class="subtitle">أدخل بيانات حساب الأدمن للتحكم في الموقع</p>
                     <form id="loginForm">
                         <div class="form-group">
@@ -1062,7 +1103,7 @@
                     </div>
                 </div>
 
-                <!-- ====== الإشعارات مع زر حذف الكل ====== -->
+                <!-- الإشعارات -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
                     <div class="card">
@@ -1070,17 +1111,13 @@
                             <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>
                         </div>
                         <div class="notif-actions">
-                            <button class="btn btn-sm btn-outline" onclick="markAllNotificationsRead()">
-                                <i class="fas fa-check-double"></i> تحديد الكل كمقروء
-                            </button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteAllNotifications()">
-                                <i class="fas fa-trash"></i> حذف الكل
-                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- ====== الإحصائيات ====== -->
+                <!-- الإحصائيات -->
                 <div class="stats-grid" id="statsContainer">
                     <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">إجمالي الأسئلة</div></div>
                     <div class="stat-card"><div class="number" id="statMonth">0</div><div class="label">هذا الشهر</div></div>
@@ -1088,42 +1125,29 @@
                     <div class="stat-card"><div class="number" id="statTopType">-</div><div class="label">أكثر نوع شيوعًا</div></div>
                 </div>
 
-                <!-- ====== إدارة وسائل التواصل ====== -->
+                <!-- إدارة وسائل التواصل -->
                 <div class="admin-section">
                     <h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> إدارة وسائل التواصل</h3>
                     <div class="card">
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                            <div class="form-group">
-                                <label for="socialFacebookInput">رابط فيسبوك</label>
-                                <input type="url" id="socialFacebookInput" placeholder="https://facebook.com/..." />
-                            </div>
-                            <div class="form-group">
-                                <label for="socialInstagramInput">رابط إنستغرام</label>
-                                <input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." />
-                            </div>
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label>
-                                <input type="text" id="whatsappInput" placeholder="مثال: 201234567890" />
-                                <small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small>
-                            </div>
+                            <div class="form-group"><label for="socialFacebookInput">رابط فيسبوك</label><input type="url" id="socialFacebookInput" placeholder="https://facebook.com/..." /></div>
+                            <div class="form-group"><label for="socialInstagramInput">رابط إنستغرام</label><input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." /></div>
+                            <div class="form-group" style="grid-column: 1 / -1;"><label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label><input type="text" id="whatsappInput" placeholder="مثال: 201234567890" /><small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small></div>
                         </div>
                         <button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
                     </div>
                 </div>
 
-                <!-- ====== إدارة نبذة "من نحن" ====== -->
+                <!-- تعديل نبذة "من نحن" -->
                 <div class="admin-section">
                     <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
                     <div class="card">
-                        <div class="form-group">
-                            <label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label>
-                            <textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea>
-                        </div>
+                        <div class="form-group"><label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label><textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea></div>
                         <button class="btn btn-success btn-sm" onclick="saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
                     </div>
                 </div>
 
-                <!-- ====== الأسئلة الواردة ====== -->
+                <!-- الأسئلة الواردة (مع زر إجابة في نافذة منبثقة) -->
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة</h3>
@@ -1134,70 +1158,61 @@
                     </div>
                     <div class="search-filter">
                         <input type="text" id="adminSearch" placeholder="بحث..." oninput="loadQuestions()" />
-                        <select id="adminFilterType" onchange="loadQuestions()">
-                            <option value="all">جميع التصنيفات</option>
-                            <option value="biblical">كتابية</option>
-                            <option value="doctrinal">عقائدية</option>
-                            <option value="personal">شخصية</option>
-                            <option value="consultation">استشارة</option>
-                            <option value="suggestion">اقتراح</option>
-                            <option value="prayer">صلاة</option>
-                        </select>
-                        <select id="adminFilterAnswered" onchange="loadQuestions()">
-                            <option value="all">الكل</option>
-                            <option value="answered">تمت الإجابة</option>
-                            <option value="unanswered">غير مجاب</option>
-                        </select>
+                        <select id="adminFilterType" onchange="loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
+                        <select id="adminFilterAnswered" onchange="loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
                     </div>
                     <div class="table-responsive">
                         <table>
-                            <thead>
-                                <tr><th>التفاصيل</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr>
-                            </thead>
+                            <thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
                             <tbody id="adminQuestionsTable"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- ====== طلبات الصلاة ====== -->
+                <!-- طلبات الصلاة -->
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة</h3>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button class="btn btn-outline btn-sm no-print" onclick="printPrayers()"><i class="fas fa-print"></i> طباعة</button>
-                            <button class="btn btn-danger btn-sm no-print" onclick="clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button>
-                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;"><button class="btn btn-outline btn-sm no-print" onclick="printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div>
                     </div>
                     <div id="adminPrayersList"></div>
                 </div>
 
-                <!-- ====== إدارة الإعلانات ====== -->
+                <!-- إدارة الإعلانات -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
                     <div class="card mb-4">
-                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
-                            <input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" />
-                            <input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" />
-                        </div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;"><input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" /><input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" /></div>
                         <button class="btn btn-success" onclick="addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
                     </div>
                     <div id="adminAnnouncementsList"></div>
                 </div>
 
-                <!-- ====== تعديل آية اليوم ====== -->
+                <!-- تعديل آية اليوم -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                        <input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" />
-                        <input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" />
-                        <button class="btn btn-primary" onclick="updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button>
-                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
                 </div>
 
             </div>
         </section>
 
     </main>
+
+    <!-- ====== نافذة منبثقة للإجابة (Modal) ====== -->
+    <div id="answerModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">كتابة الإجابة</h3>
+            <div class="form-group">
+                <label for="modalAnswer">الإجابة</label>
+                <textarea id="modalAnswer" rows="8" placeholder="اكتب الإجابة هنا..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="modalCancelBtn">إلغاء</button>
+                <button class="btn btn-success" id="modalSaveBtn">حفظ</button>
+            </div>
+        </div>
+    </div>
 
     <!-- ====== التذييل ====== -->
     <footer>
@@ -1232,7 +1247,9 @@
             getAuth,
             signInWithEmailAndPassword,
             onAuthStateChanged,
-            signOut
+            signOut,
+            createUserWithEmailAndPassword,
+            updateProfile
         } from "firebase/auth";
 
         // ====== إعداد Firebase ======
@@ -1250,8 +1267,10 @@
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        let currentUser = null;
+        let currentUser = null; // المستخدم الحالي (عادي أو أدمن)
+        let currentUserId = null;
         let notifications = [];
+        let editingQuestionId = null; // لتحديد السؤال الذي نعدل إجابته
 
         console.log('✅ Firebase initialized');
 
@@ -1269,10 +1288,13 @@
 
         const pages = document.querySelectorAll('.page');
         const navLinks = document.querySelectorAll('#mainNav a[data-page]');
+        const adminLink = document.getElementById('adminLink');
         const adminLoginPanel = document.getElementById('adminLoginPanel');
         const adminDashboard = document.getElementById('adminDashboard');
-        const adminLink = document.getElementById('adminLink');
+        const userAuthBtn = document.getElementById('userAuthBtn');
+        const myQuestionsLink = document.getElementById('myQuestionsLink');
 
+        // دالة التنقل
         window.navigateTo = function(pageId) {
             pages.forEach(p => p.classList.remove('active'));
             const target = document.getElementById('page-' + pageId);
@@ -1284,133 +1306,171 @@
 
             if (pageId === 'answered') renderAnsweredQuestions();
             if (pageId === 'announcements') loadAnnouncements();
-            if (pageId === 'admin' && currentUser) {
-                loadAdminData();
+            if (pageId === 'my-questions' && currentUser) loadMyQuestions();
+            if (pageId === 'admin' && currentUser && currentUser.uid === 'adminUid') { /* نتحقق من الأدمن */ }
+            // عند الانتقال إلى صفحة الأسئلة، نتحقق من تسجيل الدخول
+            if (pageId === 'questions') {
+                if (!currentUser) {
+                    document.getElementById('questionFormContainer').style.display = 'none';
+                    document.getElementById('authRequiredMessage').style.display = 'block';
+                } else {
+                    document.getElementById('questionFormContainer').style.display = 'block';
+                    document.getElementById('authRequiredMessage').style.display = 'none';
+                }
             }
         };
 
-        adminLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.navigateTo('admin');
-        });
-
+        // ربط الروابط
         navLinks.forEach(link => {
-            if (link.id !== 'adminLink') {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    window.navigateTo(link.dataset.page);
-                });
-            }
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                if (page === 'admin') {
+                    if (!currentUser) {
+                        showToast('يرجى تسجيل الدخول كأدمن', true);
+                        return;
+                    }
+                    // تحقق من أن المستخدم هو الأدمن (عن طريق البريد الإلكتروني)
+                    if (currentUser.email !== 'admin@church.com') { // تغيير حسب بريد الأدمن الفعلي
+                        showToast('ليس لديك صلاحية للدخول إلى لوحة التحكم', true);
+                        return;
+                    }
+                }
+                window.navigateTo(page);
+            });
         });
 
-        // ====== الوضع الليلي ======
-        const themeToggle = document.getElementById('themeToggle');
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-
-        themeToggle.addEventListener('click', () => {
-            const current = document.documentElement.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-            themeToggle.innerHTML = next === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-        });
-
-        // ====== الإشعارات (مع دوال الحذف) ======
-        async function loadNotifications() {
-            if (!currentUser) return;
-            try {
-                const snap = await getDocs(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')));
-                notifications = [];
-                snap.forEach(doc => {
-                    notifications.push({ id: doc.id, ...doc.data() });
+        // زر تسجيل الدخول للمستخدم
+        userAuthBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentUser) {
+                // تسجيل الخروج
+                signOut(auth).then(() => {
+                    showToast('تم تسجيل الخروج');
+                }).catch(() => {
+                    showToast('خطأ في تسجيل الخروج', true);
                 });
-                updateNotificationUI();
-            } catch (e) {
-                console.warn('Error loading notifications:', e);
-            }
-        }
-
-        function updateNotificationUI() {
-            const unread = notifications.filter(n => !n.read).length;
-            const badge = document.getElementById('notifBadge');
-            const countEl = document.getElementById('notifCount');
-
-            if (unread > 0) {
-                badge.style.display = 'inline-block';
-                badge.textContent = unread > 99 ? '99+' : unread;
-                countEl.textContent = `(${unread} جديدة)`;
             } else {
-                badge.style.display = 'none';
-                countEl.textContent = '';
+                window.navigateTo('user-auth');
             }
+        });
 
-            const list = document.getElementById('notificationsList');
-            if (notifications.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
+        // ====== إدارة المستخدمين ======
+        // حالة المصادقة
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                currentUserId = user.uid;
+                // تحديث واجهة المستخدم
+                userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
+                myQuestionsLink.style.display = 'inline-block';
+                // إظهار زر الأدمن إذا كان البريد هو بريد الأدمن
+                if (user.email === 'admin@church.com') { // تغيير حسب بريد الأدمن الفعلي
+                    adminLink.style.display = 'inline-block';
+                    // جلب الإشعارات للأدمن
+                    listenToNotifications();
+                    // إذا كانت الصفحة الحالية هي admin نعرض لوحة التحكم
+                    if (document.getElementById('page-admin').classList.contains('active')) {
+                        adminLoginPanel.style.display = 'none';
+                        adminDashboard.style.display = 'block';
+                        loadAdminData();
+                    }
+                } else {
+                    adminLink.style.display = 'none';
+                    // إذا كان في صفحة admin وكان مستخدم عادي، ننتقل للرئيسية
+                    if (document.getElementById('page-admin').classList.contains('active')) {
+                        window.navigateTo('home');
+                    }
+                }
+                // تحميل أسئلتي إذا كانت الصفحة نشطة
+                if (document.getElementById('page-my-questions').classList.contains('active')) {
+                    loadMyQuestions();
+                }
+            } else {
+                currentUserId = null;
+                userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
+                myQuestionsLink.style.display = 'none';
+                adminLink.style.display = 'none';
+                // إخفاء لوحة التحكم إذا كانت ظاهرة
+                adminLoginPanel.style.display = 'block';
+                adminDashboard.style.display = 'none';
+                // إعادة تعيين الإشعارات
+                notifications = [];
+                updateNotificationUI();
+                // إذا كانت الصفحة الحالية هي أسئلتي أو admin ننتقل للرئيسية
+                const activePage = document.querySelector('.page.active');
+                if (activePage && (activePage.id === 'page-my-questions' || activePage.id === 'page-admin')) {
+                    window.navigateTo('home');
+                }
+            }
+        });
+
+        // ====== تسجيل الدخول/إنشاء حساب للمستخدم ======
+        const authForm = document.getElementById('userAuthForm');
+        const authTitle = document.getElementById('authTitle');
+        const authSubtitle = document.getElementById('authSubtitle');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const authToggleLink = document.getElementById('authToggleLink');
+        const authError = document.getElementById('authError');
+        let isLoginMode = false;
+
+        authToggleLink.addEventListener('click', () => {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                authTitle.innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
+                authSubtitle.textContent = 'سجل الدخول لمتابعة أسئلتك';
+                authSubmitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+                authToggleLink.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
+                document.getElementById('authNameGroup').style.display = 'none';
+            } else {
+                authTitle.innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
+                authSubtitle.textContent = 'أنشئ حساباً لتتمكن من متابعة أسئلتك';
+                authSubmitBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+                authToggleLink.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
+                document.getElementById('authNameGroup').style.display = 'block';
+            }
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            const name = document.getElementById('authName').value.trim();
+            authError.textContent = '';
+
+            if (!email || !password) {
+                authError.textContent = 'يرجى ملء جميع الحقول';
+                return;
+            }
+            if (password.length < 6) {
+                authError.textContent = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
                 return;
             }
 
-            list.innerHTML = notifications.map(n => `
-                <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : 'صلاة'}</span>
-                    <span class="notif-text">${n.message}</span>
-                    <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
-                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
-                </div>
-            `).join('');
-        }
-
-        window.markNotifRead = async function(id) {
             try {
-                await updateDoc(doc(db, 'notifications', id), { read: true });
-                await loadNotifications();
-            } catch (e) { console.error(e); }
-        };
-
-        // تحديد الكل كمقروء
-        window.markAllNotificationsRead = async function() {
-            if (!notifications.length) { showToast('لا توجد إشعارات', true); return; }
-            try {
-                const batch = writeBatch(db);
-                notifications.forEach(n => {
-                    if (!n.read) {
-                        batch.update(doc(db, 'notifications', n.id), { read: true });
+                if (isLoginMode) {
+                    // تسجيل الدخول
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast('تم تسجيل الدخول بنجاح');
+                    window.navigateTo('home');
+                } else {
+                    // إنشاء حساب
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    if (name) {
+                        await updateProfile(cred.user, { displayName: name });
                     }
-                });
-                await batch.commit();
-                await loadNotifications();
-                showToast('✅ تم تحديد جميع الإشعارات كمقروءة');
-            } catch (e) { showToast('❌ خطأ', true); }
-        };
+                    showToast('تم إنشاء الحساب بنجاح');
+                    window.navigateTo('home');
+                }
+            } catch (err) {
+                authError.textContent = err.message;
+                showToast('فشل العملية: ' + err.message, true);
+            }
+        });
 
-        // حذف جميع الإشعارات
-        window.deleteAllNotifications = async function() {
-            if (!notifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
-            if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
-            try {
-                const batch = writeBatch(db);
-                notifications.forEach(n => {
-                    batch.delete(doc(db, 'notifications', n.id));
-                });
-                await batch.commit();
-                notifications = [];
-                updateNotificationUI();
-                showToast('✅ تم حذف جميع الإشعارات');
-            } catch (e) { showToast('❌ خطأ', true); }
-        };
-
-        // تحديد إشعار واحد كمقروء
-        window.markNotifRead = async function(id) {
-            try {
-                await updateDoc(doc(db, 'notifications', id), { read: true });
-                await loadNotifications();
-            } catch (e) { console.error(e); }
-        };
-
+        // ====== الإشعارات (للأدمن) ======
         function listenToNotifications() {
-            if (!currentUser) return;
+            if (!currentUser || currentUser.email !== 'admin@church.com') return;
             onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), (snapshot) => {
                 notifications = [];
                 snapshot.forEach(doc => {
@@ -1430,6 +1490,58 @@
             });
         }
 
+        function updateNotificationUI() {
+            const countEl = document.getElementById('notifCount');
+            const list = document.getElementById('notificationsList');
+            const unread = notifications.filter(n => !n.read).length;
+            if (countEl) countEl.textContent = unread ? `(${unread} جديدة)` : '';
+
+            if (!list) return;
+            if (notifications.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
+                return;
+            }
+            list.innerHTML = notifications.map(n => `
+                <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : 'صلاة'}</span>
+                    <span class="notif-text">${n.message}</span>
+                    <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        window.markNotifRead = async function(id) {
+            try {
+                await updateDoc(doc(db, 'notifications', id), { read: true });
+            } catch (e) { console.error(e); }
+        };
+
+        window.markAllNotificationsRead = async function() {
+            if (!notifications.length) { showToast('لا توجد إشعارات', true); return; }
+            try {
+                const batch = writeBatch(db);
+                notifications.forEach(n => {
+                    if (!n.read) batch.update(doc(db, 'notifications', n.id), { read: true });
+                });
+                await batch.commit();
+                showToast('✅ تم تحديد الكل كمقروء');
+            } catch (e) { showToast('❌ خطأ', true); }
+        };
+
+        window.deleteAllNotifications = async function() {
+            if (!notifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
+            if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
+            try {
+                const batch = writeBatch(db);
+                notifications.forEach(n => batch.delete(doc(db, 'notifications', n.id)));
+                await batch.commit();
+                notifications = [];
+                updateNotificationUI();
+                showToast('✅ تم حذف جميع الإشعارات');
+            } catch (e) { showToast('❌ خطأ', true); }
+        };
+
         async function addNotification(message, type) {
             try {
                 await addDoc(collection(db, 'notifications'), {
@@ -1438,32 +1550,33 @@
                     read: false,
                     createdAt: serverTimestamp()
                 });
-            } catch (e) {
-                console.warn('Error adding notification:', e);
-            }
+            } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إرسال الأسئلة وطلبات الصلاة ======
+        // ====== إرسال الأسئلة (مرتبطة بالمستخدم) ======
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول لطرح سؤال', true);
+                return;
+            }
             const details = document.getElementById('qDetails').value.trim();
             const type = document.getElementById('qType').value;
             const anonymous = document.getElementById('qAnonymous').checked;
-            const name = document.getElementById('qName').value.trim();
             if (!details) { showToast('الرجاء كتابة تفاصيل السؤال', true); return; }
             try {
                 await addDoc(collection(db, 'questions'), {
                     details,
                     type,
                     anonymous,
-                    name: anonymous ? '' : name,
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || currentUser.email,
                     answered: false,
                     answer: '',
                     published: false,
                     createdAt: serverTimestamp()
                 });
-                await addNotification(`📩 سؤال جديد: ${details.substring(0, 50)}${details.length > 50 ? '...' : ''}`,
-                    'question');
+                await addNotification(`📩 سؤال جديد من ${currentUser.displayName || currentUser.email}: ${details.substring(0, 50)}...`, 'question');
                 document.getElementById('questionForm').reset();
                 document.getElementById('questionForm').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
@@ -1475,24 +1588,27 @@
         });
 
         document.getElementById('qAnonymous').addEventListener('change', function() {
-            document.getElementById('nameGroup').style.display = this.checked ? 'none' : 'block';
+            // لا نحتاج إلى إظهار اسم لأننا نستخدم userId
         });
 
+        // ====== طلبات الصلاة ======
         document.getElementById('prayerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = document.getElementById('prayerText').value.trim();
             const anonymous = document.getElementById('prayerAnonymous').checked;
-            const name = document.getElementById('prayerName').value.trim();
             if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
             try {
                 await addDoc(collection(db, 'prayers'), {
                     text,
                     anonymous,
-                    name: anonymous ? '' : name,
+                    name: anonymous ? '' : (currentUser ? currentUser.displayName || currentUser.email : ''),
                     createdAt: serverTimestamp()
                 });
-                await addNotification(`🙏 طلب صلاة جديد: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`,
-                    'prayer');
+                if (currentUser) {
+                    await addNotification(`🙏 طلب صلاة جديد من ${currentUser.displayName || currentUser.email}: ${text.substring(0, 50)}...`, 'prayer');
+                } else {
+                    await addNotification(`🙏 طلب صلاة جديد (زائر): ${text.substring(0, 50)}...`, 'prayer');
+                }
                 document.getElementById('prayerForm').reset();
                 document.getElementById('prayerForm').style.display = 'none';
                 document.getElementById('prayerSuccess').style.display = 'block';
@@ -1504,10 +1620,46 @@
         });
 
         document.getElementById('prayerAnonymous').addEventListener('change', function() {
-            document.getElementById('prayerNameGroup').style.display = this.checked ? 'none' : 'block';
+            // لا نحتاج لإظهار اسم
         });
 
-        // ====== عرض الأسئلة المجاب عنها ======
+        // ====== عرض أسئلتي (خاصة بالمستخدم) ======
+        async function loadMyQuestions() {
+            const container = document.getElementById('myQuestionsList');
+            if (!currentUser) {
+                container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">يجب تسجيل الدخول لعرض أسئلتك</p>';
+                return;
+            }
+            container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
+            try {
+                const q = query(collection(db, 'questions'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد أسئلة حالياً</p>';
+                    return;
+                }
+                let html = '';
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const answerHtml = data.answered ? `<div class="q-answer"><strong>الإجابة:</strong> ${data.answer || 'لم تكتب إجابة بعد'}</div>` : '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
+                    const published = data.published ? ' (منشور عام)' : ' (خاص)';
+                    html += `
+                        <div class="my-question-card">
+                            <div class="q-details"><strong>السؤال:</strong> ${data.details}</div>
+                            <div class="q-meta">النوع: ${translateType(data.type)} ${data.anonymous ? '(مجهول)' : ''} ${published}</div>
+                            ${answerHtml}
+                            <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${data.createdAt ? data.createdAt.toDate().toLocaleString('ar-EG') : ''}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="color:#c0392b;">فشل تحميل أسئلتك</p>';
+            }
+        }
+
+        // ====== عرض الأسئلة المجاب عنها (عامة) ======
         window.renderAnsweredQuestions = async function() {
             const search = document.getElementById('answeredSearch').value.trim().toLowerCase();
             const container = document.getElementById('answeredList');
@@ -1529,9 +1681,9 @@
                 }
                 container.innerHTML = items.map(item => `
                     <div class="question-card">
-                        <div class="q-title">${item.details.substring(0,60)}${item.details.length>60?'...':''}</div>
+                        <div class="q-title"><strong>السؤال:</strong> ${item.details}</div>
                         <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''}</div>
-                        <div class="q-answer">${item.answer || 'لم يتم توفير إجابة بعد.'}</div>
+                        <div class="q-answer"><strong>الإجابة:</strong> ${item.answer || 'لم يتم توفير إجابة بعد.'}</div>
                     </div>
                 `).join('');
             } catch (e) {
@@ -1547,10 +1699,7 @@
             try {
                 const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
                 const snap = await getDocs(q);
-                if (snap.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد إعلانات حالياً.</p>';
-                    return;
-                }
+                if (snap.empty) { container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد إعلانات حالياً.</p>'; return; }
                 let html = '';
                 snap.forEach(doc => {
                     const data = doc.data();
@@ -1589,11 +1738,9 @@
         function applySocialLinks(data) {
             document.getElementById('socialFacebook').href = data.facebook || '#';
             document.getElementById('socialInstagram').href = data.instagram || '#';
-
             const whatsappNumber = data.whatsapp || '';
             const whatsappLink = document.getElementById('whatsappLink');
             const whatsappLabel = document.getElementById('whatsappLabel');
-
             if (whatsappNumber) {
                 whatsappLink.href = `https://wa.me/${whatsappNumber}`;
                 whatsappLabel.textContent = 'تواصل عبر واتساب';
@@ -1685,7 +1832,7 @@
             return map[type] || type;
         }
 
-        // ====== المصادقة ======
+        // ====== المصادقة (الأدمن) ======
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
@@ -1706,25 +1853,9 @@
             showToast('تم تسجيل الخروج');
         });
 
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                adminLoginPanel.style.display = 'none';
-                adminDashboard.style.display = 'block';
-                document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
-                loadAdminData();
-                listenToNotifications();
-            } else {
-                adminLoginPanel.style.display = 'block';
-                adminDashboard.style.display = 'none';
-                notifications = [];
-                updateNotificationUI();
-            }
-        });
-
-        // ====== لوحة التحكم ======
+        // ====== لوحة التحكم (للأدمن فقط) ======
         async function loadAdminData() {
-            if (!currentUser) return;
+            if (!currentUser || currentUser.email !== 'admin@church.com') return;
             await Promise.all([
                 loadStats(),
                 loadQuestions(),
@@ -1732,8 +1863,7 @@
                 loadAnnouncementsAdmin(),
                 loadDailyVerseForAdmin(),
                 loadSocialLinks(),
-                loadAbout(),
-                loadNotifications()
+                loadAbout()
             ]);
         }
 
@@ -1756,8 +1886,7 @@
                 let topType = '-';
                 let max = 0;
                 for (const [k, v] of Object.entries(typeCount)) {
-                    if (v > max) { max = v;
-                        topType = translateType(k); }
+                    if (v > max) { max = v; topType = translateType(k); }
                 }
                 document.getElementById('statTotal').textContent = total;
                 document.getElementById('statMonth').textContent = monthCount;
@@ -1766,12 +1895,13 @@
             } catch (e) { console.error('Stats error:', e); }
         }
 
+        // تحميل الأسئلة في لوحة التحكم مع عرض اسم المستخدم
         window.loadQuestions = async function() {
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
             const typeFilter = document.getElementById('adminFilterType').value;
             const answeredFilter = document.getElementById('adminFilterAnswered').value;
             const tbody = document.getElementById('adminQuestionsTable');
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center">جاري التحميل...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">جاري التحميل...</td></tr>';
             try {
                 const snap = await getDocs(collection(db, 'questions'));
                 let items = [];
@@ -1793,7 +1923,7 @@
                     return db - da;
                 });
                 if (items.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد أسئلة</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>';
                     return;
                 }
                 tbody.innerHTML = items.map(item => {
@@ -1801,6 +1931,7 @@
                     const short = details.substring(0, 100);
                     const long = details;
                     const showMore = details.length > 100;
+                    const userInfo = item.userName || 'مستخدم غير معروف';
                     return `
                     <tr>
                         <td>
@@ -1810,13 +1941,16 @@
                                 ${showMore ? `<button class="toggle-btn" onclick="toggleQuestionText(this)">عرض المزيد</button>` : ''}
                             </div>
                         </td>
+                        <td>${userInfo}</td>
                         <td>${translateType(item.type)}</td>
                         <td>${item.createdAt ? item.createdAt.toDate().toLocaleDateString('ar-EG') : ''}</td>
                         <td>${item.answered ? '✅ مجاب' : '⏳ قيد الانتظار'}</td>
                         <td>
                             <div class="actions">
-                                ${!item.answered ? `<button class="btn-answer" onclick="markAnswered('${item.id}')"><i class="fas fa-check"></i> إجابة</button>` : ''}
-                                ${!item.published ? `<button class="btn-publish" onclick="togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : `<button class="btn-publish" onclick="togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
+                                ${!item.answered ? `<button class="btn-answer" onclick="openAnswerModal('${item.id}')"><i class="fas fa-pen"></i> إجابة</button>` : 
+                                    `<button class="btn-edit" onclick="openEditAnswerModal('${item.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
+                                ${!item.published ? `<button class="btn-publish" onclick="togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : 
+                                    `<button class="btn-publish" onclick="togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
                                 <button class="btn-delete" onclick="deleteQuestion('${item.id}')"><i class="fas fa-trash"></i></button>
                             </div>
                         </td>
@@ -1838,20 +1972,75 @@
                 };
             } catch (e) {
                 console.error(e);
-                tbody.innerHTML = '<tr><td colspan="5" style="color:#c0392b;">فشل التحميل</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="color:#c0392b;">فشل التحميل</td></tr>';
             }
         };
 
-        window.markAnswered = async function(id) {
-            const answer = prompt('اكتب الإجابة:');
-            if (answer === null) return;
-            try {
-                await updateDoc(doc(db, 'questions', id), { answered: true, answer: answer.trim() });
-                showToast('تم وضع علامة "تمت الإجابة"');
-                loadQuestions();
-            } catch (e) { showToast('خطأ', true); }
-        };
+        // ====== نافذة الإجابة المنبثقة ======
+        const modal = document.getElementById('answerModal');
+        const modalAnswer = document.getElementById('modalAnswer');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSaveBtn = document.getElementById('modalSaveBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
 
+        function openAnswerModal(questionId) {
+            editingQuestionId = questionId;
+            modalTitle.textContent = 'كتابة الإجابة';
+            modalAnswer.value = '';
+            modal.classList.add('show');
+        }
+
+        window.openAnswerModal = openAnswerModal;
+
+        function openEditAnswerModal(questionId) {
+            // جلب الإجابة الحالية
+            const questionRef = doc(db, 'questions', questionId);
+            getDoc(questionRef).then((snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    editingQuestionId = questionId;
+                    modalTitle.textContent = 'تعديل الإجابة';
+                    modalAnswer.value = data.answer || '';
+                    modal.classList.add('show');
+                }
+            }).catch(e => console.error(e));
+        }
+
+        window.openEditAnswerModal = openEditAnswerModal;
+
+        modalCancelBtn.addEventListener('click', () => {
+            modal.classList.remove('show');
+            editingQuestionId = null;
+        });
+
+        modalSaveBtn.addEventListener('click', async () => {
+            const answer = modalAnswer.value.trim();
+            if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
+            if (!editingQuestionId) { showToast('خطأ: لم يتم تحديد السؤال', true); return; }
+            try {
+                await updateDoc(doc(db, 'questions', editingQuestionId), {
+                    answered: true,
+                    answer: answer
+                });
+                showToast('✅ تم حفظ الإجابة');
+                modal.classList.remove('show');
+                editingQuestionId = null;
+                loadQuestions();
+            } catch (e) {
+                showToast('❌ خطأ في حفظ الإجابة', true);
+                console.error(e);
+            }
+        });
+
+        // إغلاق النافذة عند النقر خارجها
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                editingQuestionId = null;
+            }
+        });
+
+        // ====== دوال إدارة الأسئلة ======
         window.togglePublish = async function(id) {
             try {
                 const ref = doc(db, 'questions', id);
@@ -1906,7 +2095,7 @@
                 <body>
                     <h2 style="text-align:center;">قائمة الأسئلة الواردة</h2>
                     <table>
-                        <thead><tr><th>التفاصيل</th><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead>
+                        <thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead>
                         <tbody>${content}</tbody>
                     </table>
                     <p style="margin-top:20px; text-align:center;">تم الطباعة في: ${new Date().toLocaleString('ar-EG')}</p>
@@ -1917,7 +2106,7 @@
             printWindow.document.close();
         };
 
-        // ====== طلبات الصلاة ======
+        // ====== طلبات الصلاة (للأدمن) ======
         async function loadPrayers() {
             const container = document.getElementById('adminPrayersList');
             container.innerHTML = 'جاري التحميل...';
@@ -2069,13 +2258,22 @@
         loadAbout();
         loadDailyVerse();
 
-        console.log('✅ التطبيق جاهز بالكامل (بدون صور)');
-        console.log('🔗 روابط التواصل مخزنة في Firestore');
-        console.log('📝 يمكن تعديل نبذة "من نحن" من لوحة التحكم');
-        console.log('🔔 يتم إرسال إشعارات عند وصول سؤال أو طلب صلاة جديد');
-        console.log('🗑️ يمكن حذف الإشعارات من لوحة التحكم');
-        console.log('🖨️ يمكن طباعة الأسئلة وطلبات الصلاة');
-        console.log('🔐 صفحة تسجيل الدخول فارغة (لا توجد بيانات مسبقة)');
+        // إذا كانت الصفحة الحالية هي الأسئلة، نتحقق من حالة تسجيل الدخول
+        setTimeout(() => {
+            if (document.getElementById('page-questions').classList.contains('active')) {
+                if (!currentUser) {
+                    document.getElementById('questionFormContainer').style.display = 'none';
+                    document.getElementById('authRequiredMessage').style.display = 'block';
+                }
+            }
+        }, 100);
+
+        console.log('✅ التطبيق جاهز بالكامل مع نظام المستخدمين');
+        console.log('🔐 المستخدمون يسجلون بالبريد وكلمة المرور');
+        console.log('📌 الإجابات تظهر للمستخدم الخاص به (غير منشور)');
+        console.log('🌍 النشر يجعل السؤال عاماً');
+        console.log('✏️ يمكن تعديل الإجابة عبر النافذة المنبثقة');
+        console.log('📖 صفحة "أجوبة عامة" تعرض النص الكامل');
     </script>
 
 </body>

@@ -21,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط ====== */
+        /* ====== جميع الأنماط (كما هي) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1286,7 +1286,7 @@
             </div>
         </section>
 
-        <!-- ====== صفحة تسجيل دخول الأدمن ====== -->
+        <!-- ====== صفحة تسجيل دخول الأدمن (تم إخفاء البيانات) ====== -->
         <section id="page-admin-login" class="page">
             <div class="login-box">
                 <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
@@ -1294,12 +1294,11 @@
                 <form id="adminLoginForm">
                     <div class="form-group">
                         <label for="adminLoginEmail">البريد الإلكتروني</label>
-                        <input type="email" id="adminLoginEmail" required placeholder="abshadat.church@gmail.com" value="abshadat.church@gmail.com" />
-                        <small style="color:var(--text-muted); font-size:0.8rem;">بريد الأدمن: abshadat.church@gmail.com</small>
+                        <input type="email" id="adminLoginEmail" required placeholder="أدخل بريد الأدمن" />
                     </div>
                     <div class="form-group">
                         <label for="adminLoginPassword">كلمة المرور</label>
-                        <input type="password" id="adminLoginPassword" required placeholder="wysmic-6cabzu-xiqpeT" value="wysmic-6cabzu-xiqpeT" />
+                        <input type="password" id="adminLoginPassword" required placeholder="أدخل كلمة المرور" />
                     </div>
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-sign-in-alt"></i> دخول</button>
                     <div id="adminLoginError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
@@ -1456,7 +1455,7 @@
     </footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت ====== -->
+    <!-- ====== جافاسكريبت (كما هو مع الحفاظ على التعديلات السابقة) ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -1829,7 +1828,7 @@
         // استدعاء تحديث الواجهة بعد تحميل الصفحة
         updateAuthUI();
 
-        // ====== تسجيل دخول الأدمن ======
+        // ====== تسجيل دخول الأدمن (بدون بيانات مسبقة) ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminLoginEmail').value.trim();
@@ -1838,8 +1837,8 @@
             errorDiv.textContent = '';
 
             if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
-                errorDiv.textContent = `⚠️ البريد غير صحيح. البريد المسموح به هو: ${ADMIN_EMAIL}`;
-                showToast('غير مصرح', true);
+                errorDiv.textContent = `⚠️ البريد غير صحيح.`;
+                showToast('البريد الإلكتروني غير صحيح', true);
                 return;
             }
 
@@ -2924,10 +2923,11 @@
         console.log('✅ التطبيق جاهز بالكامل');
         console.log('🔐 تم ضبط استمرار المصادقة محلياً (browserLocalPersistence)');
         console.log('📌 تم إزالة orderBy من استعلام أسئلة المستخدم لتجنب أخطاء الفهارس');
-        console.log('📧 بريد الأدمن: abshadat.church@gmail.com');
+        console.log('📧 بريد الأدمن: abshadat.church@gmail.com (غير معروض)');
         console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
         console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم');
         console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
+        console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة');
     </script>
 
 </body>

@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>الكنيسة الإنجيلية المشيخية بإبشادات</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js"
+            }
+        }
+    </script>
+
+    <style>
+        /* ====== جميع الأنماط (بدون صور) ====== */
+        :root {
+            --color-primary: #1a2a3a;
+            --color-primary-light: #2c4056;
+            --color-gold: #c9a87c;
+            --color-gold-light: #dfc8a8;
+            --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%);
+            --bg-body: #f5f1eb;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a1f2a;
+            --text-secondary: #3d4552;
+            --text-muted: #7a8291;
+            --border-color: #e8e2d9;
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: 'Cairo', sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #11161e;
+            --bg-surface: #1a232e;
+            --bg-card: #1e2833;
+            --text-primary: #edf2f7;
+            --text-secondary: #cbd5e0;
+            --text-muted: #94a3b8;
+            --border-color: #2d3b47;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.5s, color 0.5s;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            font-family: var(--font-family);
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+        input,
+        select,
+        textarea {
+            font-family: var(--font-family);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            width: 100%;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            font-size: 1rem;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-gold);
+            box-shadow: 0 0 0 4px rgba(201, 168, 124, 0.15);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all var(--transition);
+            border: 2px solid transparent;
+            background: var(--color-gold-gradient);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(201, 168, 124, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform var(--transition);
+        }
+        .btn:hover::after {
+            transform: translateX(0);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(201, 168, 124, 0.4);
+        }
+        .btn-primary {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .btn-primary:hover {
+            background: var(--color-primary-light);
+        }
+        .btn-danger {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+        .btn-success {
+            background: #27ae60;
+            border-color: #27ae60;
+        }
+        .btn-sm {
+            padding: 8px 18px;
+            font-size: 0.85rem;
+        }
+        .btn-outline {
+            background: transparent;
+            border-color: var(--color-gold);
+            color: var(--color-gold);
+        }
+        .btn-outline:hover {
+            background: var(--color-gold);
+            color: #fff;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1.8rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--color-gold-gradient);
+            border-radius: 4px;
+        }
+        .section-title.text-center::after {
+            right: 50%;
+            transform: translateX(50%);
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mt-4 {
+            margin-top: 2rem;
+        }
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        .mt-2 {
+            margin-top: 1rem;
+        }
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+
+        /* ====== الهيدر ====== */
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            transition: all var(--transition);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .logo-area h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            transition: color var(--transition);
+        }
+        [data-theme="dark"] .logo-area h1 {
+            color: var(--color-gold);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        nav a {
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        nav a:hover,
+        nav a.active {
+            background: var(--color-gold-gradient);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(201, 168, 124, 0.25);
+        }
+        .theme-toggle {
+            font-size: 1.3rem;
+            padding: 8px 14px;
+            border-radius: 50px;
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .theme-toggle:hover {
+            background: var(--color-gold);
+            color: #fff;
+        }
+
+        .page {
+            display: none;
+            padding: 40px 0 60px;
+            animation: fadeIn 0.5s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ====== الهيرو ====== */
+        .hero {
+            position: relative;
+            height: 520px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            background-image: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.15) 0%, transparent 70%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .hero-content h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            line-height: 1.2;
+        }
+        .hero-content p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ====== آية اليوم ====== */
+        #dailyVerseDisplay {
+            font-size: 1.25rem;
+            line-height: 1.9;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+        #dailyVerseDisplay::-webkit-scrollbar {
+            width: 4px;
+        }
+        #dailyVerseDisplay::-webkit-scrollbar-thumb {
+            background: var(--color-gold);
+            border-radius: 4px;
+        }
+
+        /* ====== الأسئلة المجاب عنها ====== */
+        .question-card {
+            border-right: 4px solid var(--color-gold);
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all var(--transition);
+        }
+        .question-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateX(-4px);
+        }
+        .question-card .q-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .question-card .q-answer {
+            margin-top: 10px;
+            padding: 14px 18px;
+            background: var(--bg-body);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            border-right: 3px solid var(--color-gold-light);
+        }
+        .question-card .q-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* ====== الإعلانات ====== */
+        .announcement-item {
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+        .announcement-item .announce-content {
+            flex: 1;
+        }
+        .announcement-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        .announcement-item .date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* ====== جدول الأسئلة ====== */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th {
+            background: var(--bg-body);
+            color: var(--text-secondary);
+            font-weight: 700;
+            padding: 14px 12px;
+            text-align: right;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            max-width: 300px;
+        }
+        td .question-text {
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        td .question-text .short-text {
+            display: inline;
+        }
+        td .question-text .full-text {
+            display: none;
+        }
+        td .question-text .full-text.show {
+            display: inline;
+        }
+        td .question-text .toggle-btn {
+            color: var(--color-gold);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background: none;
+            border: none;
+            padding: 0 4px;
+        }
+        td .question-text .toggle-btn:hover {
+            text-decoration: underline;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .actions button {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .actions .btn-answer {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .actions .btn-publish {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        .actions .btn-delete {
+            background: #c0392b;
+            color: #fff;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .search-filter input,
+        .search-filter select {
+            width: auto;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        /* ====== لوحة التحكم ====== */
+        .admin-section {
+            margin-bottom: 3rem;
+        }
+        .admin-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+        }
+        .admin-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            padding: 22px 18px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        .stat-card .number {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--color-gold);
+        }
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ====== تسجيل الدخول ====== */
+        .login-box {
+            max-width: 420px;
+            margin: 60px auto;
+            padding: 44px 40px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+            border: 1px solid var(--border-color);
+        }
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 28px;
+            font-weight: 800;
+        }
+        .login-box .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* ====== الإشعارات ====== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 18px 28px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border-right: 5px solid var(--color-gold);
+            z-index: 999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            font-weight: 600;
+            max-width: 90%;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+        .notification-badge .badge-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item .notif-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .notification-item .notif-text {
+            flex: 1;
+            margin-left: 12px;
+        }
+        .notification-item .notif-type {
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .notif-type.question {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .notif-type.prayer {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        .notif-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* ====== وسائل التواصل ====== */
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 16px 0;
+        }
+        .social-links a {
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        .social-links a:hover {
+            color: var(--color-gold);
+            transform: scale(1.15);
+        }
+
+        footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            padding: 28px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 40px;
+        }
+
+        .about-text {
+            white-space: pre-wrap;
+            line-height: 1.9;
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: #25d366;
+            color: #fff;
+            border: 2px solid #25d366;
+            transition: all var(--transition);
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+            text-decoration: none;
+        }
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+            color: #fff;
+        }
+        .whatsapp-btn i {
+            font-size: 1.5rem;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+            table {
+                font-size: 12px !important;
+            }
+            .actions {
+                display: none !important;
+            }
+            .theme-toggle,
+            nav a,
+            header .logo-area h1 {
+                color: #000 !important;
+            }
+            header {
+                background: #fff !important;
+                border-bottom: 1px solid #ccc !important;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 10px !important;
+            }
+            .page {
+                padding: 20px 0 !important;
+            }
+            .btn {
+                display: none !important;
+            }
+            .admin-section .section-header .btn {
+                display: none !important;
+            }
+            .announcement-item .announce-actions {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                height: 420px;
+            }
+            .hero-content h2 {
+                font-size: 2.4rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .hero {
+                height: 380px;
+            }
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+            .logo-area h1 {
+                font-size: 1rem;
+            }
+            nav a {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .login-box {
+                padding: 32px 24px;
+                margin: 30px 16px;
+            }
+            td {
+                max-width: 150px;
+            }
+            .announcement-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        @media (max-width: 480px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            nav {
+                justify-content: center;
+            }
+            .hero {
+                height: 300px;
+            }
+            .hero-content h2 {
+                font-size: 1.6rem;
+            }
+            .hero-content p {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+            .card {
+                padding: 18px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            .stat-card .number {
+                font-size: 1.8rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            td {
+                max-width: 100px;
+                font-size: 0.85rem;
+            }
+            td .question-text .toggle-btn {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- ====== الهيدر ====== -->
+    <header>
+        <div class="container header-inner">
+            <div class="logo-area">
+                <h1>الكنيسة الإنجيلية المشيخية بإبشادات</h1>
+            </div>
+            <nav id="mainNav">
+                <a href="#" data-page="home" class="active"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="#" data-page="questions"><i class="fas fa-question-circle"></i> اسأل</a>
+                <a href="#" data-page="prayer"><i class="fas fa-hands-praying"></i> صلاة</a>
+                <a href="#" data-page="answered"><i class="fas fa-check-circle"></i> أجوبة</a>
+                <a href="#" data-page="announcements"><i class="fas fa-bullhorn"></i> إعلانات</a>
+                <a href="#" data-page="about"><i class="fas fa-info-circle"></i> من نحن</a>
+                <a href="#" data-page="contact"><i class="fas fa-envelope"></i> تواصل</a>
+                <a href="#" data-page="admin" id="adminLink" class="notification-badge">
+                    <i class="fas fa-user-shield"></i> لوحة التحكم
+                    <span class="badge-count" id="notifBadge" style="display:none;">0</span>
+                </a>
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ====== المحتوى ====== -->
+    <main class="container">
+
+        <!-- ====== الرئيسية ====== -->
+        <section id="page-home" class="page active">
+            <div class="hero" id="heroSection">
+                <div class="hero-content">
+                    <h2>الكنيسة الإنجيلية المشيخية بإبشادات</h2>
+                    <p>«أَنَا هُوَ الطَّرِيقُ وَالْحَقُّ وَالْحَيَاةُ» (يوحنا ١٤: ٦)</p>
+                    <button class="btn btn-primary mt-2" onclick="navigateTo('questions')">
+                        <i class="fas fa-pen"></i> اسأل سؤالك الآن
+                    </button>
+                </div>
+            </div>
+
+            <div id="dailyVerseContainer" class="card text-center mb-4">
+                <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> آية اليوم</h3>
+                <div id="dailyVerseDisplay">جاري التحميل...</div>
+                <div id="dailyVerseRef" style="color:var(--text-muted); margin-top:6px;"></div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-primary" onclick="navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
+            </div>
+        </section>
+
+        <!-- ====== الأسئلة ====== -->
+        <section id="page-questions" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
+            <div class="card" style="max-width:700px; margin:0 auto;">
+                <form id="questionForm">
+                    <div class="form-group">
+                        <label for="qDetails">تفاصيل السؤال</label>
+                        <textarea id="qDetails" required placeholder="اكتب تفاصيل سؤالك هنا..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="qType">تصنيف السؤال</label>
+                        <select id="qType">
+                            <option value="biblical">أسئلة كتابية</option>
+                            <option value="doctrinal">أسئلة عقائدية</option>
+                            <option value="personal">مشاكل شخصية</option>
+                            <option value="consultation">طلب استشارة</option>
+                            <option value="suggestion">اقتراحات للكنيسة</option>
+                            <option value="prayer">طلب صلاة</option>
+                        </select>
+                    </div>
+                    <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
+                        <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
+                        <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول</label>
+                    </div>
+                    <div class="form-group" id="nameGroup" style="display:none;">
+                        <label for="qName">الاسم (اختياري)</label>
+                        <input type="text" id="qName" placeholder="اكتب اسمك" />
+                    </div>
+                    <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
+                </form>
+                <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
+                    <i class="fas fa-check-circle" style="font-size:3rem;"></i>
+                    <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== طلبات الصلاة ====== -->
+        <section id="page-prayer" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">طلبات الصلاة</h2>
+            <div class="card" style="max-width:600px; margin:0 auto;">
+                <form id="prayerForm">
+                    <div class="form-group">
+                        <label for="prayerText">طلب الصلاة</label>
+                        <textarea id="prayerText" required placeholder="اكتب طلب صلاتك..."></textarea>
+                    </div>
+                    <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
+                        <input type="checkbox" id="prayerAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
+                        <label for="prayerAnonymous" style="margin:0; font-weight:400;">إرسال مجهول</label>
+                    </div>
+                    <div class="form-group" id="prayerNameGroup" style="display:none;">
+                        <label for="prayerName">الاسم (اختياري)</label>
+                        <input type="text" id="prayerName" placeholder="اكتب اسمك" />
+                    </div>
+                    <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال طلب الصلاة</button>
+                </form>
+                <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
+                    <i class="fas fa-check-circle" style="font-size:3rem;"></i>
+                    <p style="font-size:1.2rem; margin-top:10px;">تم استلام طلب صلاتك، باركك الرب.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== الأسئلة المجاب عنها ====== -->
+        <section id="page-answered" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها</h2>
+            <div class="search-filter">
+                <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="renderAnsweredQuestions()" />
+            </div>
+            <div id="answeredList"></div>
+        </section>
+
+        <!-- ====== الإعلانات ====== -->
+        <section id="page-announcements" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">الإعلانات والأنشطة</h2>
+            <div id="announcementsList"></div>
+        </section>
+
+        <!-- ====== من نحن ====== -->
+        <section id="page-about" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">من نحن</h2>
+            <div class="card">
+                <h3 style="color:var(--color-gold);">تاريخ الكنيسة</h3>
+                <div id="aboutContent" class="about-text">
+                    جاري تحميل النبذة...
+                </div>
+                <h3 style="color:var(--color-gold); margin-top:1.2rem;">خدماتنا</h3>
+                <ul style="padding-right:20px;">
+                    <li>اجتماعات العبادة الأسبوعية</li>
+                    <li>اجتماعات الشباب والطلائع</li>
+                    <li>خدمة التعليم المسيحي</li>
+                    <li>الخدمة الاجتماعية والزيارات</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ====== التواصل ====== -->
+        <section id="page-contact" class="page">
+            <h2 class="section-title text-center" style="display:block; text-align:center;">تواصل معنا</h2>
+            <div class="text-center card" style="max-width:600px; margin:0 auto;">
+                <p style="margin-bottom:16px;">تواصل معنا عبر واتساب:</p>
+                <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                    <span id="whatsappLabel">تواصل عبر واتساب</span>
+                </a>
+                <p style="margin-top:24px; margin-bottom:12px;">تابعونا على وسائل التواصل الاجتماعي:</p>
+                <div class="social-links">
+                    <a href="#" id="socialFacebook" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="#" id="socialInstagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ====== لوحة التحكم ====== -->
+        <section id="page-admin" class="page">
+            <div id="adminLoginPanel">
+                <div class="login-box">
+                    <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
+                    <p class="subtitle">أدخل بيانات حساب الأدمن للتحكم في الموقع</p>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">البريد الإلكتروني</label>
+                            <input type="email" id="loginEmail" required placeholder="أدخل البريد الإلكتروني" />
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">كلمة المرور</label>
+                            <input type="password" id="loginPassword" required placeholder="أدخل كلمة المرور" />
+                        </div>
+                        <button type="submit" class="btn" style="width:100%;"><i class="fas fa-sign-in-alt"></i> دخول</button>
+                        <div id="loginError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="adminDashboard" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem;">
+                    <h2 class="section-title" style="margin-bottom:0;">لوحة التحكم</h2>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span id="adminUserEmail" style="color:var(--text-muted); font-weight:600;"></span>
+                        <button id="logoutBtn" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> خروج</button>
+                    </div>
+                </div>
+
+                <!-- ====== الإشعارات ====== -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
+                    <div class="card">
+                        <div id="notificationsList" class="notif-list">
+                            <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات جديدة</p>
+                        </div>
+                        <button class="btn btn-sm btn-outline mt-2" onclick="clearAllNotifications()" style="width:100%;">
+                            <i class="fas fa-check-double"></i> تحديد الكل كمقروء
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ====== الإحصائيات ====== -->
+                <div class="stats-grid" id="statsContainer">
+                    <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">إجمالي الأسئلة</div></div>
+                    <div class="stat-card"><div class="number" id="statMonth">0</div><div class="label">هذا الشهر</div></div>
+                    <div class="stat-card"><div class="number" id="statPrayers">0</div><div class="label">طلبات الصلاة</div></div>
+                    <div class="stat-card"><div class="number" id="statTopType">-</div><div class="label">أكثر نوع شيوعًا</div></div>
+                </div>
+
+                <!-- ====== إدارة وسائل التواصل ====== -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> إدارة وسائل التواصل</h3>
+                    <div class="card">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div class="form-group">
+                                <label for="socialFacebookInput">رابط فيسبوك</label>
+                                <input type="url" id="socialFacebookInput" placeholder="https://facebook.com/..." />
+                            </div>
+                            <div class="form-group">
+                                <label for="socialInstagramInput">رابط إنستغرام</label>
+                                <input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." />
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / -1;">
+                                <label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label>
+                                <input type="text" id="whatsappInput" placeholder="مثال: 201234567890" />
+                                <small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
+                    </div>
+                </div>
+
+                <!-- ====== إدارة نبذة "من نحن" ====== -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
+                    <div class="card">
+                        <div class="form-group">
+                            <label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label>
+                            <textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea>
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
+                    </div>
+                </div>
+
+                <!-- ====== الأسئلة الواردة ====== -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة</h3>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-sm no-print" onclick="printQuestions()"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-danger btn-sm no-print" onclick="clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
+                        </div>
+                    </div>
+                    <div class="search-filter">
+                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="loadQuestions()" />
+                        <select id="adminFilterType" onchange="loadQuestions()">
+                            <option value="all">جميع التصنيفات</option>
+                            <option value="biblical">كتابية</option>
+                            <option value="doctrinal">عقائدية</option>
+                            <option value="personal">شخصية</option>
+                            <option value="consultation">استشارة</option>
+                            <option value="suggestion">اقتراح</option>
+                            <option value="prayer">صلاة</option>
+                        </select>
+                        <select id="adminFilterAnswered" onchange="loadQuestions()">
+                            <option value="all">الكل</option>
+                            <option value="answered">تمت الإجابة</option>
+                            <option value="unanswered">غير مجاب</option>
+                        </select>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr><th>التفاصيل</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr>
+                            </thead>
+                            <tbody id="adminQuestionsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ====== طلبات الصلاة ====== -->
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة</h3>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-sm no-print" onclick="printPrayers()"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-danger btn-sm no-print" onclick="clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button>
+                        </div>
+                    </div>
+                    <div id="adminPrayersList"></div>
+                </div>
+
+                <!-- ====== إدارة الإعلانات ====== -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
+                    <div class="card mb-4">
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;">
+                            <input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" />
+                            <input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" />
+                        </div>
+                        <button class="btn btn-success" onclick="addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
+                    </div>
+                    <div id="adminAnnouncementsList"></div>
+                </div>
+
+                <!-- ====== تعديل آية اليوم ====== -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" />
+                        <input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" />
+                        <button class="btn btn-primary" onclick="updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ====== التذييل ====== -->
+    <footer>
+        <div class="container">
+            Designed &amp; Developed by John Osama &copy; <span id="year"></span>
+        </div>
+    </footer>
+
+    <!-- ================================================================ -->
+    <!-- ====== جافاسكريبت ====== -->
+    <!-- ================================================================ -->
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import {
+            getFirestore,
+            collection,
+            doc,
+            addDoc,
+            getDocs,
+            updateDoc,
+            deleteDoc,
+            query,
+            where,
+            orderBy,
+            getDoc,
+            setDoc,
+            serverTimestamp,
+            writeBatch,
+            onSnapshot
+        } from "firebase/firestore";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+        } from "firebase/auth";
+
+        // ====== إعداد Firebase ======
+        const firebaseConfig = {
+            apiKey: "AIzaSyBn58yFwHcStPr23UClRLjIxSEQ671-I5Y",
+            authDomain: "wep-site-ch.firebaseapp.com",
+            databaseURL: "https://wep-site-ch-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "wep-site-ch",
+            storageBucket: "wep-site-ch.firebasestorage.app",
+            messagingSenderId: "892256170869",
+            appId: "1:892256170869:web:eff22b472e848c72c7993c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let currentUser = null;
+        let notifications = [];
+
+        console.log('✅ Firebase initialized');
+
+        // ====== دوال مساعدة ======
+        const toastEl = document.getElementById('toast');
+        let toastTimeout = null;
+
+        function showToast(msg, isError = false) {
+            toastEl.textContent = msg;
+            toastEl.style.borderRightColor = isError ? '#c0392b' : 'var(--color-gold)';
+            toastEl.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
+        }
+
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('#mainNav a[data-page]');
+        const adminLoginPanel = document.getElementById('adminLoginPanel');
+        const adminDashboard = document.getElementById('adminDashboard');
+        const adminLink = document.getElementById('adminLink');
+
+        window.navigateTo = function(pageId) {
+            pages.forEach(p => p.classList.remove('active'));
+            const target = document.getElementById('page-' + pageId);
+            if (target) target.classList.add('active');
+            navLinks.forEach(link => {
+                link.classList.toggle('active', link.dataset.page === pageId);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (pageId === 'answered') renderAnsweredQuestions();
+            if (pageId === 'announcements') loadAnnouncements();
+            if (pageId === 'admin' && currentUser) {
+                loadAdminData();
+            }
+        };
+
+        adminLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.navigateTo('admin');
+        });
+
+        navLinks.forEach(link => {
+            if (link.id !== 'adminLink') {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.navigateTo(link.dataset.page);
+                });
+            }
+        });
+
+        // ====== الوضع الليلي ======
+        const themeToggle = document.getElementById('themeToggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        themeToggle.innerHTML = currentTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+        themeToggle.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            themeToggle.innerHTML = next === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // ====== الإشعارات ======
+        async function loadNotifications() {
+            if (!currentUser) return;
+            try {
+                const snap = await getDocs(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')));
+                notifications = [];
+                snap.forEach(doc => {
+                    notifications.push({ id: doc.id, ...doc.data() });
+                });
+                updateNotificationUI();
+            } catch (e) {
+                console.warn('Error loading notifications:', e);
+            }
+        }
+
+        function updateNotificationUI() {
+            const unread = notifications.filter(n => !n.read).length;
+            const badge = document.getElementById('notifBadge');
+            const countEl = document.getElementById('notifCount');
+
+            if (unread > 0) {
+                badge.style.display = 'inline-block';
+                badge.textContent = unread > 99 ? '99+' : unread;
+                countEl.textContent = `(${unread} جديدة)`;
+            } else {
+                badge.style.display = 'none';
+                countEl.textContent = '';
+            }
+
+            const list = document.getElementById('notificationsList');
+            if (notifications.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
+                return;
+            }
+
+            list.innerHTML = notifications.map(n => `
+                <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : 'صلاة'}</span>
+                    <span class="notif-text">${n.message}</span>
+                    <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        window.markNotifRead = async function(id) {
+            try {
+                await updateDoc(doc(db, 'notifications', id), { read: true });
+                await loadNotifications();
+            } catch (e) { console.error(e); }
+        };
+
+        window.clearAllNotifications = async function() {
+            if (!confirm('تحديد جميع الإشعارات كمقروءة؟')) return;
+            try {
+                const batch = writeBatch(db);
+                const snap = await getDocs(collection(db, 'notifications'));
+                snap.forEach(doc => {
+                    if (!doc.data().read) {
+                        batch.update(doc.ref, { read: true });
+                    }
+                });
+                await batch.commit();
+                await loadNotifications();
+                showToast('تم تحديث جميع الإشعارات كمقروءة');
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        function listenToNotifications() {
+            if (!currentUser) return;
+            onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), (snapshot) => {
+                notifications = [];
+                snapshot.forEach(doc => {
+                    notifications.push({ id: doc.id, ...doc.data() });
+                });
+                updateNotificationUI();
+                const unread = notifications.filter(n => !n.read).length;
+                const badge = document.getElementById('notifBadge');
+                if (unread > 0) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = unread > 99 ? '99+' : unread;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }, (error) => {
+                console.warn('Notification listener error:', error);
+            });
+        }
+
+        async function addNotification(message, type) {
+            try {
+                await addDoc(collection(db, 'notifications'), {
+                    message,
+                    type,
+                    read: false,
+                    createdAt: serverTimestamp()
+                });
+            } catch (e) {
+                console.warn('Error adding notification:', e);
+            }
+        }
+
+        // ====== إرسال الأسئلة وطلبات الصلاة ======
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const details = document.getElementById('qDetails').value.trim();
+            const type = document.getElementById('qType').value;
+            const anonymous = document.getElementById('qAnonymous').checked;
+            const name = document.getElementById('qName').value.trim();
+            if (!details) { showToast('الرجاء كتابة تفاصيل السؤال', true); return; }
+            try {
+                await addDoc(collection(db, 'questions'), {
+                    details,
+                    type,
+                    anonymous,
+                    name: anonymous ? '' : name,
+                    answered: false,
+                    answer: '',
+                    published: false,
+                    createdAt: serverTimestamp()
+                });
+                await addNotification(`📩 سؤال جديد: ${details.substring(0, 50)}${details.length > 50 ? '...' : ''}`,
+                    'question');
+                document.getElementById('questionForm').reset();
+                document.getElementById('questionForm').style.display = 'none';
+                document.getElementById('questionSuccess').style.display = 'block';
+                showToast('تم إرسال سؤالك بنجاح!');
+            } catch (err) {
+                console.error(err);
+                showToast('حدث خطأ أثناء الإرسال.', true);
+            }
+        });
+
+        document.getElementById('qAnonymous').addEventListener('change', function() {
+            document.getElementById('nameGroup').style.display = this.checked ? 'none' : 'block';
+        });
+
+        document.getElementById('prayerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = document.getElementById('prayerText').value.trim();
+            const anonymous = document.getElementById('prayerAnonymous').checked;
+            const name = document.getElementById('prayerName').value.trim();
+            if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
+            try {
+                await addDoc(collection(db, 'prayers'), {
+                    text,
+                    anonymous,
+                    name: anonymous ? '' : name,
+                    createdAt: serverTimestamp()
+                });
+                await addNotification(`🙏 طلب صلاة جديد: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`,
+                    'prayer');
+                document.getElementById('prayerForm').reset();
+                document.getElementById('prayerForm').style.display = 'none';
+                document.getElementById('prayerSuccess').style.display = 'block';
+                showToast('تم استلام طلب صلاتك!');
+            } catch (err) {
+                console.error(err);
+                showToast('حدث خطأ أثناء الإرسال.', true);
+            }
+        });
+
+        document.getElementById('prayerAnonymous').addEventListener('change', function() {
+            document.getElementById('prayerNameGroup').style.display = this.checked ? 'none' : 'block';
+        });
+
+        // ====== عرض الأسئلة المجاب عنها ======
+        window.renderAnsweredQuestions = async function() {
+            const search = document.getElementById('answeredSearch').value.trim().toLowerCase();
+            const container = document.getElementById('answeredList');
+            container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
+            try {
+                const q = query(collection(db, 'questions'), where('published', '==', true));
+                const snap = await getDocs(q);
+                let items = [];
+                snap.forEach(doc => { items.push({ id: doc.id, ...doc.data() }); });
+                if (search) {
+                    items = items.filter(item =>
+                        item.details.toLowerCase().includes(search) ||
+                        (item.answer && item.answer.toLowerCase().includes(search))
+                    );
+                }
+                if (items.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد أسئلة منشورة حالياً.</p>';
+                    return;
+                }
+                container.innerHTML = items.map(item => `
+                    <div class="question-card">
+                        <div class="q-title">${item.details.substring(0,60)}${item.details.length>60?'...':''}</div>
+                        <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''}</div>
+                        <div class="q-answer">${item.answer || 'لم يتم توفير إجابة بعد.'}</div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الأسئلة.</p>';
+            }
+        };
+
+        // ====== الإعلانات ======
+        async function loadAnnouncements() {
+            const container = document.getElementById('announcementsList');
+            container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
+            try {
+                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) {
+                    container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد إعلانات حالياً.</p>';
+                    return;
+                }
+                let html = '';
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.date ? data.date.toDate().toLocaleDateString('ar-EG') : '';
+                    html += `
+                        <div class="announcement-item">
+                            <div class="announce-content">
+                                <h4>${data.title}</h4>
+                                <p>${data.content}</p>
+                                <div class="date">${date}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الإعلانات.</p>';
+            }
+        }
+
+        // ====== وسائل التواصل ======
+        async function loadSocialLinks() {
+            try {
+                const docSnap = await getDoc(doc(db, 'settings', 'socialLinks'));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('socialFacebookInput').value = data.facebook || '';
+                    document.getElementById('socialInstagramInput').value = data.instagram || '';
+                    document.getElementById('whatsappInput').value = data.whatsapp || '';
+                    applySocialLinks(data);
+                }
+            } catch (e) { console.warn('Error loading social links:', e); }
+        }
+
+        function applySocialLinks(data) {
+            document.getElementById('socialFacebook').href = data.facebook || '#';
+            document.getElementById('socialInstagram').href = data.instagram || '#';
+
+            const whatsappNumber = data.whatsapp || '';
+            const whatsappLink = document.getElementById('whatsappLink');
+            const whatsappLabel = document.getElementById('whatsappLabel');
+
+            if (whatsappNumber) {
+                whatsappLink.href = `https://wa.me/${whatsappNumber}`;
+                whatsappLabel.textContent = 'تواصل عبر واتساب';
+                whatsappLink.style.opacity = '1';
+            } else {
+                whatsappLink.href = '#';
+                whatsappLabel.textContent = 'لم يتم تعيين رقم واتساب بعد';
+                whatsappLink.style.opacity = '0.6';
+            }
+        }
+
+        window.saveSocialLinks = async function() {
+            const data = {
+                facebook: document.getElementById('socialFacebookInput').value.trim(),
+                instagram: document.getElementById('socialInstagramInput').value.trim(),
+                whatsapp: document.getElementById('whatsappInput').value.trim()
+            };
+            try {
+                await setDoc(doc(db, 'settings', 'socialLinks'), data);
+                applySocialLinks(data);
+                showToast('✅ تم حفظ روابط التواصل');
+            } catch (e) { showToast('❌ فشل الحفظ', true); }
+        };
+
+        // ====== نبذة "من نحن" ======
+        async function loadAbout() {
+            try {
+                const docSnap = await getDoc(doc(db, 'settings', 'aboutText'));
+                if (docSnap.exists()) {
+                    const text = docSnap.data().text || '';
+                    document.getElementById('aboutContent').innerHTML = text || 'لا توجد نبذة حالياً. قم بإضافتها من لوحة التحكم.';
+                    document.getElementById('aboutEditor').value = text;
+                } else {
+                    document.getElementById('aboutContent').textContent = 'لا توجد نبذة حالياً. قم بإضافتها من لوحة التحكم.';
+                    document.getElementById('aboutEditor').value = '';
+                }
+            } catch (e) {
+                console.warn('Error loading about:', e);
+                document.getElementById('aboutContent').textContent = 'فشل تحميل النبذة.';
+            }
+        }
+
+        window.saveAbout = async function() {
+            const text = document.getElementById('aboutEditor').value.trim();
+            if (!text) { showToast('الرجاء كتابة النبذة أولاً', true); return; }
+            try {
+                await setDoc(doc(db, 'settings', 'aboutText'), { text, updatedAt: serverTimestamp() });
+                document.getElementById('aboutContent').innerHTML = text;
+                showToast('✅ تم حفظ النبذة');
+            } catch (e) { showToast('❌ فشل الحفظ', true); }
+        };
+
+        // ====== آية اليوم ======
+        async function loadDailyVerse() {
+            const display = document.getElementById('dailyVerseDisplay');
+            const refDisplay = document.getElementById('dailyVerseRef');
+            try {
+                const docSnap = await getDoc(doc(db, 'settings', 'dailyVerse'));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    display.textContent = data.verse || 'لم يتم تعيين آية';
+                    refDisplay.textContent = data.reference || '';
+                } else {
+                    const def = {
+                        verse: 'لأَنَّهُ هكَذَا أَحَبَّ اللهُ الْعَالَمَ، حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.',
+                        reference: 'يوحنا 3:16'
+                    };
+                    await setDoc(doc(db, 'settings', 'dailyVerse'), def);
+                    display.textContent = def.verse;
+                    refDisplay.textContent = def.reference;
+                }
+            } catch (e) {
+                console.warn('Verse load error:', e);
+                display.textContent = 'لأَنَّهُ هكَذَا أَحَبَّ اللهُ الْعَالَمَ...';
+                refDisplay.textContent = 'يوحنا 3:16';
+            }
+        }
+
+        // ====== ترجمة الأنواع ======
+        function translateType(type) {
+            const map = {
+                biblical: 'كتابية',
+                doctrinal: 'عقائدية',
+                personal: 'شخصية',
+                consultation: 'استشارة',
+                suggestion: 'اقتراح',
+                prayer: 'صلاة'
+            };
+            return map[type] || type;
+        }
+
+        // ====== المصادقة ======
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = '';
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showToast('تم تسجيل الدخول بنجاح');
+            } catch (err) {
+                errorDiv.textContent = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                showToast('فشل تسجيل الدخول', true);
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await signOut(auth);
+            showToast('تم تسجيل الخروج');
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user) {
+                adminLoginPanel.style.display = 'none';
+                adminDashboard.style.display = 'block';
+                document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
+                loadAdminData();
+                listenToNotifications();
+            } else {
+                adminLoginPanel.style.display = 'block';
+                adminDashboard.style.display = 'none';
+                notifications = [];
+                updateNotificationUI();
+            }
+        });
+
+        // ====== لوحة التحكم ======
+        async function loadAdminData() {
+            if (!currentUser) return;
+            await Promise.all([
+                loadStats(),
+                loadQuestions(),
+                loadPrayers(),
+                loadAnnouncementsAdmin(),
+                loadDailyVerseForAdmin(),
+                loadSocialLinks(),
+                loadAbout(),
+                loadNotifications()
+            ]);
+        }
+
+        async function loadStats() {
+            try {
+                const qSnap = await getDocs(collection(db, 'questions'));
+                const pSnap = await getDocs(collection(db, 'prayers'));
+                const total = qSnap.size;
+                const now = new Date();
+                const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                let monthCount = 0;
+                const typeCount = {};
+                qSnap.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt ? data.createdAt.toDate() : new Date();
+                    if (date >= startMonth) monthCount++;
+                    const t = data.type || 'other';
+                    typeCount[t] = (typeCount[t] || 0) + 1;
+                });
+                let topType = '-';
+                let max = 0;
+                for (const [k, v] of Object.entries(typeCount)) {
+                    if (v > max) { max = v;
+                        topType = translateType(k); }
+                }
+                document.getElementById('statTotal').textContent = total;
+                document.getElementById('statMonth').textContent = monthCount;
+                document.getElementById('statPrayers').textContent = pSnap.size;
+                document.getElementById('statTopType').textContent = topType;
+            } catch (e) { console.error('Stats error:', e); }
+        }
+
+        window.loadQuestions = async function() {
+            const search = document.getElementById('adminSearch').value.trim().toLowerCase();
+            const typeFilter = document.getElementById('adminFilterType').value;
+            const answeredFilter = document.getElementById('adminFilterAnswered').value;
+            const tbody = document.getElementById('adminQuestionsTable');
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">جاري التحميل...</td></tr>';
+            try {
+                const snap = await getDocs(collection(db, 'questions'));
+                let items = [];
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    if (data.details !== undefined && data.details !== null && data.details.trim() !== '') {
+                        items.push({ id: doc.id, ...data });
+                    } else {
+                        deleteDoc(doc.ref).catch(e => console.warn('Delete failed:', e));
+                    }
+                });
+                if (typeFilter !== 'all') items = items.filter(item => item.type === typeFilter);
+                if (answeredFilter === 'answered') items = items.filter(item => item.answered === true);
+                else if (answeredFilter === 'unanswered') items = items.filter(item => item.answered !== true);
+                if (search) items = items.filter(item => item.details.toLowerCase().includes(search));
+                items.sort((a, b) => {
+                    const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                    const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                    return db - da;
+                });
+                if (items.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center">لا توجد أسئلة</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = items.map(item => {
+                    const details = item.details || '';
+                    const short = details.substring(0, 100);
+                    const long = details;
+                    const showMore = details.length > 100;
+                    return `
+                    <tr>
+                        <td>
+                            <div class="question-text">
+                                <span class="short-text">${short}${showMore ? '...' : ''}</span>
+                                <span class="full-text">${long}</span>
+                                ${showMore ? `<button class="toggle-btn" onclick="toggleQuestionText(this)">عرض المزيد</button>` : ''}
+                            </div>
+                        </td>
+                        <td>${translateType(item.type)}</td>
+                        <td>${item.createdAt ? item.createdAt.toDate().toLocaleDateString('ar-EG') : ''}</td>
+                        <td>${item.answered ? '✅ مجاب' : '⏳ قيد الانتظار'}</td>
+                        <td>
+                            <div class="actions">
+                                ${!item.answered ? `<button class="btn-answer" onclick="markAnswered('${item.id}')"><i class="fas fa-check"></i> إجابة</button>` : ''}
+                                ${!item.published ? `<button class="btn-publish" onclick="togglePublish('${item.id}')"><i class="fas fa-globe"></i> نشر</button>` : `<button class="btn-publish" onclick="togglePublish('${item.id}')" style="background:#f39c12;">إلغاء</button>`}
+                                <button class="btn-delete" onclick="deleteQuestion('${item.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `}).join('');
+                window.toggleQuestionText = function(btn) {
+                    const container = btn.parentElement;
+                    const short = container.querySelector('.short-text');
+                    const full = container.querySelector('.full-text');
+                    if (full.classList.contains('show')) {
+                        full.classList.remove('show');
+                        short.style.display = 'inline';
+                        btn.textContent = 'عرض المزيد';
+                    } else {
+                        full.classList.add('show');
+                        short.style.display = 'none';
+                        btn.textContent = 'عرض أقل';
+                    }
+                };
+            } catch (e) {
+                console.error(e);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#c0392b;">فشل التحميل</td></tr>';
+            }
+        };
+
+        window.markAnswered = async function(id) {
+            const answer = prompt('اكتب الإجابة:');
+            if (answer === null) return;
+            try {
+                await updateDoc(doc(db, 'questions', id), { answered: true, answer: answer.trim() });
+                showToast('تم وضع علامة "تمت الإجابة"');
+                loadQuestions();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.togglePublish = async function(id) {
+            try {
+                const ref = doc(db, 'questions', id);
+                const snap = await getDoc(ref);
+                const current = snap.data()?.published || false;
+                await updateDoc(ref, { published: !current });
+                showToast(current ? 'تم إلغاء النشر' : 'تم نشر السؤال');
+                loadQuestions();
+                renderAnsweredQuestions();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.deleteQuestion = async function(id) {
+            if (!confirm('هل أنت متأكد من حذف هذا السؤال؟')) return;
+            try {
+                await deleteDoc(doc(db, 'questions', id));
+                showToast('تم الحذف');
+                loadQuestions();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.clearAllQuestions = async function() {
+            if (!confirm('هل أنت متأكد من حذف جميع الأسئلة؟')) return;
+            try {
+                const snap = await getDocs(collection(db, 'questions'));
+                const batch = writeBatch(db);
+                snap.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+                showToast('تم حذف جميع الأسئلة');
+                loadQuestions();
+                loadStats();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.printQuestions = function() {
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            if (!printWindow) { showToast('الرجاء السماح للنوافذ المنبثقة', true); return; }
+            const tbody = document.getElementById('adminQuestionsTable');
+            let content = tbody.innerHTML;
+            content = content.replace(/<td>.*?<div class="actions">.*?<\/div>.*?<\/td>/gs, '<td></td>');
+            printWindow.document.write(`
+                <html dir="rtl">
+                <head><title>طباعة الأسئلة</title>
+                <style>
+                    body { font-family: 'Cairo', sans-serif; padding:20px; }
+                    table { width:100%; border-collapse:collapse; }
+                    th, td { border:1px solid #ccc; padding:8px; text-align:right; }
+                    th { background:#f0f0f0; }
+                    .actions { display:none; }
+                </style>
+                </head>
+                <body>
+                    <h2 style="text-align:center;">قائمة الأسئلة الواردة</h2>
+                    <table>
+                        <thead><tr><th>التفاصيل</th><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead>
+                        <tbody>${content}</tbody>
+                    </table>
+                    <p style="margin-top:20px; text-align:center;">تم الطباعة في: ${new Date().toLocaleString('ar-EG')}</p>
+                    <script>window.onload = function() { window.print(); }<\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        };
+
+        // ====== طلبات الصلاة ======
+        async function loadPrayers() {
+            const container = document.getElementById('adminPrayersList');
+            container.innerHTML = 'جاري التحميل...';
+            try {
+                const q = query(collection(db, 'prayers'), orderBy('createdAt', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد طلبات صلاة.</p>'; return; }
+                let html = '<ul style="list-style:none; padding:0;">';
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-EG') : '';
+                    html += `
+                        <li style="padding:10px 0; border-bottom:1px solid var(--border-color);">
+                            <p><strong>${data.text}</strong></p>
+                            <small style="color:var(--text-muted);">${data.anonymous ? 'مجهول' : data.name || ''} - ${date}</small>
+                            <button class="btn btn-danger btn-sm" onclick="deletePrayer('${doc.id}')" style="float:left; padding:2px 12px; font-size:0.75rem;">حذف</button>
+                        </li>
+                    `;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+            } catch (e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
+        }
+
+        window.deletePrayer = async function(id) {
+            if (!confirm('حذف طلب الصلاة؟')) return;
+            try {
+                await deleteDoc(doc(db, 'prayers', id));
+                showToast('تم الحذف');
+                loadPrayers();
+                loadStats();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.clearAllPrayers = async function() {
+            if (!confirm('هل أنت متأكد من حذف جميع طلبات الصلاة؟')) return;
+            try {
+                const snap = await getDocs(collection(db, 'prayers'));
+                const batch = writeBatch(db);
+                snap.forEach(doc => batch.delete(doc.ref));
+                await batch.commit();
+                showToast('تم حذف جميع طلبات الصلاة');
+                loadPrayers();
+                loadStats();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.printPrayers = function() {
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            if (!printWindow) { showToast('الرجاء السماح للنوافذ المنبثقة', true); return; }
+            const container = document.getElementById('adminPrayersList');
+            let content = container.innerHTML;
+            content = content.replace(/<button.*?<\/button>/g, '');
+            printWindow.document.write(`
+                <html dir="rtl">
+                <head><title>طباعة طلبات الصلاة</title>
+                <style>
+                    body { font-family: 'Cairo', sans-serif; padding:20px; }
+                    ul { list-style:none; padding:0; }
+                    li { padding:10px 0; border-bottom:1px solid #ccc; }
+                    .btn { display:none; }
+                </style>
+                </head>
+                <body>
+                    <h2 style="text-align:center;">قائمة طلبات الصلاة</h2>
+                    ${content}
+                    <p style="margin-top:20px; text-align:center;">تم الطباعة في: ${new Date().toLocaleString('ar-EG')}</p>
+                    <script>window.onload = function() { window.print(); }<\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        };
+
+        // ====== إدارة الإعلانات ======
+        async function loadAnnouncementsAdmin() {
+            const container = document.getElementById('adminAnnouncementsList');
+            container.innerHTML = 'جاري التحميل...';
+            try {
+                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد إعلانات.</p>'; return; }
+                let html = '';
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    html += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
+                            <div><strong>${data.title}</strong> - ${data.content}</div>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement('${doc.id}')">حذف</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
+        }
+
+        window.addAnnouncement = async function() {
+            const title = document.getElementById('announceTitle').value.trim();
+            const content = document.getElementById('announceContent').value.trim();
+            if (!title || !content) { showToast('املأ الحقول', true); return; }
+            try {
+                await addDoc(collection(db, 'announcements'), { title, content, date: serverTimestamp() });
+                showToast('تمت الإضافة');
+                document.getElementById('announceTitle').value = '';
+                document.getElementById('announceContent').value = '';
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.deleteAnnouncement = async function(id) {
+            if (!confirm('حذف الإعلان؟')) return;
+            try {
+                await deleteDoc(doc(db, 'announcements', id));
+                showToast('تم الحذف');
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        // ====== تعديل آية اليوم ======
+        async function loadDailyVerseForAdmin() {
+            try {
+                const docSnap = await getDoc(doc(db, 'settings', 'dailyVerse'));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('verseText').value = data.verse || '';
+                    document.getElementById('verseRef').value = data.reference || '';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        window.updateDailyVerse = async function() {
+            const verse = document.getElementById('verseText').value.trim();
+            const ref = document.getElementById('verseRef').value.trim();
+            if (!verse || !ref) { showToast('املأ الحقول', true); return; }
+            try {
+                await setDoc(doc(db, 'settings', 'dailyVerse'), { verse, reference: ref });
+                showToast('تم تحديث آية اليوم');
+                loadDailyVerse();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        // ====== تهيئة ======
+        loadAnnouncements();
+        document.getElementById('year').textContent = new Date().getFullYear();
+        renderAnsweredQuestions();
+        loadSocialLinks();
+        loadAbout();
+        loadDailyVerse();
+
+        console.log('✅ التطبيق جاهز بالكامل (بدون صور)');
+        console.log('🔗 روابط التواصل مخزنة في Firestore');
+        console.log('📝 يمكن تعديل نبذة "من نحن" من لوحة التحكم');
+        console.log('🔔 يتم إرسال إشعارات عند وصول سؤال أو طلب صلاة جديد');
+        console.log('🖨️ يمكن طباعة الأسئلة وطلبات الصلاة');
+        console.log('🔐 صفحة تسجيل الدخول فارغة (لا توجد بيانات مسبقة)');
+    </script>
+
+</body>
+</html>

@@ -857,12 +857,23 @@
             gap: 12px;
             margin-bottom: 16px;
             flex-wrap: wrap;
+            align-items: center;
         }
 
         .no-questions {
             text-align: center;
             color: var(--text-muted);
             padding: 30px 0;
+        }
+
+        .status-connected {
+            color: #27ae60;
+        }
+        .status-error {
+            color: #c0392b;
+        }
+        .status-loading {
+            color: var(--text-muted);
         }
 
         @media print {
@@ -1123,7 +1134,7 @@
                 <button class="btn btn-refresh btn-sm" onclick="window.refreshMyQuestions()">
                     <i class="fas fa-sync-alt"></i> تحديث
                 </button>
-                <span id="myQuestionsStatus" style="color:var(--text-muted); font-size:0.85rem; align-self:center;"></span>
+                <span id="myQuestionsStatus" style="color:var(--text-muted); font-size:0.85rem;"></span>
             </div>
             <div id="myQuestionsList"></div>
         </section>
@@ -1374,7 +1385,9 @@
             onAuthStateChanged,
             signOut,
             createUserWithEmailAndPassword,
-            updateProfile
+            updateProfile,
+            setPersistence,
+            browserLocalPersistence
         } from "firebase/auth";
 
         // ====== إعداد Firebase ======
@@ -1391,6 +1404,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
+
+        // ====== ضبط استمرار المصادقة ======
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                console.log('✅ تم ضبط استمرار المصادقة محلياً');
+            })
+            .catch((error) => {
+                console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', error);
+            });
 
         let currentUser = null;
         let currentUserId = null;
@@ -1492,11 +1514,14 @@
             if (currentUser && !isAdmin) {
                 signOut(auth).then(() => {
                     showToast('تم تسجيل الخروج');
-                    // إلغاء الاشتراك من أسئلة المستخدم
                     if (myQuestionsUnsubscribe) {
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
                     }
+                    // تحديث واجهة أسئلتي
+                    document.getElementById('myQuestionsList').innerHTML =
+                        '<p class="no-questions">تم تسجيل الخروج</p>';
+                    document.getElementById('myQuestionsStatus').textContent = '';
                 }).catch((err) => {
                     showToast('خطأ في تسجيل الخروج: ' + err.message, true);
                 });
@@ -1574,6 +1599,13 @@
                     myQuestionsUnsubscribe();
                     myQuestionsUnsubscribe = null;
                 }
+                // تحديث واجهة أسئلتي
+                const myQuestionsPage = document.getElementById('page-my-questions');
+                if (myQuestionsPage.classList.contains('active')) {
+                    document.getElementById('myQuestionsList').innerHTML =
+                        '<p class="no-questions">يرجى تسجيل الدخول لعرض أسئلتك</p>';
+                    document.getElementById('myQuestionsStatus').textContent = '';
+                }
                 const activePage = document.querySelector('.page.active');
                 if (activePage && (activePage.id === 'page-my-questions' || activePage.id === 'page-admin' || activePage
                         .id === 'page-admin-login')) {
@@ -1645,6 +1677,8 @@
                     authError.textContent = 'كلمة المرور غير صحيحة.';
                 } else if (err.code === 'auth/email-already-in-use') {
                     authError.textContent = 'هذا البريد مستخدم بالفعل. يرجى تسجيل الدخول.';
+                } else if (err.code === 'auth/too-many-requests') {
+                    authError.textContent = 'تم إرسال عدد كبير جداً من الطلبات. حاول لاحقاً.';
                 } else {
                     authError.textContent = err.message;
                 }
@@ -1681,6 +1715,8 @@
                     errorDiv.textContent = '❌ هذا الحساب غير موجود في Firebase Authentication. يرجى إنشاؤه أولاً.';
                 } else if (err.code === 'auth/wrong-password') {
                     errorDiv.textContent = '❌ كلمة المرور غير صحيحة.';
+                } else if (err.code === 'auth/too-many-requests') {
+                    errorDiv.textContent = '❌ تم إرسال عدد كبير جداً من الطلبات. حاول لاحقاً.';
                 } else {
                     errorDiv.textContent = '❌ فشل تسجيل الدخول: ' + err.message;
                 }
@@ -1694,7 +1730,7 @@
             window.navigateTo('home');
         });
 
-        // ====== مستمع أسئلة المستخدم ======
+        // ====== مستمع أسئلة المستخدم (محسّن بدون orderBy لتجنب الفهارس) ======
         function startMyQuestionsListener() {
             // إلغاء الاشتراك السابق إن وجد
             if (myQuestionsUnsubscribe) {
@@ -1708,37 +1744,55 @@
             if (!currentUser) {
                 container.innerHTML = '<p class="no-questions">يجب تسجيل الدخول لعرض أسئلتك</p>';
                 statusEl.textContent = '';
+                statusEl.className = '';
                 return;
             }
 
             container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
             statusEl.textContent = '⏳ جاري التحميل...';
+            statusEl.className = 'status-loading';
 
             try {
+                // استعلام بدون orderBy لتجنب الحاجة لفهرس مركب
                 const q = query(
                     collection(db, 'questions'),
-                    where('userId', '==', currentUser.uid),
-                    orderBy('createdAt', 'desc')
+                    where('userId', '==', currentUser.uid)
                 );
 
                 myQuestionsUnsubscribe = onSnapshot(q, (snapshot) => {
                     statusEl.textContent = '✅ محدث لحظياً';
+                    statusEl.className = 'status-connected';
+
                     if (snapshot.empty) {
                         container.innerHTML = '<p class="no-questions">لا توجد أسئلة حالياً</p>';
                         return;
                     }
-                    let html = '';
+
+                    // تجميع البيانات وترتيبها يدوياً حسب createdAt
+                    let items = [];
                     snapshot.forEach(doc => {
                         const data = doc.data();
-                        const answerHtml = data.answered ?
-                            `<div class="q-answer"><strong>الإجابة:</strong> ${data.answer || 'لم تكتب إجابة بعد'}</div>` :
+                        items.push({ id: doc.id, ...data });
+                    });
+
+                    // ترتيب تنازلي (الأحدث أولاً)
+                    items.sort((a, b) => {
+                        const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                        const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                        return db - da;
+                    });
+
+                    let html = '';
+                    items.forEach(item => {
+                        const answerHtml = item.answered ?
+                            `<div class="q-answer"><strong>الإجابة:</strong> ${item.answer || 'لم تكتب إجابة بعد'}</div>` :
                             '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
-                        const published = data.published ? ' (منشور عام)' : ' (خاص)';
-                        const dateStr = data.createdAt ? data.createdAt.toDate().toLocaleString('ar-EG') : '';
+                        const published = item.published ? ' (منشور عام)' : ' (خاص)';
+                        const dateStr = item.createdAt ? item.createdAt.toDate().toLocaleString('ar-EG') : '';
                         html += `
                             <div class="my-question-card">
-                                <div class="q-details"><strong>السؤال:</strong> ${data.details}</div>
-                                <div class="q-meta">النوع: ${translateType(data.type)} ${data.anonymous ? '(مجهول)' : ''} ${published}</div>
+                                <div class="q-details"><strong>السؤال:</strong> ${item.details}</div>
+                                <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''} ${published}</div>
                                 ${answerHtml}
                                 <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${dateStr}</div>
                             </div>
@@ -1747,24 +1801,35 @@
                     container.innerHTML = html;
                 }, (error) => {
                     console.error('Error in my questions listener:', error);
-                    statusEl.textContent = '❌ خطأ في الاتصال';
-                    container.innerHTML = `<p style="color:#c0392b;">حدث خطأ في تحميل أسئلتك: ${error.message}<br>حاول تحديث الصفحة أو الضغط على زر التحديث.</p>`;
+                    statusEl.textContent = '❌ خطأ في الاتصال: ' + error.message;
+                    statusEl.className = 'status-error';
+                    container.innerHTML =
+                        `<p style="color:#c0392b;">حدث خطأ في تحميل أسئلتك: ${error.message}<br>حاول تحديث الصفحة أو الضغط على زر التحديث.</p>`;
                 });
             } catch (error) {
                 console.error('Error setting up listener:', error);
-                statusEl.textContent = '❌ خطأ';
-                container.innerHTML = `<p style="color:#c0392b;">حدث خطأ في إعداد المستمع: ${error.message}</p>`;
+                statusEl.textContent = '❌ خطأ: ' + error.message;
+                statusEl.className = 'status-error';
+                container.innerHTML =
+                    `<p style="color:#c0392b;">حدث خطأ في إعداد المستمع: ${error.message}</p>`;
             }
         }
 
         // ====== تحديث يدوي لأسئلة المستخدم ======
         window.refreshMyQuestions = function() {
+            const statusEl = document.getElementById('myQuestionsStatus');
+            statusEl.textContent = '⏳ جاري التحديث...';
+            statusEl.className = 'status-loading';
+
             if (myQuestionsUnsubscribe) {
                 myQuestionsUnsubscribe();
                 myQuestionsUnsubscribe = null;
             }
-            startMyQuestionsListener();
-            showToast('✅ تم تحديث الأسئلة');
+            // تأخير بسيط لإعادة الاتصال
+            setTimeout(() => {
+                startMyQuestionsListener();
+                showToast('✅ تم تحديث الأسئلة');
+            }, 300);
         };
 
         // ====== الإشعارات ======
@@ -2486,6 +2551,7 @@
         loadAbout();
         loadDailyVerse();
 
+        // بدء الاستماع إذا كانت الصفحة نشطة
         setTimeout(() => {
             if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
                 startMyQuestionsListener();
@@ -2498,11 +2564,10 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل مع تحديث حي لأسئلة المستخدم');
-        console.log('🔐 تسجيل الدخول منفصل للمستخدم والأدمن');
+        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('🔐 تم ضبط استمرار المصادقة محلياً (browserLocalPersistence)');
+        console.log('📌 تم إزالة orderBy من استعلام أسئلة المستخدم لتجنب أخطاء الفهارس');
         console.log(`📧 بريد الأدمن: ${ADMIN_EMAIL}`);
-        console.log('🔑 كلمة المرور محددة مسبقاً');
-        console.log('💡 تأكد من أن هذا الحساب موجود في Firebase Authentication');
         console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
     </script>
 

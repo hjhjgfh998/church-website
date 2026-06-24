@@ -1510,22 +1510,1031 @@
             `).join('');
         }
 
-        // ====== بقية الدوال (مختصرة) ======
-        // ... (نفس الدوال السابقة: resetQuestionForm, resetPrayerForm, navigateTo, ensureUserDocument, checkAdmin,
-        // notifyAllUsers, addUserNotification, startMyItemsListeners, star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8,
-        // markUserNotifRead, markAllUserNotifsRead, clearAllUserNotifs, listenToNotifications,
-        // markNotifRead, markAllNotificationsRead, deleteAllNotifications, addNotification,
-        // loadDailyVerse, scheduleVerseUpdate, updateDailyVerse, renderAnsweredQuestions,
-        // loadAnnouncements, loadSocialLinks, saveSocialLinks, loadAbout, saveAbout, translateType,
-        // loadAdminData, loadStats, loadQuestions, renderQuestionsPage, changePage,
-        // startPrayersListener, renderPrayersList, loadPrayersOnce, refreshPrayers, deletePrayer,
-        // clearAllPrayers, printPrayers, openAnswerModal, openEditAnswerModal, answerModal handlers,
-        // prayerReplyModal handlers, togglePublish, deleteQuestion, clearAllQuestions, printQuestions,
-        // loadAnnouncementsAdmin, addAnnouncement, deleteAnnouncement)
+        // ====== دوال التنقل ======
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`page-${page}`);
+            if (target) target.classList.add('active');
+            document.querySelectorAll('nav a[data-page]').forEach(el => el.classList.remove('active'));
+            const navLink = document.querySelector(`nav a[data-page="${page}"]`);
+            if (navLink) navLink.classList.add('active');
+            if (page === 'admin' && !isAdmin) {
+                showToast('غير مسموح بالدخول إلى لوحة التحكم', true);
+                navigateTo('home');
+                return;
+            }
+        }
 
-        // لتوفير المساحة، سيتم وضع الدوال المكتملة في الرد النهائي.
+        // ====== دوال إعادة تعيين النماذج ======
+        function resetQuestionForm() {
+            document.getElementById('questionForm').reset();
+            document.getElementById('questionSuccess').style.display = 'none';
+            document.getElementById('questionFormContainer').querySelector('.card').style.display = 'block';
+        }
+
+        function resetPrayerForm() {
+            document.getElementById('prayerForm').reset();
+            document.getElementById('prayerSuccess').style.display = 'none';
+            document.querySelector('#page-prayer .card').style.display = 'block';
+        }
+
+        // ====== دوال Firebase ======
+        async function ensureUserDocument(userId, displayName) {
+            const userRef = ref(db, `users/${userId}`);
+            const snap = await get(userRef);
+            if (!snap.exists()) {
+                await set(userRef, {
+                    name: displayName || 'مستخدم',
+                    email: currentUser.email,
+                    createdAt: Date.now()
+                });
+            }
+        }
+
+        function checkAdmin(user) {
+            if (user && user.email === ADMIN_EMAIL) {
+                isAdmin = true;
+                document.getElementById('adminLink').style.display = 'inline-block';
+                document.getElementById('adminDashboard').style.display = 'block';
+                document.getElementById('adminLoginBtn').style.display = 'none';
+                document.getElementById('adminUserEmail').textContent = user.email;
+                loadAdminData();
+                loadStats();
+                loadQuestions();
+                loadAnnouncementsAdmin();
+                listenToNotifications();
+                startPrayersListener();
+            } else {
+                isAdmin = false;
+                document.getElementById('adminLink').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('adminLoginBtn').style.display = 'inline-block';
+            }
+        }
+
+        // ====== الإشعارات العامة ======
+        function addNotification(type, message) {
+            const notifRef = push(ref(db, 'notifications'));
+            set(notifRef, {
+                type,
+                message,
+                createdAt: Date.now(),
+                read: false
+            });
+        }
+
+        function listenToNotifications() {
+            const notifRef = ref(db, 'notifications');
+            onValue(notifRef, (snapshot) => {
+                const data = snapshot.val();
+                notifications = [];
+                if (data) {
+                    notifications = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    notifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                }
+                updateNotificationUI();
+                // تحديث الباج الخاص بالأدمن
+                const badge = document.getElementById('notifBadge');
+                const unread = notifications.filter(n => !n.read).length;
+                if (unread > 0 && isAdmin) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = unread;
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        function markNotifRead(id) {
+            const notifRef = ref(db, `notifications/${id}`);
+            update(notifRef, { read: true });
+        }
+
+        function markAllNotificationsRead() {
+            notifications.forEach(n => {
+                if (!n.read) {
+                    const notifRef = ref(db, `notifications/${n.id}`);
+                    update(notifRef, { read: true });
+                }
+            });
+        }
+
+        function deleteAllNotifications() {
+            if (confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) {
+                notifications.forEach(n => {
+                    const notifRef = ref(db, `notifications/${n.id}`);
+                    remove(notifRef);
+                });
+            }
+        }
+
+        // ====== إشعارات المستخدمين ======
+        function addUserNotification(userId, type, message) {
+            const notifRef = push(ref(db, `userNotifications/${userId}`));
+            set(notifRef, {
+                type,
+                message,
+                createdAt: Date.now(),
+                read: false
+            });
+        }
+
+        function listenToUserNotifications(userId) {
+            if (userNotifUnsubscribe) userNotifUnsubscribe();
+            const notifRef = ref(db, `userNotifications/${userId}`);
+            userNotifUnsubscribe = onValue(notifRef, (snapshot) => {
+                const data = snapshot.val();
+                userNotifications = [];
+                if (data) {
+                    userNotifications = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    userNotifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                }
+                updateUserNotifUI();
+            });
+        }
+
+        function markUserNotifRead(id) {
+            const notifRef = ref(db, `userNotifications/${currentUserId}/${id}`);
+            update(notifRef, { read: true });
+        }
+
+        function markAllUserNotifsRead() {
+            userNotifications.forEach(n => {
+                if (!n.read) {
+                    const notifRef = ref(db, `userNotifications/${currentUserId}/${n.id}`);
+                    update(notifRef, { read: true });
+                }
+            });
+        }
+
+        function clearAllUserNotifs() {
+            if (confirm('هل أنت متأكد من حذف جميع إشعاراتك؟')) {
+                userNotifications.forEach(n => {
+                    const notifRef = ref(db, `userNotifications/${currentUserId}/${n.id}`);
+                    remove(notifRef);
+                });
+            }
+        }
+
+        // ====== آية اليوم ======
+        function loadDailyVerse() {
+            const verseRef = ref(db, 'dailyVerse');
+            get(verseRef).then(snap => {
+                const data = snap.val();
+                if (data) {
+                    document.getElementById('dailyVerseDisplay').textContent = data.text || 'لا توجد آية';
+                    document.getElementById('dailyVerseRef').textContent = data.reference || '';
+                } else {
+                    document.getElementById('dailyVerseDisplay').textContent = 'لا توجد آية اليوم';
+                }
+            }).catch(() => {
+                document.getElementById('dailyVerseDisplay').textContent = 'فشل في تحميل الآية';
+            });
+        }
+
+        function updateDailyVerse() {
+            const text = document.getElementById('verseText').value.trim();
+            const refText = document.getElementById('verseRef').value.trim();
+            if (!text) { showToast('الرجاء إدخال نص الآية', true); return; }
+            const verseRef = ref(db, 'dailyVerse');
+            set(verseRef, { text, reference: refText, updatedAt: Date.now() }).then(() => {
+                showToast('تم تحديث آية اليوم بنجاح');
+                loadDailyVerse();
+                // إشعار للمستخدمين
+                addNotification('verse', `تم تحديث آية اليوم: "${text}"`);
+                // إشعار لكل المستخدمين (اختياري)
+                // يمكن إضافته في حلقة للمستخدمين لكننا سنكتفي بالإشعار العام
+            }).catch(() => showToast('فشل في تحديث الآية', true));
+        }
+
+        // ====== الأسئلة المجاب عنها (عامة) ======
+        function renderAnsweredQuestions() {
+            const search = document.getElementById('answeredSearch').value.toLowerCase();
+            const container = document.getElementById('answeredList');
+            const qRef = ref(db, 'questions');
+            get(qRef).then(snap => {
+                const data = snap.val();
+                let items = [];
+                if (data) {
+                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    items = items.filter(q => q.answer && q.answer.trim() !== '' && q.published !== false);
+                    if (search) items = items.filter(q => q.text && q.text.toLowerCase().includes(search));
+                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                }
+                if (items.length === 0) {
+                    container.innerHTML = '<p class="no-questions">لا توجد أسئلة مجاب عنها</p>';
+                    return;
+                }
+                container.innerHTML = items.map(q => `
+                    <div class="question-card">
+                        <div class="q-title">${q.text || 'سؤال'}</div>
+                        <div class="q-answer">${q.answer}</div>
+                        <div class="q-meta">${q.type ? translateType(q.type) : ''} - ${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                    </div>
+                `).join('');
+            }).catch(() => {
+                container.innerHTML = '<p class="no-questions">حدث خطأ في تحميل البيانات</p>';
+            });
+        }
+
+        function translateType(type) {
+            const map = {
+                'biblical': 'كتابي',
+                'doctrinal': 'عقائدي',
+                'personal': 'شخصي',
+                'consultation': 'استشارة',
+                'suggestion': 'اقتراح',
+                'prayer': 'صلاة'
+            };
+            return map[type] || type;
+        }
+
+        // ====== الإعلانات ======
+        function loadAnnouncements() {
+            const container = document.getElementById('announcementsList');
+            const refAnn = ref(db, 'announcements');
+            get(refAnn).then(snap => {
+                const data = snap.val();
+                let items = [];
+                if (data) {
+                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                }
+                if (items.length === 0) {
+                    container.innerHTML = '<p class="no-questions">لا توجد إعلانات حالياً</p>';
+                    return;
+                }
+                container.innerHTML = items.map(a => `
+                    <div class="announcement-item">
+                        <div class="announce-content">
+                            <h4>${a.title || 'إعلان'}</h4>
+                            <p>${a.content || ''}</p>
+                            <div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                        </div>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function loadAnnouncementsAdmin() {
+            const container = document.getElementById('adminAnnouncementsList');
+            const refAnn = ref(db, 'announcements');
+            get(refAnn).then(snap => {
+                const data = snap.val();
+                let items = [];
+                if (data) {
+                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                }
+                if (items.length === 0) {
+                    container.innerHTML = '<p class="no-questions">لا توجد إعلانات</p>';
+                    return;
+                }
+                container.innerHTML = items.map(a => `
+                    <div class="announcement-item">
+                        <div class="announce-content">
+                            <h4>${a.title || 'إعلان'}</h4>
+                            <p>${a.content || ''}</p>
+                            <div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                        </div>
+                        <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${a.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+            });
+        }
+
+        function addAnnouncement() {
+            const title = document.getElementById('announceTitle').value.trim();
+            const content = document.getElementById('announceContent').value.trim();
+            if (!title || !content) { showToast('الرجاء ملء جميع الحقول', true); return; }
+            const refAnn = push(ref(db, 'announcements'));
+            set(refAnn, { title, content, createdAt: Date.now() }).then(() => {
+                showToast('تم إضافة الإعلان بنجاح');
+                document.getElementById('announceTitle').value = '';
+                document.getElementById('announceContent').value = '';
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+                addNotification('announcement', `إعلان جديد: ${title}`);
+            }).catch(() => showToast('فشل في إضافة الإعلان', true));
+        }
+
+        function deleteAnnouncement(id) {
+            if (confirm('هل أنت متأكد من حذف هذا الإعلان؟')) {
+                remove(ref(db, `announcements/${id}`)).then(() => {
+                    showToast('تم حذف الإعلان');
+                    loadAnnouncementsAdmin();
+                    loadAnnouncements();
+                }).catch(() => showToast('فشل الحذف', true));
+            }
+        }
+
+        // ====== وسائل التواصل ======
+        function loadSocialLinks() {
+            const refSocial = ref(db, 'socialLinks');
+            get(refSocial).then(snap => {
+                const data = snap.val();
+                if (data) {
+                    document.getElementById('socialFacebook').href = data.facebook || '#';
+                    document.getElementById('socialInstagram').href = data.instagram || '#';
+                    document.getElementById('whatsappLink').href = data.whatsapp ? `https://wa.me/${data.whatsapp}` : '#';
+                    document.getElementById('whatsappLabel').textContent = data.whatsapp ? 'تواصل عبر واتساب' : 'رقم واتساب غير متاح';
+                    document.getElementById('socialFacebookInput').value = data.facebook || '';
+                    document.getElementById('socialInstagramInput').value = data.instagram || '';
+                    document.getElementById('whatsappInput').value = data.whatsapp || '';
+                }
+            });
+        }
+
+        function saveSocialLinks() {
+            const facebook = document.getElementById('socialFacebookInput').value.trim();
+            const instagram = document.getElementById('socialInstagramInput').value.trim();
+            const whatsapp = document.getElementById('whatsappInput').value.trim();
+            const refSocial = ref(db, 'socialLinks');
+            set(refSocial, { facebook, instagram, whatsapp }).then(() => {
+                showToast('تم حفظ الروابط بنجاح');
+                loadSocialLinks();
+            }).catch(() => showToast('فشل في حفظ الروابط', true));
+        }
+
+        // ====== نبذة "من نحن" ======
+        function loadAbout() {
+            const aboutRef = ref(db, 'about');
+            get(aboutRef).then(snap => {
+                const data = snap.val();
+                if (data) {
+                    document.getElementById('aboutContent').innerHTML = data.text || 'لا توجد نبذة';
+                    document.getElementById('aboutEditor').value = data.text || '';
+                } else {
+                    document.getElementById('aboutContent').textContent = 'لم يتم إضافة نبذة بعد';
+                }
+            });
+        }
+
+        function saveAbout() {
+            const text = document.getElementById('aboutEditor').value.trim();
+            if (!text) { showToast('الرجاء إدخال نص النبذة', true); return; }
+            const aboutRef = ref(db, 'about');
+            set(aboutRef, { text }).then(() => {
+                showToast('تم حفظ النبذة بنجاح');
+                loadAbout();
+            }).catch(() => showToast('فشل في حفظ النبذة', true));
+        }
+
+        // ====== لوحة التحكم - الأسئلة ======
+        function loadQuestions() {
+            const search = document.getElementById('adminSearch').value.toLowerCase();
+            const type = document.getElementById('adminFilterType').value;
+            const answeredFilter = document.getElementById('adminFilterAnswered').value;
+            const qRef = ref(db, 'questions');
+            get(qRef).then(snap => {
+                const data = snap.val();
+                let items = [];
+                if (data) {
+                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                }
+                allQuestionsItems = items;
+                renderQuestionsPage(search, type, answeredFilter);
+            }).catch(() => showToast('فشل في تحميل الأسئلة', true));
+        }
+
+        function renderQuestionsPage(search, type, answeredFilter) {
+            let filtered = allQuestionsItems;
+            if (search) filtered = filtered.filter(q => q.text && q.text.toLowerCase().includes(search));
+            if (type !== 'all') filtered = filtered.filter(q => q.type === type);
+            if (answeredFilter === 'answered') filtered = filtered.filter(q => q.answer && q.answer.trim() !== '');
+            else if (answeredFilter === 'unanswered') filtered = filtered.filter(q => !q.answer || q.answer.trim() === '');
+
+            filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+            const total = filtered.length;
+            const totalPages = Math.ceil(total / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, total);
+            const pageItems = filtered.slice(start, end);
+
+            document.getElementById('questionsCount').textContent = `(${total})`;
+            document.getElementById('pageInfo').textContent = `صفحة ${currentPage} من ${totalPages}`;
+            document.getElementById('prevPageBtn').disabled = (currentPage === 1);
+            document.getElementById('nextPageBtn').disabled = (currentPage === totalPages);
+
+            const tbody = document.getElementById('adminQuestionsTable');
+            if (pageItems.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>';
+                return;
+            }
+            tbody.innerHTML = pageItems.map(q => {
+                const hasAnswer = q.answer && q.answer.trim() !== '';
+                const shortText = q.text && q.text.length > 50 ? q.text.substring(0, 50) + '...' : q.text || '';
+                const fullText = q.text || '';
+                return `
+                    <tr>
+                        <td>
+                            <div class="question-text">
+                                <span class="short-text">${shortText}</span>
+                                <span class="full-text">${fullText}</span>
+                                ${q.text && q.text.length > 50 ? `<button class="toggle-btn" onclick="this.previousElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'عرض المزيد' ? 'عرض أقل' : 'عرض المزيد';">عرض المزيد</button>` : ''}
+                            </div>
+                        </td>
+                        <td>${q.anonymous ? 'مجهول' : (q.userName || 'مستخدم')}</td>
+                        <td>${translateType(q.type)}</td>
+                        <td>${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</td>
+                        <td>${hasAnswer ? '✅ مجاب' : '⏳ غير مجاب'}</td>
+                        <td class="actions">
+                            ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')"><i class="fas fa-reply"></i> إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
+                            ${hasAnswer ? `<button class="btn-publish" onclick="window.togglePublish('${q.id}')">${q.published !== false ? 'إخفاء' : 'نشر'}</button>` : ''}
+                            <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function changePage(delta) {
+            currentPage += delta;
+            loadQuestions();
+        }
+
+        // ====== الإجابة على الأسئلة ======
+        function openAnswerModal(id) {
+            editingQuestionId = id;
+            document.getElementById('modalTitle').textContent = 'كتابة الإجابة';
+            document.getElementById('modalAnswer').value = '';
+            document.getElementById('answerModal').classList.add('show');
+        }
+
+        function openEditAnswerModal(id) {
+            editingQuestionId = id;
+            const qRef = ref(db, `questions/${id}`);
+            get(qRef).then(snap => {
+                const data = snap.val();
+                if (data && data.answer) {
+                    document.getElementById('modalTitle').textContent = 'تعديل الإجابة';
+                    document.getElementById('modalAnswer').value = data.answer;
+                    document.getElementById('answerModal').classList.add('show');
+                } else {
+                    showToast('لم يتم العثور على الإجابة', true);
+                }
+            });
+        }
+
+        function saveAnswer() {
+            const answer = document.getElementById('modalAnswer').value.trim();
+            if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
+            if (!editingQuestionId) { showToast('خطأ في تحديد السؤال', true); return; }
+            const qRef = ref(db, `questions/${editingQuestionId}`);
+            update(qRef, { answer, answeredAt: Date.now(), published: true }).then(() => {
+                showToast('تم حفظ الإجابة بنجاح');
+                document.getElementById('answerModal').classList.remove('show');
+                loadQuestions();
+                renderAnsweredQuestions();
+                // إشعار للمستخدم صاحب السؤال
+                get(qRef).then(snap => {
+                    const q = snap.val();
+                    if (q && q.userId) {
+                        addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0, 30)}..."`);
+                    }
+                });
+                addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0, 30)}..."`);
+            }).catch(() => showToast('فشل في حفظ الإجابة', true));
+        }
+
+        function togglePublish(id) {
+            const qRef = ref(db, `questions/${id}`);
+            get(qRef).then(snap => {
+                const q = snap.val();
+                if (q) {
+                    const newVal = q.published === false ? true : false;
+                    update(qRef, { published: newVal }).then(() => {
+                        showToast(newVal ? 'تم نشر الإجابة' : 'تم إخفاء الإجابة');
+                        loadQuestions();
+                        renderAnsweredQuestions();
+                    });
+                }
+            });
+        }
+
+        function deleteQuestion(id) {
+            if (confirm('هل أنت متأكد من حذف هذا السؤال؟')) {
+                remove(ref(db, `questions/${id}`)).then(() => {
+                    showToast('تم حذف السؤال');
+                    loadQuestions();
+                    renderAnsweredQuestions();
+                }).catch(() => showToast('فشل في الحذف', true));
+            }
+        }
+
+        function clearAllQuestions() {
+            if (confirm('هل أنت متأكد من حذف جميع الأسئلة؟')) {
+                allQuestionsItems.forEach(q => {
+                    remove(ref(db, `questions/${q.id}`));
+                });
+                showToast('تم حذف جميع الأسئلة');
+                loadQuestions();
+                renderAnsweredQuestions();
+            }
+        }
+
+        function printQuestions() {
+            window.print();
+        }
+
+        // ====== طلبات الصلاة ======
+        function startPrayersListener() {
+            if (prayersUnsubscribe) prayersUnsubscribe();
+            const prayersRef = ref(db, 'prayerRequests');
+            prayersUnsubscribe = onValue(prayersRef, (snapshot) => {
+                renderPrayersList(snapshot.val());
+            });
+        }
+
+        function renderPrayersList(data) {
+            const container = document.getElementById('adminPrayersList');
+            let items = [];
+            if (data) {
+                items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            }
+            document.getElementById('prayersCount').textContent = `(${items.length})`;
+            if (items.length === 0) {
+                container.innerHTML = '<p class="no-questions">لا توجد طلبات صلاة</p>';
+                return;
+            }
+            container.innerHTML = items.map(p => `
+                <div class="my-item-card">
+                    <div class="item-details">${p.text || 'طلب صلاة'}</div>
+                    <div class="item-meta">${p.anonymous ? 'مجهول' : (p.userName || 'مستخدم')} - ${p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                    ${p.reply ? `<div class="item-answer">${p.reply}</div>` : ''}
+                    <div class="actions" style="margin-top:8px;">
+                        ${p.reply ? `<button class="btn-edit" onclick="window.openEditPrayerReply('${p.id}')"><i class="fas fa-edit"></i> تعديل الرد</button>` : `<button class="btn-prayer-reply" onclick="window.openPrayerReply('${p.id}')"><i class="fas fa-reply"></i> رد</button>`}
+                        <button class="btn-delete" onclick="window.deletePrayer('${p.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function refreshPrayers() {
+            startPrayersListener();
+            showToast('تم تحديث طلبات الصلاة');
+        }
+
+        function openPrayerReply(id) {
+            editingPrayerId = id;
+            document.getElementById('prayerModalTitle').textContent = 'الرد على طلب الصلاة';
+            document.getElementById('prayerReplyAnswer').value = '';
+            document.getElementById('prayerReplyModal').classList.add('show');
+        }
+
+        function openEditPrayerReply(id) {
+            editingPrayerId = id;
+            const pRef = ref(db, `prayerRequests/${id}`);
+            get(pRef).then(snap => {
+                const data = snap.val();
+                if (data && data.reply) {
+                    document.getElementById('prayerModalTitle').textContent = 'تعديل الرد';
+                    document.getElementById('prayerReplyAnswer').value = data.reply;
+                    document.getElementById('prayerReplyModal').classList.add('show');
+                } else {
+                    showToast('لم يتم العثور على الرد', true);
+                }
+            });
+        }
+
+        function savePrayerReply() {
+            const reply = document.getElementById('prayerReplyAnswer').value.trim();
+            if (!reply) { showToast('الرجاء كتابة الرد', true); return; }
+            if (!editingPrayerId) { showToast('خطأ', true); return; }
+            const pRef = ref(db, `prayerRequests/${editingPrayerId}`);
+            update(pRef, { reply, repliedAt: Date.now() }).then(() => {
+                showToast('تم حفظ الرد بنجاح');
+                document.getElementById('prayerReplyModal').classList.remove('show');
+                startPrayersListener();
+                // إشعار للمستخدم
+                get(pRef).then(snap => {
+                    const p = snap.val();
+                    if (p && p.userId) {
+                        addUserNotification(p.userId, 'prayer', `تم الرد على طلب صلاتك: "${p.text?.substring(0, 30)}..."`);
+                    }
+                });
+                addNotification('prayer', `تم الرد على طلب صلاة: "${reply.substring(0, 30)}..."`);
+            }).catch(() => showToast('فشل في حفظ الرد', true));
+        }
+
+        function deletePrayer(id) {
+            if (confirm('هل أنت متأكد من حذف طلب الصلاة؟')) {
+                remove(ref(db, `prayerRequests/${id}`)).then(() => {
+                    showToast('تم الحذف');
+                    startPrayersListener();
+                }).catch(() => showToast('فشل الحذف', true));
+            }
+        }
+
+        function clearAllPrayers() {
+            if (confirm('هل أنت متأكد من حذف جميع طلبات الصلاة؟')) {
+                const refP = ref(db, 'prayerRequests');
+                get(refP).then(snap => {
+                    const data = snap.val();
+                    if (data) {
+                        Object.keys(data).forEach(key => remove(ref(db, `prayerRequests/${key}`)));
+                    }
+                    showToast('تم حذف الكل');
+                    startPrayersListener();
+                });
+            }
+        }
+
+        function printPrayers() {
+            window.print();
+        }
+
+        // ====== إحصائيات ======
+        function loadStats() {
+            const qRef = ref(db, 'questions');
+            get(qRef).then(snap => {
+                const data = snap.val();
+                let total = 0,
+                    month = 0;
+                const typeCount = {};
+                if (data) {
+                    const items = Object.values(data);
+                    total = items.length;
+                    const now = new Date();
+                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+                    items.forEach(q => {
+                        if (q.createdAt && q.createdAt >= monthStart) month++;
+                        if (q.type) typeCount[q.type] = (typeCount[q.type] || 0) + 1;
+                    });
+                }
+                document.getElementById('statTotal').textContent = total;
+                document.getElementById('statMonth').textContent = month;
+                let topType = '-';
+                let max = 0;
+                for (const [type, count] of Object.entries(typeCount)) {
+                    if (count > max) { max = count;
+                        topType = translateType(type); }
+                }
+                document.getElementById('statTopType').textContent = topType;
+            });
+
+            // عدد طلبات الصلاة
+            const pRef = ref(db, 'prayerRequests');
+            get(pRef).then(snap => {
+                const data = snap.val();
+                const count = data ? Object.keys(data).length : 0;
+                document.getElementById('statPrayers').textContent = count;
+            });
+        }
+
+        function loadAdminData() {
+            loadDailyVerse();
+            loadSocialLinks();
+            loadAbout();
+            loadAnnouncements();
+        }
+
+        // ====== أسئلتي وطلباتي (للمستخدم العادي) ======
+        function startMyItemsListeners() {
+            if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
+            if (myPrayersUnsubscribe) myPrayersUnsubscribe();
+
+            const container = document.getElementById('myItemsList');
+            const status = document.getElementById('myItemsStatus');
+
+            // استماع للأسئلة
+            const qRef = query(ref(db, 'questions'), orderByChild('userId'), equalTo(currentUserId));
+            myQuestionsUnsubscribe = onValue(qRef, (snapshot) => {
+                const data = snapshot.val();
+                let questions = [];
+                if (data) {
+                    questions = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+                    questions.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                }
+                // استماع لطلبات الصلاة
+                const pRef = query(ref(db, 'prayerRequests'), orderByChild('userId'), equalTo(currentUserId));
+                get(pRef).then(snap => {
+                    const pData = snap.val();
+                    let prayers = [];
+                    if (pData) {
+                        prayers = Object.keys(pData).map(key => ({ id: key, ...pData[key] }));
+                        prayers.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    }
+                    // دمج وترتيب
+                    const all = [...questions, ...prayers];
+                    all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                    if (all.length === 0) {
+                        container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات صلاة</p>';
+                        status.textContent = '';
+                        return;
+                    }
+                    container.innerHTML = all.map(item => {
+                        const isQuestion = !!item.text && !item.reply; // افتراض أن طلبات الصلاة تحتوي على reply
+                        const isPrayer = !!item.text && item.reply !== undefined;
+                        return `
+                            <div class="my-item-card">
+                                <div class="item-details">${item.text || 'محتوى'}</div>
+                                ${item.answer ? `<div class="item-answer">${item.answer}</div>` : ''}
+                                ${item.reply ? `<div class="item-answer">${item.reply}</div>` : ''}
+                                <div class="item-meta">${isQuestion ? 'سؤال' : 'طلب صلاة'} - ${item.type ? translateType(item.type) : ''} - ${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                                ${item.answer ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تمت الإجابة</div>` : ''}
+                                ${item.reply ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تم الرد</div>` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                    status.textContent = `(${all.length})`;
+                });
+            });
+        }
+
+        function refreshMyItems() {
+            if (currentUserId) {
+                startMyItemsListeners();
+                showToast('تم تحديث الأسئلة');
+            }
+        }
+
+        // ====== أحداث النماذج ======
+        // نموذج تسجيل المستخدمين
+        document.getElementById('userAuthForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+            const name = document.getElementById('authName').value.trim();
+            const isLogin = document.getElementById('authSubmitBtn').textContent.includes('تسجيل الدخول');
+
+            const errorDiv = document.getElementById('authError');
+            errorDiv.textContent = '';
+
+            try {
+                if (isLogin) {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    showToast('تم تسجيل الدخول بنجاح');
+                    navigateTo('home');
+                } else {
+                    const cred = await createUserWithEmailAndPassword(auth, email, password);
+                    if (name) {
+                        await updateProfile(cred.user, { displayName: name });
+                    }
+                    await ensureUserDocument(cred.user.uid, name || cred.user.displayName);
+                    showToast('تم إنشاء الحساب بنجاح');
+                    navigateTo('home');
+                }
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                showToast(err.message, true);
+            }
+        });
+
+        document.getElementById('authToggleLink').addEventListener('click', function() {
+            const isLogin = document.getElementById('authSubmitBtn').textContent.includes('تسجيل الدخول');
+            if (isLogin) {
+                document.getElementById('authTitle').innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
+                document.getElementById('authSubtitle').textContent = 'أنشئ حساباً لمتابعة أسئلتك';
+                document.getElementById('authSubmitBtn').innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+                document.getElementById('authNameGroup').style.display = 'block';
+                this.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
+            } else {
+                document.getElementById('authTitle').innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
+                document.getElementById('authSubtitle').textContent = 'سجل الدخول لمتابعة أسئلتك';
+                document.getElementById('authSubmitBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
+                document.getElementById('authNameGroup').style.display = 'none';
+                this.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
+            }
+        });
+
+        // نموذج تسجيل الأدمن
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminLoginEmail').value.trim();
+            const password = document.getElementById('adminLoginPassword').value;
+            const errorDiv = document.getElementById('adminLoginError');
+            errorDiv.textContent = '';
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, password);
+                if (cred.user.email !== ADMIN_EMAIL) {
+                    await signOut(auth);
+                    errorDiv.textContent = 'هذا الحساب ليس حساب أدمن';
+                    showToast('غير مسموح', true);
+                    return;
+                }
+                showToast('تم تسجيل دخول الأدمن');
+                navigateTo('admin');
+            } catch (err) {
+                errorDiv.textContent = err.message;
+                showToast(err.message, true);
+            }
+        });
+
+        // نموذج الأسئلة
+        document.getElementById('questionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول لطرح سؤال', true);
+                return;
+            }
+            const text = document.getElementById('qDetails').value.trim();
+            const type = document.getElementById('qType').value;
+            const anonymous = document.getElementById('qAnonymous').checked;
+            if (!text) { showToast('الرجاء كتابة السؤال', true); return; }
+
+            const qRef = push(ref(db, 'questions'));
+            await set(qRef, {
+                text,
+                type,
+                anonymous,
+                userId: currentUser.uid,
+                userName: currentUser.displayName || 'مستخدم',
+                createdAt: Date.now(),
+                answer: '',
+                published: false
+            });
+            // إشعار للمستخدم
+            addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0, 30)}..."`);
+            // إشعار عام للأدمن
+            addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName || 'مستخدم'}: "${text.substring(0, 30)}..."`);
+
+            document.getElementById('questionFormContainer').querySelector('.card').style.display = 'none';
+            document.getElementById('questionSuccess').style.display = 'block';
+            showToast('تم إرسال سؤالك بنجاح');
+        });
+
+        // نموذج الصلاة
+        document.getElementById('prayerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول لطلب صلاة', true);
+                return;
+            }
+            const text = document.getElementById('prayerText').value.trim();
+            const anonymous = document.getElementById('prayerAnonymous').checked;
+            if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
+
+            const pRef = push(ref(db, 'prayerRequests'));
+            await set(pRef, {
+                text,
+                anonymous,
+                userId: currentUser.uid,
+                userName: currentUser.displayName || 'مستخدم',
+                createdAt: Date.now(),
+                reply: ''
+            });
+            addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0, 30)}..."`);
+            addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName || 'مستخدم'}: "${text.substring(0, 30)}..."`);
+
+            document.querySelector('#page-prayer .card').style.display = 'none';
+            document.getElementById('prayerSuccess').style.display = 'block';
+            showToast('تم إرسال طلب الصلاة');
+        });
+
+        // ====== مستمع حالة المصادقة ======
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                currentUserId = user.uid;
+                document.getElementById('userAuthBtn').innerHTML = `<i class="fas fa-user"></i> ${user.displayName || 'مستخدم'}`;
+                document.getElementById('userAuthBtn').href = '#';
+                document.getElementById('userAuthBtn').onclick = function(e) {
+                    e.preventDefault();
+                    if (confirm('تسجيل الخروج؟')) {
+                        signOut(auth);
+                    }
+                };
+                document.getElementById('myQuestionsLink').style.display = 'inline-block';
+                await ensureUserDocument(user.uid, user.displayName);
+                checkAdmin(user);
+                listenToUserNotifications(user.uid);
+                startMyItemsListeners();
+                // إذا كان مستخدمًا عاديًا وليس أدمن، نعرض الإشعارات
+                if (user.email !== ADMIN_EMAIL) {
+                    updateUserNotifUI();
+                }
+            } else {
+                currentUser = null;
+                currentUserId = null;
+                isAdmin = false;
+                document.getElementById('userAuthBtn').innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
+                document.getElementById('userAuthBtn').href = '#';
+                document.getElementById('userAuthBtn').onclick = function(e) {
+                    e.preventDefault();
+                    navigateTo('user-auth');
+                };
+                document.getElementById('myQuestionsLink').style.display = 'none';
+                document.getElementById('adminLink').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'none';
+                document.getElementById('adminLoginBtn').style.display = 'inline-block';
+                document.getElementById('notifBell').style.display = 'none';
+                if (userNotifUnsubscribe) userNotifUnsubscribe();
+                if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
+                if (myPrayersUnsubscribe) myPrayersUnsubscribe();
+                if (prayersUnsubscribe) prayersUnsubscribe();
+                // إعادة تعيين الإشعارات
+                userNotifications = [];
+                updateUserNotifUI();
+                showToast('تم تسجيل الخروج');
+                navigateTo('home');
+            }
+        });
+
+        // ====== أحداث الأزرار ======
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            const current = document.documentElement.getAttribute('data-theme');
+            const newTheme = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            this.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // استعادة الثيم
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.getElementById('themeToggle').innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+
+        // أحداث التنقل
+        document.querySelectorAll('nav a[data-page]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                if (page === 'admin' && !isAdmin) {
+                    showToast('غير مسموح', true);
+                    return;
+                }
+                navigateTo(page);
+            });
+        });
+
+        // زر الإشعارات
+        document.getElementById('notifBell').addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+            document.getElementById('userNotifModal').classList.add('show');
+        });
+
+        document.getElementById('closeUserNotifModal').addEventListener('click', function() {
+            document.getElementById('userNotifModal').classList.remove('show');
+        });
+
+        // أزرار النوافذ المنبثقة
+        document.getElementById('modalCancelBtn').addEventListener('click', function() {
+            document.getElementById('answerModal').classList.remove('show');
+        });
+        document.getElementById('modalSaveBtn').addEventListener('click', saveAnswer);
+
+        document.getElementById('prayerReplyCancelBtn').addEventListener('click', function() {
+            document.getElementById('prayerReplyModal').classList.remove('show');
+        });
+        document.getElementById('prayerReplySaveBtn').addEventListener('click', savePrayerReply);
+
+        // زر تسجيل خروج الأدمن
+        document.getElementById('adminLogoutBtn').addEventListener('click', function() {
+            signOut(auth);
+        });
+
+        // سنة حقوق النشر
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // تحميل البيانات الأولية
+        loadAnnouncements();
+        loadDailyVerse();
+        loadSocialLinks();
+        loadAbout();
+
+        // ====== جعل الدوال عامة للاستخدام في HTML ======
+        window.navigateTo = navigateTo;
+        window.resetQuestionForm = resetQuestionForm;
+        window.resetPrayerForm = resetPrayerForm;
+        window.loadQuestions = loadQuestions;
+        window.changePage = changePage;
+        window.renderAnsweredQuestions = renderAnsweredQuestions;
+        window.refreshMyItems = refreshMyItems;
+        window.updateDailyVerse = updateDailyVerse;
+        window.loadSocialLinks = loadSocialLinks;
+        window.saveSocialLinks = saveSocialLinks;
+        window.saveAbout = saveAbout;
+        window.addAnnouncement = addAnnouncement;
+        window.deleteAnnouncement = deleteAnnouncement;
+        window.openAnswerModal = openAnswerModal;
+        window.openEditAnswerModal = openEditAnswerModal;
+        window.togglePublish = togglePublish;
+        window.deleteQuestion = deleteQuestion;
+        window.clearAllQuestions = clearAllQuestions;
+        window.printQuestions = printQuestions;
+        window.openPrayerReply = openPrayerReply;
+        window.openEditPrayerReply = openEditPrayerReply;
+        window.deletePrayer = deletePrayer;
+        window.clearAllPrayers = clearAllPrayers;
+        window.refreshPrayers = refreshPrayers;
+        window.printPrayers = printPrayers;
+        window.markNotifRead = markNotifRead;
+        window.markAllNotificationsRead = markAllNotificationsRead;
+        window.deleteAllNotifications = deleteAllNotifications;
+        window.markUserNotifRead = markUserNotifRead;
+        window.markAllUserNotifsRead = markAllUserNotifsRead;
+        window.clearAllUserNotifs = clearAllUserNotifs;
+        window.updateUserNotifUI = updateUserNotifUI; // جعلها عامة
+
         console.log('✅ التطبيق جاهز بالكامل');
-        console.log('🔒 تم إزالة كلمة المرور من الكود');
+        console.log('🔒 تم إزالة كلمة المرور من الكود نهائياً');
         console.log('🔐 التحقق من الأدمن يتم عبر البريد الإلكتروني و UID');
         console.log('📢 الإشعارات تعمل: عند الإجابة، النشر، الإعلانات، تحديث الآية');
         console.log('🔄 زر "اسأل سؤال آخر" يعيد تعيين النموذج');

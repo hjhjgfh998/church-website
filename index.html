@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* جميع الأنماط (نفس السابق) */
+        /* الأنماط (كما هي سابقاً) */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1341,7 +1341,11 @@
                 </div>
                 <div class="admin-section">
                     <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" />
+                        <input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" />
+                        <button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1402,7 +1406,7 @@
 
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
 
-        // قائمة الآيات للتحديث التلقائي
+        // قائمة الآيات الافتراضية للتحديث التلقائي
         const VERSES = [
             { text: 'لأَنَّهُ هَكَذَا أَحَبَّ اللهُ الْعَالَمَ حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
             { text: 'لاَ تَهْتَمُّوا بِشَيْءٍ، بَلْ فِي كُلِّ شَيْءٍ بِالصَّلاَةِ وَالدُّعَاءِ مَعَ الشُّكْرِ، لِتُعْلَمْ طِلْبَاتُكُمْ لَدَى اللهِ.', reference: 'فيلبي 4:6' },
@@ -1450,7 +1454,7 @@
             toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
         }
 
-        // ====== تحديث واجهة الإشعارات ======
+        // ====== دوال تحديث واجهة الإشعارات ======
         function updateUserNotifUI() {
             const badge = document.getElementById('userNotifBadge');
             const bell = document.getElementById('notifBell');
@@ -1582,7 +1586,9 @@
                             document.getElementById('dailyVerseDisplay').textContent = newVerse.text;
                             document.getElementById('dailyVerseRef').textContent = newVerse.reference;
                             document.getElementById('verseUpdateInfo').textContent = '✅ تم تحديث آية اليوم';
-                            addNotification('verse', `آية اليوم الجديدة: "${newVerse.text.substring(0,30)}..."`);
+                            addNotification('verse', `آية اليوم الجديدة: "${newVerse.text.substring(0, 30)}..."`);
+                            // إشعار للمستخدمين بتحديث الآية
+                            sendNotificationToAllUsers('verse', `تم تحديث آية اليوم: "${newVerse.text}"`);
                         })
                         .catch(err => {
                             console.warn('⚠️ فشل تحديث الآية:', err);
@@ -1610,7 +1616,26 @@
                 showToast('تم تحديث آية اليوم بنجاح');
                 loadDailyVerse();
                 addNotification('verse', `تم تحديث آية اليوم: "${text}"`);
+                sendNotificationToAllUsers('verse', `تم تحديث آية اليوم: "${text}"`);
             }).catch(() => showToast('فشل في تحديث الآية', true));
+        }
+
+        // ====== دوال إرسال الإشعارات لكل المستخدمين ======
+        function sendNotificationToAllUsers(type, message) {
+            // جلب جميع المستخدمين من قاعدة البيانات
+            const usersRef = ref(db, 'users');
+            get(usersRef).then(snap => {
+                const users = snap.val();
+                if (users) {
+                    Object.keys(users).forEach(userId => {
+                        // لا نرسل إشعار للأدمن لأنه يستخدم الإشعارات العامة
+                        if (userId !== currentUserId) {
+                            addUserNotification(userId, type, message);
+                        }
+                    });
+                    console.log(`✅ تم إرسال إشعار "${type}" لجميع المستخدمين`);
+                }
+            }).catch(err => console.warn('⚠️ فشل جلب المستخدمين لإرسال الإشعارات:', err));
         }
 
         // ====== دوال Firebase ======
@@ -1665,7 +1690,7 @@
             try {
                 const notifRef = push(ref(db, 'notifications'));
                 set(notifRef, { type, message, createdAt: Date.now(), read: false });
-            } catch (e) { console.warn('⚠️ فشل إضافة إشعار:', e); }
+            } catch (e) { console.warn('⚠️ فشل إضافة إشعار عام:', e); }
         }
 
         function listenToNotifications() {
@@ -1812,6 +1837,8 @@
                 loadAnnouncementsAdmin();
                 loadAnnouncements();
                 addNotification('announcement', `إعلان جديد: ${title}`);
+                // إرسال إشعار لكل المستخدمين
+                sendNotificationToAllUsers('announcement', `إعلان جديد: ${title}`);
             }).catch(() => showToast('فشل في إضافة الإعلان', true));
         }
 
@@ -1914,6 +1941,7 @@
             if (!pageItems.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>'; return; }
             tbody.innerHTML = pageItems.map(q => {
                 const hasAnswer = q.answer && q.answer.trim();
+                const isPublished = q.published === true;
                 const shortText = q.text && q.text.length > 50 ? q.text.substring(0, 50) + '...' : q.text || '';
                 return `
                     <tr>
@@ -1927,10 +1955,10 @@
                         <td>${q.anonymous ? 'مجهول' : (q.userName || 'مستخدم')}</td>
                         <td>${translateType(q.type)}</td>
                         <td>${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</td>
-                        <td>${hasAnswer ? '✅ مجاب' : '⏳ غير مجاب'}</td>
+                        <td>${hasAnswer ? (isPublished ? '✅ منشور' : '⏳ غير منشور') : '⏳ غير مجاب'}</td>
                         <td class="actions">
                             ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')">إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')">تعديل</button>`}
-                            ${hasAnswer ? `<button class="btn-publish" onclick="window.togglePublish('${q.id}')">${q.published !== false ? 'إخفاء' : 'نشر'}</button>` : ''}
+                            ${hasAnswer ? `<button class="btn-publish" onclick="window.publishQuestion('${q.id}')">${isPublished ? 'إخفاء' : 'نشر'}</button>` : ''}
                             <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')">حذف</button>
                         </td>
                     </tr>
@@ -1968,30 +1996,43 @@
             if (!answer) { showToast('اكتب الإجابة', true); return; }
             if (!editingQuestionId) { showToast('خطأ', true); return; }
             const qRef = ref(db, `questions/${editingQuestionId}`);
-            update(qRef, { answer, answeredAt: Date.now(), published: true }).then(() => {
+            update(qRef, { answer, answeredAt: Date.now() }).then(() => {
                 showToast('تم الحفظ');
                 document.getElementById('answerModal').classList.remove('show');
                 loadQuestions();
                 renderAnsweredQuestions();
                 get(qRef).then(snap => {
                     const q = snap.val();
-                    if (q && q.userId) addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0,30)}..."`);
+                    if (q && q.userId) {
+                        addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0, 30)}..."`);
+                        // إذا كان السؤال منشوراً بالفعل، أرسل إشعار إضافي
+                        if (q.published) {
+                            addUserNotification(q.userId, 'answer', `تم نشر سؤالك في أجوبة عامة: "${q.text?.substring(0, 30)}..."`);
+                        }
+                    }
                 });
-                addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0,30)}..."`);
+                addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0, 30)}..."`);
+                showToast('تم حفظ الإجابة');
             }).catch(() => showToast('فشل الحفظ', true));
         }
 
-        function togglePublish(id) {
-            get(ref(db, `questions/${id}`)).then(snap => {
+        // دالة نشر السؤال (جديدة)
+        function publishQuestion(id) {
+            const qRef = ref(db, `questions/${id}`);
+            get(qRef).then(snap => {
                 const q = snap.val();
-                if (q) {
-                    const newVal = q.published === false ? true : false;
-                    update(ref(db, `questions/${id}`), { published: newVal }).then(() => {
-                        showToast(newVal ? 'تم النشر' : 'تم الإخفاء');
-                        loadQuestions();
-                        renderAnsweredQuestions();
-                    });
-                }
+                if (!q) { showToast('السؤال غير موجود', true); return; }
+                if (!q.answer || !q.answer.trim()) { showToast('لا يمكن نشر سؤال غير مجاب', true); return; }
+                const newPublished = q.published === true ? false : true;
+                update(qRef, { published: newPublished }).then(() => {
+                    showToast(newPublished ? 'تم نشر السؤال في أجوبة عامة' : 'تم إخفاء السؤال من أجوبة عامة');
+                    loadQuestions();
+                    renderAnsweredQuestions();
+                    // إشعار لصاحب السؤال إذا تم النشر
+                    if (newPublished && q.userId) {
+                        addUserNotification(q.userId, 'answer', `تم نشر سؤالك في أجوبة عامة: "${q.text?.substring(0, 30)}..."`);
+                    }
+                }).catch(() => showToast('فشل النشر', true));
             });
         }
 
@@ -2042,7 +2083,8 @@
             `).join('');
         }
 
-        function refreshPrayers() { startPrayersListener(); showToast('تم التحديث'); }
+        function refreshPrayers() { startPrayersListener();
+            showToast('تم التحديث'); }
 
         function openPrayerReply(id) {
             editingPrayerId = id;
@@ -2074,15 +2116,16 @@
                 startPrayersListener();
                 get(pRef).then(snap => {
                     const p = snap.val();
-                    if (p && p.userId) addUserNotification(p.userId, 'prayer', `تم الرد على طلب صلاتك: "${p.text?.substring(0,30)}..."`);
+                    if (p && p.userId) addUserNotification(p.userId, 'prayer', `تم الرد على طلب صلاتك: "${p.text?.substring(0, 30)}..."`);
                 });
-                addNotification('prayer', `تم الرد على طلب صلاة: "${reply.substring(0,30)}..."`);
+                addNotification('prayer', `تم الرد على طلب صلاة: "${reply.substring(0, 30)}..."`);
             }).catch(() => showToast('فشل الحفظ', true));
         }
 
         function deletePrayer(id) {
             if (confirm('حذف طلب الصلاة؟')) {
-                remove(ref(db, `prayerRequests/${id}`)).then(() => { showToast('تم الحذف'); startPrayersListener(); }).catch(() => showToast('فشل', true));
+                remove(ref(db, `prayerRequests/${id}`)).then(() => { showToast('تم الحذف');
+                    startPrayersListener(); }).catch(() => showToast('فشل', true));
             }
         }
 
@@ -2103,7 +2146,9 @@
         function loadStats() {
             get(ref(db, 'questions')).then(snap => {
                 const data = snap.val();
-                let total = 0, month = 0, typeCount = {};
+                let total = 0,
+                    month = 0,
+                    typeCount = {};
                 if (data) {
                     const items = Object.values(data);
                     total = items.length;
@@ -2116,9 +2161,11 @@
                 }
                 document.getElementById('statTotal').textContent = total;
                 document.getElementById('statMonth').textContent = month;
-                let topType = '-', max = 0;
-                for (const [t, c] of Object.entries(typeCount)) if (c > max) { max = c;
-                    topType = translateType(t); }
+                let topType = '-',
+                    max = 0;
+                for (const [t, c] of Object.entries(typeCount))
+                    if (c > max) { max = c;
+                        topType = translateType(t); }
                 document.getElementById('statTopType').textContent = topType;
             }).catch(() => {});
 
@@ -2143,7 +2190,6 @@
             const container = document.getElementById('myItemsList');
             const status = document.getElementById('myItemsStatus');
 
-            // جلب الأسئلة وفلترتها يدوياً
             const qRef = ref(db, 'questions');
             myQuestionsUnsubscribe = onValue(qRef, (snapshot) => {
                 const qData = snapshot.val();
@@ -2166,6 +2212,7 @@
                                 <div class="item-meta">${isQuestion ? 'سؤال' : 'طلب صلاة'} - ${translateType(item.type)} - ${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</div>
                                 ${item.answer ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تمت الإجابة</div>` : ''}
                                 ${item.reply ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تم الرد</div>` : ''}
+                                ${item.published ? `<div class="item-notification show" style="background:#cce5ff;border-right-color:#007bff;"><i class="fas fa-globe"></i> تم نشر السؤال في أجوبة عامة</div>` : ''}
                             </div>
                         `;
                     }).join('');
@@ -2255,8 +2302,8 @@
             try {
                 const qRef = push(ref(db, 'questions'));
                 await set(qRef, { text, type, anonymous, userId: currentUser.uid, userName: currentUser.displayName || 'مستخدم', createdAt: Date.now(), answer: '', published: false });
-                addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0,30)}..."`);
-                addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
+                addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0, 30)}..."`);
+                addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0, 30)}..."`);
                 document.getElementById('questionFormContainer').querySelector('.card').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم الإرسال');
@@ -2272,8 +2319,8 @@
             try {
                 const pRef = push(ref(db, 'prayerRequests'));
                 await set(pRef, { text, anonymous, userId: currentUser.uid, userName: currentUser.displayName || 'مستخدم', createdAt: Date.now(), reply: '' });
-                addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0,30)}..."`);
-                addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
+                addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0, 30)}..."`);
+                addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0, 30)}..."`);
                 document.querySelector('#page-prayer .card').style.display = 'none';
                 document.getElementById('prayerSuccess').style.display = 'block';
                 showToast('تم الإرسال');
@@ -2382,7 +2429,7 @@
         window.deleteAnnouncement = deleteAnnouncement;
         window.openAnswerModal = openAnswerModal;
         window.openEditAnswerModal = openEditAnswerModal;
-        window.togglePublish = togglePublish;
+        window.publishQuestion = publishQuestion; // الدالة الجديدة
         window.deleteQuestion = deleteQuestion;
         window.clearAllQuestions = clearAllQuestions;
         window.printQuestions = printQuestions;
@@ -2400,8 +2447,9 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('✅ التطبيق جاهز بالكامل مع جميع الإضافات');
         console.log('📖 سيتم تحديث آية اليوم تلقائياً كل 24 ساعة');
+        console.log('📢 سيتم إرسال إشعارات للمستخدمين عند نشر إعلانات أو نشر أسئلة في أجوبة عامة');
         console.log(`📧 البريد الإلكتروني للأدمن: ${ADMIN_EMAIL}`);
     </script>
 </body>

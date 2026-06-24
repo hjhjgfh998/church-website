@@ -21,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط كما هي، مع تعديل بسيط لأزرار الإشعارات ====== */
+        /* ====== جميع الأنماط (كما هي سابقاً مع تحسينات بسيطة) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -2029,7 +2029,7 @@
             }
         }
 
-        // ====== مستمع إشعارات المستخدم (محسّن) ======
+        // ====== مستمع إشعارات المستخدم (محسّن مع إعادة محاولة) ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
             // إلغاء الاشتراك السابق
             if (userNotifUnsubscribe) {
@@ -2275,21 +2275,21 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إضافة إشعار للمستخدم عند الإجابة (محسّن) ======
+        // ====== إضافة إشعار للمستخدم عند الإجابة (محسّن مع تأكيد) ======
         async function addUserNotification(userId, message, questionId) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
                 return;
             }
             try {
-                await addDoc(collection(db, 'userNotifications'), {
+                const docRef = await addDoc(collection(db, 'userNotifications'), {
                     userId: userId,
                     message: message,
                     questionId: questionId || '',
                     read: false,
                     createdAt: serverTimestamp()
                 });
-                console.log(`✅ تم إرسال إشعار للمستخدم ${userId}: ${message}`);
+                console.log(`✅ تم إرسال إشعار للمستخدم ${userId} بالمعرف ${docRef.id}: ${message}`);
             } catch (e) {
                 console.error('❌ فشل إرسال إشعار المستخدم:', e);
             }
@@ -2587,7 +2587,7 @@
             } catch (e) { console.error('Stats error:', e); }
         }
 
-        // ====== تحميل الأسئلة مع ترقيم الصفحات ======
+        // ====== تحميل الأسئلة مع ترقيم الصفحات وإخفاء الاسم المجهول للأدمن ======
         window.loadQuestions = async function() {
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
             const typeFilter = document.getElementById('adminFilterType').value;
@@ -2653,7 +2653,11 @@
                 const short = details.substring(0, 100);
                 const long = details;
                 const showMore = details.length > 100;
-                const userInfo = item.userName || 'مستخدم غير معروف';
+                // ====== إخفاء اسم المستخدم إذا كان السؤال مجهولاً ======
+                let displayName = item.userName || 'مستخدم غير معروف';
+                if (item.anonymous === true) {
+                    displayName = 'مجهول';
+                }
                 return `
                     <tr>
                         <td>
@@ -2663,7 +2667,7 @@
                                 ${showMore ? `<button class="toggle-btn" onclick="window.toggleQuestionText(this)">عرض المزيد</button>` : ''}
                             </div>
                         </td>
-                        <td>${userInfo}</td>
+                        <td>${displayName}</td>
                         <td>${translateType(item.type)}</td>
                         <td>${item.createdAt ? item.createdAt.toDate().toLocaleDateString('ar-EG') : ''}</td>
                         <td>${item.answered ? '✅ مجاب' : '⏳ قيد الانتظار'}</td>
@@ -3015,11 +3019,11 @@
         console.log('📌 تم إزالة orderBy من استعلام أسئلة المستخدم لتجنب أخطاء الفهارس');
         console.log('📧 بريد الأدمن: abshadat.church@gmail.com (غير معروض)');
         console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
-        console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم (مع مستمع فوري)');
+        console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم (مع مستمع فوري وإعادة محاولة)');
         console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
         console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة نهائياً');
         console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');
-        console.log('🕵️ إظهار اسم المستخدم يظهر فقط إذا لم يكن السؤال مجهولاً');
+        console.log('🕵️ إظهار اسم المستخدم للأدمن يظهر فقط إذا لم يكن السؤال مجهولاً');
     </script>
 
 </body>

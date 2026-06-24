@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* ====== جميع الأنماط ====== */
+        /* ====== جميع الأنماط (مختصرة) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -283,12 +283,11 @@
                             <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
                             <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول (لن يظهر اسمك)</label>
                         </div>
-                        <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
+                        <button type="submit" class="btn" style="width:100%;" id="submitQuestionBtn"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
                     </form>
                     <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                         <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                         <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
-                        <!-- ====== زر لطرح سؤال آخر ====== -->
                         <button class="btn btn-primary mt-4" id="askAnotherBtn" onclick="window.resetQuestionForm()">
                             <i class="fas fa-plus"></i> اسأل سؤال آخر
                         </button>
@@ -589,6 +588,7 @@
             document.getElementById('questionForm').style.display = 'block';
             document.getElementById('questionSuccess').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('qDetails').focus();
         };
 
         // ====== دالة إعادة تعيين نموذج طلب الصلاة ======
@@ -597,6 +597,7 @@
             document.getElementById('prayerForm').style.display = 'block';
             document.getElementById('prayerSuccess').style.display = 'none';
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('prayerText').focus();
         };
 
         // ====== الوضع الليلي ======
@@ -713,15 +714,12 @@
         // ====== إرسال إشعار لجميع المستخدمين ======
         async function notifyAllUsers(message, type) {
             try {
-                // محاولة جلب جميع المستخدمين
                 const usersSnap = await getDocs(collection(db, 'users'));
                 if (usersSnap.empty) {
                     console.log('⚠️ لا يوجد مستخدمين في مجموعة users');
-                    // محاولة إنشاء مستند للمستخدم الحالي إذا كان موجوداً
                     if (currentUser) {
                         await ensureUserDocument(currentUser);
                     }
-                    // المحاولة مرة أخرى
                     const retrySnap = await getDocs(collection(db, 'users'));
                     if (retrySnap.empty) {
                         console.log('⚠️ لا يزال لا يوجد مستخدمين');
@@ -797,8 +795,6 @@
                     if (document.getElementById('page-my-questions').classList.contains('active')) startMyItemsListeners();
                     if (document.getElementById('page-admin').classList.contains('active')) window.navigateTo('home');
                     if (document.getElementById('page-admin-login').classList.contains('active')) window.navigateTo('home');
-                    // التأكد من أن مستند المستخدم موجود
-                    await ensureUserDocument(user);
                 }
             } else {
                 currentUserId = null; isAdmin = false;
@@ -1213,6 +1209,10 @@
                 document.getElementById('questionForm').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم إرسال سؤالك بنجاح!');
+                // تحديث قائمة "أسئلتي" إذا كانت مفتوحة
+                if (document.getElementById('page-my-questions').classList.contains('active')) {
+                    startMyItemsListeners();
+                }
             } catch(err) { console.error(err); showToast('حدث خطأ أثناء الإرسال.', true); }
         });
 
@@ -1685,12 +1685,17 @@
                 const ref = doc(db, 'questions', id);
                 const snap = await getDoc(ref);
                 const current = snap.data()?.published || false;
+                const data = snap.data();
                 await updateDoc(ref, { published: !current });
                 showToast(current ? 'تم إلغاء النشر' : 'تم نشر السؤال');
                 if (!current) {
-                    const data = snap.data();
                     const displayName = data.anonymous ? 'مستخدم مجهول' : (data.userName || 'مستخدم');
-                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0,50)}..." (بواسطة ${displayName})`, 'answer');
+                    // إرسال إشعار للمستخدم صاحب السؤال
+                    if (data && data.userId) {
+                        await addUserNotification(data.userId, `📢 تم نشر سؤالك في "أجوبة عامة": "${data.details.substring(0,50)}..."`, 'answer');
+                    }
+                    // إشعار لجميع المستخدمين
+                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0,50)}..."`, 'answer');
                 }
                 loadQuestions();
                 renderAnsweredQuestions();
@@ -1799,16 +1804,16 @@
                     document.getElementById('questionFormContainer').style.display = 'none';
                     document.getElementById('authRequiredMessage').style.display = 'block';
                 }
-                // إعادة تعيين النموذج عند فتح الصفحة
                 document.getElementById('questionForm').style.display = 'block';
                 document.getElementById('questionSuccess').style.display = 'none';
             }
         }, 100);
 
         console.log('✅ التطبيق جاهز بالكامل');
-        console.log('✅ إصلاح الإشعارات عند إضافة إعلان أو نشر إجابة');
-        console.log('✅ إضافة زر "اسأل سؤال آخر" لإعادة تعيين النموذج');
-        console.log('✅ إصلاح عرض جميع طلبات الصلاة في لوحة التحكم');
+        console.log('✅ إصلاح: إمكانية طرح أسئلة متعددة بدون تحديث');
+        console.log('✅ إصلاح: إرسال إشعار للمستخدم عند نشر سؤاله في أجوبة عامة');
+        console.log('✅ إصلاح: عرض جميع طلبات الصلاة في لوحة التحكم');
+        console.log('✅ إصلاح: الإشعارات تصل عند إضافة إعلان');
     </script>
 </body>
 </html>

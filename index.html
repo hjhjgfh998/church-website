@@ -1557,7 +1557,9 @@
                     createdAt: Date.now()
                 });
                 console.log('✅ تم إنشاء مستند المستخدم:', user.uid);
+                return true;
             }
+            return true;
         }
 
         async function checkAdmin(uid) {
@@ -1879,7 +1881,6 @@
                 userNotifications = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 userNotifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 updateUserNotifUI();
-                // عرض أحدث إشعار غير مقروء
                 const newNotifs = userNotifications.filter(n => !n.read);
                 if (newNotifs.length > 0) {
                     const latest = newNotifs[0];
@@ -2094,17 +2095,23 @@
             const selected = dailyVerses[index];
             display.textContent = selected.verse;
             refDisplay.textContent = selected.reference;
+
             try {
                 const verseRef = ref(db, 'settings/dailyVerse');
                 const snap = await get(verseRef);
                 const todayStr = today.toDateString();
-                if (!snap.exists() || snap.val().verse !== selected.verse || snap.val().lastUpdate !== todayStr) {
+                // فقط الأدمن يحاول حفظ الآية
+                const isAdminUser = currentUser && await checkAdmin(currentUser.uid);
+                if (isAdminUser && (!snap.exists() || snap.val().verse !== selected.verse || snap.val().lastUpdate !== todayStr)) {
                     await set(verseRef, { verse: selected.verse, reference: selected.reference, lastUpdate: todayStr });
                     if (snap.exists() && snap.val().verse !== selected.verse) {
                         await notifyAllUsers(`📖 تم تحديث آية اليوم: "${selected.verse}" (${selected.reference})`, 'verse');
                     }
                 }
-            } catch (e) { console.warn('Could not save verse:', e); }
+            } catch (e) {
+                // هذا الخطأ يحدث للمستخدمين العاديين وهو طبيعي
+                console.log('ℹ️ محاولة حفظ آية اليوم (مستخدم غير أدمن أو خطأ):', e.message);
+            }
         }
 
         function scheduleVerseUpdate() {
@@ -2128,14 +2135,24 @@
             } catch (e) { showToast('خطأ', true); }
         };
 
+        // ====== إرسال الأسئلة (مع عرض الخطأ الحقيقي) ======
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUser) { showToast('يجب تسجيل الدخول لطرح سؤال', true); return; }
+            if (!currentUser) {
+                showToast('يجب تسجيل الدخول لطرح سؤال', true);
+                return;
+            }
             const details = document.getElementById('qDetails').value.trim();
             const type = document.getElementById('qType').value;
             const anonymous = document.getElementById('qAnonymous').checked;
-            if (!details) { showToast('الرجاء كتابة تفاصيل السؤال', true); return; }
+            if (!details) {
+                showToast('الرجاء كتابة تفاصيل السؤال', true);
+                return;
+            }
             try {
+                // التأكد من وجود مستند المستخدم
+                await ensureUserDocument(currentUser);
+
                 const newRef = push(ref(db, 'questions'));
                 await set(newRef, {
                     details,
@@ -2157,16 +2174,27 @@
                 if (document.getElementById('page-my-questions').classList.contains('active')) {
                     startMyItemsListeners();
                 }
-            } catch (err) { console.error(err);
-                showToast('حدث خطأ أثناء الإرسال.', true); }
+            } catch (err) {
+                console.error('❌ خطأ في إرسال السؤال:', err);
+                showToast(`❌ فشل الإرسال: ${err.message}`, true);
+            }
         });
 
+        // ====== إرسال طلب الصلاة (مع عرض الخطأ الحقيقي) ======
         document.getElementById('prayerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = document.getElementById('prayerText').value.trim();
             const anonymous = document.getElementById('prayerAnonymous').checked;
-            if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
+            if (!text) {
+                showToast('الرجاء كتابة طلب الصلاة', true);
+                return;
+            }
             try {
+                // التأكد من وجود مستند المستخدم
+                if (currentUser) {
+                    await ensureUserDocument(currentUser);
+                }
+
                 const newRef = push(ref(db, 'prayers'));
                 await set(newRef, {
                     text,
@@ -2183,8 +2211,10 @@
                 document.getElementById('prayerForm').style.display = 'none';
                 document.getElementById('prayerSuccess').style.display = 'block';
                 showToast('تم استلام طلب صلاتك!');
-            } catch (err) { console.error(err);
-                showToast('حدث خطأ أثناء الإرسال.', true); }
+            } catch (err) {
+                console.error('❌ خطأ في إرسال طلب الصلاة:', err);
+                showToast(`❌ فشل الإرسال: ${err.message}`, true);
+            }
         });
 
         window.renderAnsweredQuestions = async function() {
@@ -2767,6 +2797,7 @@
             } catch (e) { showToast('خطأ', true); }
         };
 
+        // ====== التهيئة ======
         loadAnnouncements();
         document.getElementById('year').textContent = new Date().getFullYear();
         renderAnsweredQuestions();
@@ -2789,11 +2820,12 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل');
-        console.log('🔒 تم إزالة كلمة المرور من الكود');
-        console.log('📢 الإشعارات تعمل: عند الإجابة، النشر، الإعلانات، تحديث الآية');
-        console.log('🔄 زر "اسأل سؤال آخر" يعيد تعيين النموذج');
-        console.log('📊 جميع طلبات الصلاة تظهر في لوحة التحكم');
+        console.log('✅ التطبيق جاهز بالكامل (Realtime Database)');
+        console.log('✅ تم إزالة كلمة المرور من الكود واستخدام Authentication');
+        console.log('✅ التحقق من صلاحية الأدمن عبر مسار /admins');
+        console.log('✅ جميع الإشعارات تعمل عبر مسار /userNotifications');
+        console.log('✅ تم إصلاح عرض الخطأ عند الإرسال (يظهر سبب الفشل)');
+        console.log('✅ تم إصلاح تحذير آية اليوم (يحاول فقط الأدمن الحفظ)');
     </script>
 </body>
 </html>

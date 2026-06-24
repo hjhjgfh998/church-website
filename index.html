@@ -18,6 +18,7 @@
         }
     </script>
     <style>
+        /* جميع الأنماط (نفس السابق) */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1401,7 +1402,7 @@
 
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
 
-        // قائمة الآيات الافتراضية للتغيير التلقائي كل 24 ساعة
+        // قائمة الآيات للتحديث التلقائي
         const VERSES = [
             { text: 'لأَنَّهُ هَكَذَا أَحَبَّ اللهُ الْعَالَمَ حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
             { text: 'لاَ تَهْتَمُّوا بِشَيْءٍ، بَلْ فِي كُلِّ شَيْءٍ بِالصَّلاَةِ وَالدُّعَاءِ مَعَ الشُّكْرِ، لِتُعْلَمْ طِلْبَاتُكُمْ لَدَى اللهِ.', reference: 'فيلبي 4:6' },
@@ -1418,40 +1419,7 @@
             { text: 'وَلَكِنَّ الْعَامِلِينَ بِالْحَقِّ يُقْبِلُونَ إِلَى النُّورِ، لِتُظْهَرَ أَعْمَالُهُمْ أَنَّهَا بِاللهِ مَعْمُولَةٌ.', reference: 'يوحنا 3:21' },
             { text: 'اُطْلُبُوا الرَّبَّ حِينَ يُوجَدُ. ادْعُوهُ وَهُوَ قَرِيبٌ.', reference: 'إشعياء 55:6' },
             { text: 'عَلَى جَبَلٍ عَالٍ اصْعَدِي يَا مُبَشِّرَةَ صِهْيَوْنَ. ارْفَعِي صَوْتَكِ بِقُوَّةٍ يَا مُبَشِّرَةَ أُورُشَلِيمَ.', reference: 'إشعياء 40:9' },
-            { text: 'فَلْيَكُنْ كَلاَمُكُمْ كُلُّ حِينٍ بِنِعْمَةٍ، مُصْلَحًا بِمِلْحٍ، لِتَعْلَمُوا كَيْفَ يُجِيبُونَ كُلَّ وَاحِدٍ.', reference: 'كولوسي 4:6' },
-            { text: 'أَبْرَارٌ الرَّبُّ فِي كُلِّ طُرُقِهِ، وَرَحِيمٌ فِي جَمِيعِ أَعْمَالِهِ.', reference: 'مزمور 145:17' },
-            { text: 'وَإِنْ سَلَكْتُ فِي وَسَطِ ضِيقٍ تُحْيِينِي. عَلَى غَضَبِ أَعْدَائِي تَبْسُطُ يَدَكَ، وَتُخَلِّصُنِي يَمِينُكَ.', reference: 'مزمور 138:7' },
-            { text: 'مُحِيطُونَ بِي فِي يَوْمِ بَلِيَّتِي، الرَّبُّ سَنَدِي.', reference: 'مزمور 18:18' },
-            { text: 'فَاللهُ مَعِينٌ لَنَا، وَالرَّبُّ مُعْتَقِلُنَا، وَإِلَهَنَا هُوَ حِصْنُنَا.', reference: 'مزمور 46:7' },
-            { text: 'اَلرَّبُّ رَاعِيَّ فَلاَ يُعْوِزُنِي شَيْءٌ.', reference: 'مزمور 23:1' },
-            { text: 'يَكُونُ فِي الأَيَّامِ الأَخِيرَةِ أَنَّ جَبَلَ بَيْتِ الرَّبِّ يَكُونُ ثَابِتًا فِي رَأْسِ الْجِبَالِ، وَيَرْتَفِعُ فَوْقَ الآكَامِ، وَتَتَوَفَّرُ إِلَيْهِ جَمِيعُ الأُمَمِ.', reference: 'ميخا 4:1' },
-            { text: 'قَدْ عَلِمْتُ يَا رَبُّ أَنَّ أَحْكَامَكَ عَادِلَةٌ، وَبِالأَمَانَةِ أَذْلَلْتَنِي.', reference: 'مزمور 119:75' },
-            { text: 'مِنْ أَجْلِ ذَلِكَ أَيْضًا أَنَا أَسْأَلُكُمْ أَنْ لاَ تَكِلُّوا فِي الضِّيقَاتِ الَّتِي مِنْ أَجْلِكُمْ هِيَ مَجْدِي.', reference: 'أفسس 3:13' },
-            { text: 'فَإِنْ كُنْتُ أَتَأَلَّمُ فَإِنِّي أَتَأَلَّمُ بِسَبَبِكُمْ، وَإِنْ كُنْتُ أُعَزَّى فَإِنِّي أُعَزَّى بِسَبَبِكُمْ.', reference: 'كورنثوس الثانية 1:6' },
-            { text: 'لِذَلِكَ نَتَشَجَّعُ وَلاَ نَكِلُّ، بَلْ إِنَّ كُلَّ يَوْمٍ نَجْتَازُ فِيهِ نَتَجَدَّدُ بِالرُّوحِ.', reference: 'كورنثوس الثانية 4:16' },
-            { text: 'أَلَمْ أُوصِكَ؟ تَشَدَّدْ وَتَجَلَّدْ! لاَ تَرْهَبْ وَلاَ تَرْتَعِبْ لأَنَّ الرَّبَّ إِلَهَكَ مَعَكَ حَيْثُمَا تَذْهَبُ.', reference: 'يشوع 1:9' },
-            { text: 'أَيُّهَا الرَّبُّ إِلَهُنَا، مَا أَمْجَدَ اسْمَكَ فِي كُلِّ الأَرْضِ!', reference: 'مزمور 8:1' },
-            { text: 'وَلَكِنَّنِي قُلْتُ: يَا رَبُّ، ارْحَمْنِي. اشْفِ نَفْسِي لأَنِّي أَخْطَأْتُ إِلَيْكَ.', reference: 'مزمور 41:4' },
-            { text: 'اَلرَّبُّ هُوَ نُورِي وَخَلاَصِي، مِمَّنْ أَخَافُ؟ الرَّبُّ حِصْنُ حَيَاتِي، مِمَّنْ أَرْتَعِبُ؟', reference: 'مزمور 27:1' },
-            { text: 'أَنَا هُوَ الرَّاعِي الصَّالِحُ. الرَّاعِي الصَّالِحُ يَبْذِلُ نَفْسَهُ عَنِ الْخِرَافِ.', reference: 'يوحنا 10:11' },
-            { text: 'أَطْعِمُوا خِرَافِي. أَطْعِمُوا غَنَمِي.', reference: 'يوحنا 21:15-17' },
-            { text: 'اُشْكُرُوا الرَّبَّ لأَنَّهُ صَالِحٌ، لأَنَّ إِلَى الأَبَدِ رَحْمَتَهُ.', reference: 'مزمور 107:1' },
-            { text: 'مَلِيءُ الرَّحْمَةِ وَالْحَنَانِ، طَوِيلُ الرُّوحِ وَكَثِيرُ الإِحْسَانِ.', reference: 'مزمور 86:15' },
-            { text: 'اَلرَّبُّ حَافِظُ الْغُرَبَاءِ. يُعِينُ الْيَتِيمَ وَالأَرْمَلَةَ، وَيُهْلِكُ طَرِيقَ الأَشْرَارِ.', reference: 'مزمور 146:9' },
-            { text: 'سُبْحَانَ الرَّبِّ إِلَهِنَا الَّذِي حَمَلَ أَحْمَالَنَا يَوْمًا فَيَوْمًا.', reference: 'مزمور 68:19' },
-            { text: 'لأَنَّ الرَّبَّ إِلَهَكُمْ هُوَ إِلَهُ الآلِهَةِ وَرَبُّ الأَرْبَابِ، الإِلَهُ الْعَظِيمُ الْجَبَّارُ الْمَهِيبُ.', reference: 'تثنية 10:17' },
-            { text: 'هُوَذَا مَا أُوصِيكُمْ بِهِ: أَحِبُّوا بَعْضُكُمْ بَعْضًا.', reference: 'يوحنا 15:17' },
-            { text: 'اَلتَّوْبَةُ وَالاِسْتِغْفَارُ يُبْشَرُ بِهِمَا بِاسْمِهِ بَيْنَ جَمِيعِ الأُمَمِ، مُبْتَدِئًا مِنْ أُورُشَلِيمَ.', reference: 'لوقا 24:47' },
-            { text: 'لأَنَّ الْحَيَاةَ هِيَ الْمَسِيحُ وَالْمَوْتُ هُوَ رِبْحٌ.', reference: 'فيلبي 1:21' },
-            { text: 'بَلِ اسْأَلُونِي عَنْ أُمُورٍ مُسْتَقْبَلَةٍ، وَعَنْ صُنْعِ يَدَيَّ أَوْصُونِي.', reference: 'إشعياء 45:11' },
-            { text: 'فَإِنَّنِي عَالِمٌ بِالْخَطَطِ الَّتِي أَنَا مُخْتَلِقُهَا لَكُمْ، قَالَ الرَّبُّ، خَطَطَ سَلاَمٍ لاَ شَرٍّ، لأُعْطِيَكُمْ آخِرَةً وَرَجَاءً.', reference: 'إرميا 29:11' },
-            { text: 'اَلرَّبُّ يُبَارِكُ شَعْبَهُ بِالسَّلاَمِ.', reference: 'مزمور 29:11' },
-            { text: 'قَدْ أَمَرَ الرَّبُّ بِالْبَرَكَةِ عَلَى الصِّدِّيقِ، وَيُكَلِّلُهُ بِالْخَلاَصِ.', reference: 'مزمور 5:12' },
-            { text: 'تَطَوَّلْتَ يَا رَبُّ عَلَى كُلِّ الأَرْضِ، وَمَحَبَّتُكَ تَدُومُ إِلَى الأَبَدِ.', reference: 'مزمور 136:1' },
-            { text: 'اِرْفَعُوا أَيْدِيَكُمْ إِلَى الْقُدْسِ، وَبَارِكُوا الرَّبَّ.', reference: 'مزمور 134:2' },
-            { text: 'اَلرَّبُّ صَالِحٌ فِي كُلِّ شَيْءٍ، وَمَرَاحِمُهُ عَلَى جَمِيعِ أَعْمَالِهِ.', reference: 'مزمور 145:9' },
-            { text: 'فَإِنِّي إِلهُكَ الَّذِي آمَنَكَ، وَعَزَّزْتُكَ وَأَعَنْتُكَ، وَعَضَدْتُكَ بِيَمِينِ بِرِّي.', reference: 'إشعياء 41:10' },
-            { text: 'اَلرَّبُّ يَحْرُسُكَ مِنْ كُلِّ شَرٍّ، يَحْرُسُ نَفْسَكَ.', reference: 'مزمور 121:7' }
+            { text: 'فَلْيَكُنْ كَلاَمُكُمْ كُلُّ حِينٍ بِنِعْمَةٍ، مُصْلَحًا بِمِلْحٍ، لِتَعْلَمُوا كَيْفَ يُجِيبُونَ كُلَّ وَاحِدٍ.', reference: 'كولوسي 4:6' }
         ];
 
         let currentUser = null,
@@ -1482,7 +1450,7 @@
             toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
         }
 
-        // ====== دوال تحديث واجهة الإشعارات ======
+        // ====== تحديث واجهة الإشعارات ======
         function updateUserNotifUI() {
             const badge = document.getElementById('userNotifBadge');
             const bell = document.getElementById('notifBell');
@@ -1576,7 +1544,6 @@
             }
         }
 
-        // ====== دوال إعادة تعيين النماذج ======
         function resetQuestionForm() {
             document.getElementById('questionForm').reset();
             document.getElementById('questionSuccess').style.display = 'none';
@@ -1589,12 +1556,11 @@
             document.querySelector('#page-prayer .card').style.display = 'block';
         }
 
-        // ====== آية اليوم مع التحديث التلقائي كل 24 ساعة ======
+        // ====== آية اليوم مع التحديث التلقائي ======
         function getVerseOfDay() {
             const today = new Date();
             const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-            const index = dayOfYear % VERSES.length;
-            return VERSES[index];
+            return VERSES[dayOfYear % VERSES.length];
         }
 
         function loadDailyVerse() {
@@ -1605,41 +1571,33 @@
                 const twentyFourHours = 24 * 60 * 60 * 1000;
 
                 if (data && data.updatedAt && (now - data.updatedAt) < twentyFourHours) {
-                    // الآية لا تزال صالحة (أقل من 24 ساعة)
                     document.getElementById('dailyVerseDisplay').textContent = data.text || 'لا توجد آية';
                     document.getElementById('dailyVerseRef').textContent = data.reference || '';
                     const remaining = Math.ceil((twentyFourHours - (now - data.updatedAt)) / (60 * 60 * 1000));
                     document.getElementById('verseUpdateInfo').textContent = `⏳ سيتم تحديث الآية بعد ${remaining} ساعة`;
                 } else {
-                    // نحتاج إلى تحديث الآية
                     const newVerse = getVerseOfDay();
-                    set(verseRef, {
-                        text: newVerse.text,
-                        reference: newVerse.reference,
-                        updatedAt: now
-                    }).then(() => {
-                        document.getElementById('dailyVerseDisplay').textContent = newVerse.text;
-                        document.getElementById('dailyVerseRef').textContent = newVerse.reference;
-                        document.getElementById('verseUpdateInfo').textContent = '✅ تم تحديث آية اليوم';
-                        // إشعار بتحديث الآية
-                        addNotification('verse', `آية اليوم الجديدة: "${newVerse.text.substring(0, 30)}..."`);
-                        console.log('✅ تم تحديث آية اليوم تلقائياً');
-                    }).catch(err => {
-                        console.warn('⚠️ فشل تحديث الآية:', err);
-                        // عرض آية مؤقتة
-                        const fallback = getVerseOfDay();
-                        document.getElementById('dailyVerseDisplay').textContent = fallback.text;
-                        document.getElementById('dailyVerseRef').textContent = fallback.reference;
-                        document.getElementById('verseUpdateInfo').textContent = '⚠️ فشل حفظ الآية في قاعدة البيانات';
-                    });
+                    set(verseRef, { text: newVerse.text, reference: newVerse.reference, updatedAt: now })
+                        .then(() => {
+                            document.getElementById('dailyVerseDisplay').textContent = newVerse.text;
+                            document.getElementById('dailyVerseRef').textContent = newVerse.reference;
+                            document.getElementById('verseUpdateInfo').textContent = '✅ تم تحديث آية اليوم';
+                            addNotification('verse', `آية اليوم الجديدة: "${newVerse.text.substring(0,30)}..."`);
+                        })
+                        .catch(err => {
+                            console.warn('⚠️ فشل تحديث الآية:', err);
+                            const fallback = getVerseOfDay();
+                            document.getElementById('dailyVerseDisplay').textContent = fallback.text;
+                            document.getElementById('dailyVerseRef').textContent = fallback.reference;
+                            document.getElementById('verseUpdateInfo').textContent = '⚠️ فشل حفظ الآية في قاعدة البيانات';
+                        });
                 }
             }).catch(err => {
                 console.warn('⚠️ فشل تحميل الآية:', err);
-                // عرض آية افتراضية من القائمة
                 const fallback = getVerseOfDay();
                 document.getElementById('dailyVerseDisplay').textContent = fallback.text;
                 document.getElementById('dailyVerseRef').textContent = fallback.reference;
-                document.getElementById('verseUpdateInfo').textContent = '⚠️ عرض آية مؤقتة (اتصال بقاعدة البيانات ضعيف)';
+                document.getElementById('verseUpdateInfo').textContent = '⚠️ عرض آية مؤقتة (اتصال ضعيف)';
             });
         }
 
@@ -1677,7 +1635,6 @@
                 isAdmin = false;
                 return;
             }
-            // مقارنة غير حساسة لحالة الأحرف
             const userEmail = user.email ? user.email.toLowerCase().trim() : '';
             const adminEmail = ADMIN_EMAIL.toLowerCase().trim();
 
@@ -1699,6 +1656,7 @@
                 document.getElementById('adminLink').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
                 document.getElementById('adminLoginBtn').style.display = 'inline-block';
+                console.log('👤 مستخدم عادي');
             }
         }
 
@@ -1714,11 +1672,7 @@
             const notifRef = ref(db, 'notifications');
             onValue(notifRef, (snapshot) => {
                 const data = snapshot.val();
-                notifications = [];
-                if (data) {
-                    notifications = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    notifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
+                notifications = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
                 updateNotificationUI();
                 const badge = document.getElementById('notifBadge');
                 const unread = notifications.filter(n => !n.read).length;
@@ -1728,9 +1682,7 @@
                 } else {
                     badge.style.display = 'none';
                 }
-            }, (error) => {
-                console.warn('⚠️ فشل الاستماع للإشعارات:', error);
-            });
+            }, (error) => console.warn('⚠️ فشل الاستماع للإشعارات:', error));
         }
 
         function markNotifRead(id) {
@@ -1739,9 +1691,7 @@
 
         function markAllNotificationsRead() {
             notifications.forEach(n => {
-                if (!n.read) {
-                    try { update(ref(db, `notifications/${n.id}`), { read: true }); } catch (e) {}
-                }
+                if (!n.read) try { update(ref(db, `notifications/${n.id}`), { read: true }); } catch (e) {}
             });
             showToast('تم تحديث الكل كمقروء');
         }
@@ -1768,15 +1718,9 @@
             const notifRef = ref(db, `userNotifications/${userId}`);
             userNotifUnsubscribe = onValue(notifRef, (snapshot) => {
                 const data = snapshot.val();
-                userNotifications = [];
-                if (data) {
-                    userNotifications = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    userNotifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
+                userNotifications = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
                 updateUserNotifUI();
-            }, (error) => {
-                console.warn('⚠️ فشل الاستماع لإشعارات المستخدم:', error);
-            });
+            }, (error) => console.warn('⚠️ فشل الاستماع لإشعارات المستخدم:', error));
         }
 
         function markUserNotifRead(id) {
@@ -1785,9 +1729,7 @@
 
         function markAllUserNotifsRead() {
             userNotifications.forEach(n => {
-                if (!n.read) {
-                    try { update(ref(db, `userNotifications/${currentUserId}/${n.id}`), { read: true }); } catch (e) {}
-                }
+                if (!n.read) try { update(ref(db, `userNotifications/${currentUserId}/${n.id}`), { read: true }); } catch (e) {}
             });
             showToast('تم تحديث الكل كمقروء');
         }
@@ -1801,21 +1743,16 @@
             }
         }
 
-        // ====== الأسئلة المجاب عنها (عامة) ======
+        // ====== الأسئلة المجاب عنها ======
         function renderAnsweredQuestions() {
             const search = document.getElementById('answeredSearch').value.toLowerCase();
             const container = document.getElementById('answeredList');
-            const qRef = ref(db, 'questions');
-            get(qRef).then(snap => {
+            get(ref(db, 'questions')).then(snap => {
                 const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    items = items.filter(q => q.answer && q.answer.trim() !== '' && q.published !== false);
-                    if (search) items = items.filter(q => q.text && q.text.toLowerCase().includes(search));
-                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                if (items.length === 0) {
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).filter(q => q.answer && q.answer.trim() && q.published !== false) : [];
+                if (search) items = items.filter(q => q.text && q.text.toLowerCase().includes(search));
+                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                if (!items.length) {
                     container.innerHTML = '<p class="no-questions">لا توجد أسئلة مجاب عنها</p>';
                     return;
                 }
@@ -1823,91 +1760,53 @@
                     <div class="question-card">
                         <div class="q-title">${q.text || 'سؤال'}</div>
                         <div class="q-answer">${q.answer}</div>
-                        <div class="q-meta">${q.type ? translateType(q.type) : ''} - ${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                        <div class="q-meta">${translateType(q.type)} - ${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</div>
                     </div>
                 `).join('');
-            }).catch(() => {
-                container.innerHTML = '<p class="no-questions">حدث خطأ في تحميل البيانات</p>';
-            });
+            }).catch(() => container.innerHTML = '<p class="no-questions">حدث خطأ في تحميل البيانات</p>');
         }
 
         function translateType(type) {
-            const map = {
-                'biblical': 'كتابي',
-                'doctrinal': 'عقائدي',
-                'personal': 'شخصي',
-                'consultation': 'استشارة',
-                'suggestion': 'اقتراح',
-                'prayer': 'صلاة'
-            };
+            const map = { biblical: 'كتابي', doctrinal: 'عقائدي', personal: 'شخصي', consultation: 'استشارة', suggestion: 'اقتراح', prayer: 'صلاة' };
             return map[type] || type;
         }
 
         // ====== الإعلانات ======
         function loadAnnouncements() {
-            const container = document.getElementById('announcementsList');
-            const refAnn = ref(db, 'announcements');
-            get(refAnn).then(snap => {
+            get(ref(db, 'announcements')).then(snap => {
                 const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                if (items.length === 0) {
-                    container.innerHTML = '<p class="no-questions">لا توجد إعلانات حالياً</p>';
-                    return;
-                }
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
+                const container = document.getElementById('announcementsList');
+                if (!items.length) { container.innerHTML = '<p class="no-questions">لا توجد إعلانات</p>'; return; }
                 container.innerHTML = items.map(a => `
                     <div class="announcement-item">
-                        <div class="announce-content">
-                            <h4>${a.title || 'إعلان'}</h4>
-                            <p>${a.content || ''}</p>
-                            <div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                        </div>
+                        <div class="announce-content"><h4>${a.title}</h4><p>${a.content}</p><div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div></div>
                     </div>
                 `).join('');
-            }).catch(() => {
-                container.innerHTML = '<p class="no-questions">فشل تحميل الإعلانات</p>';
-            });
+            }).catch(() => {});
         }
 
         function loadAnnouncementsAdmin() {
-            const container = document.getElementById('adminAnnouncementsList');
-            const refAnn = ref(db, 'announcements');
-            get(refAnn).then(snap => {
+            get(ref(db, 'announcements')).then(snap => {
                 const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                if (items.length === 0) {
-                    container.innerHTML = '<p class="no-questions">لا توجد إعلانات</p>';
-                    return;
-                }
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
+                const container = document.getElementById('adminAnnouncementsList');
+                if (!items.length) { container.innerHTML = '<p class="no-questions">لا توجد إعلانات</p>'; return; }
                 container.innerHTML = items.map(a => `
                     <div class="announcement-item">
-                        <div class="announce-content">
-                            <h4>${a.title || 'إعلان'}</h4>
-                            <p>${a.content || ''}</p>
-                            <div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                        </div>
+                        <div class="announce-content"><h4>${a.title}</h4><p>${a.content}</p><div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div></div>
                         <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${a.id}')"><i class="fas fa-trash"></i></button>
                     </div>
                 `).join('');
-            }).catch(() => {
-                container.innerHTML = '<p class="no-questions">فشل تحميل الإعلانات</p>';
-            });
+            }).catch(() => {});
         }
 
         function addAnnouncement() {
             const title = document.getElementById('announceTitle').value.trim();
             const content = document.getElementById('announceContent').value.trim();
             if (!title || !content) { showToast('الرجاء ملء جميع الحقول', true); return; }
-            const refAnn = push(ref(db, 'announcements'));
-            set(refAnn, { title, content, createdAt: Date.now() }).then(() => {
-                showToast('تم إضافة الإعلان بنجاح');
+            push(ref(db, 'announcements'), { title, content, createdAt: Date.now() }).then(() => {
+                showToast('تم إضافة الإعلان');
                 document.getElementById('announceTitle').value = '';
                 document.getElementById('announceContent').value = '';
                 loadAnnouncementsAdmin();
@@ -1917,9 +1816,9 @@
         }
 
         function deleteAnnouncement(id) {
-            if (confirm('هل أنت متأكد من حذف هذا الإعلان؟')) {
+            if (confirm('حذف الإعلان؟')) {
                 remove(ref(db, `announcements/${id}`)).then(() => {
-                    showToast('تم حذف الإعلان');
+                    showToast('تم الحذف');
                     loadAnnouncementsAdmin();
                     loadAnnouncements();
                 }).catch(() => showToast('فشل الحذف', true));
@@ -1928,64 +1827,55 @@
 
         // ====== وسائل التواصل ======
         function loadSocialLinks() {
-            const refSocial = ref(db, 'socialLinks');
-            get(refSocial).then(snap => {
+            get(ref(db, 'socialLinks')).then(snap => {
                 const data = snap.val();
                 if (data) {
                     document.getElementById('socialFacebook').href = data.facebook || '#';
                     document.getElementById('socialInstagram').href = data.instagram || '#';
                     document.getElementById('whatsappLink').href = data.whatsapp ? `https://wa.me/${data.whatsapp}` : '#';
-                    document.getElementById('whatsappLabel').textContent = data.whatsapp ? 'تواصل عبر واتساب' : 'رقم واتساب غير متاح';
+                    document.getElementById('whatsappLabel').textContent = data.whatsapp ? 'تواصل عبر واتساب' : 'رقم غير متاح';
                     document.getElementById('socialFacebookInput').value = data.facebook || '';
                     document.getElementById('socialInstagramInput').value = data.instagram || '';
                     document.getElementById('whatsappInput').value = data.whatsapp || '';
                 } else {
-                    const defaultSocial = { facebook: '#', instagram: '#', whatsapp: '' };
-                    set(refSocial, defaultSocial).catch(e => console.warn('⚠️ فشل حفظ الروابط الافتراضية:', e));
+                    set(ref(db, 'socialLinks'), { facebook: '#', instagram: '#', whatsapp: '' }).catch(() => {});
                 }
-            }).catch(() => {
-                console.warn('⚠️ فشل تحميل روابط التواصل');
-            });
+            }).catch(() => {});
         }
 
         function saveSocialLinks() {
-            const facebook = document.getElementById('socialFacebookInput').value.trim();
-            const instagram = document.getElementById('socialInstagramInput').value.trim();
-            const whatsapp = document.getElementById('whatsappInput').value.trim();
-            const refSocial = ref(db, 'socialLinks');
-            set(refSocial, { facebook, instagram, whatsapp }).then(() => {
-                showToast('تم حفظ الروابط بنجاح');
+            const fb = document.getElementById('socialFacebookInput').value.trim();
+            const insta = document.getElementById('socialInstagramInput').value.trim();
+            const wa = document.getElementById('whatsappInput').value.trim();
+            set(ref(db, 'socialLinks'), { facebook: fb, instagram: insta, whatsapp: wa }).then(() => {
+                showToast('تم الحفظ');
                 loadSocialLinks();
-            }).catch(() => showToast('فشل في حفظ الروابط', true));
+            }).catch(() => showToast('فشل الحفظ', true));
         }
 
         // ====== نبذة ======
         function loadAbout() {
-            const aboutRef = ref(db, 'about');
-            get(aboutRef).then(snap => {
+            get(ref(db, 'about')).then(snap => {
                 const data = snap.val();
                 if (data) {
                     document.getElementById('aboutContent').innerHTML = data.text || 'لا توجد نبذة';
                     document.getElementById('aboutEditor').value = data.text || '';
                 } else {
-                    const defaultAbout = { text: 'الكنيسة الإنجيلية المشيخية بإبشادات هي كنيسة مسيحية تهدف إلى نشر الإنجيل وخدمة المجتمع.' };
-                    set(aboutRef, defaultAbout).catch(e => console.warn('⚠️ فشل حفظ النبذة الافتراضية:', e));
-                    document.getElementById('aboutContent').textContent = defaultAbout.text;
-                    document.getElementById('aboutEditor').value = defaultAbout.text;
+                    const def = { text: 'الكنيسة الإنجيلية المشيخية بإبشادات هي كنيسة مسيحية تهدف إلى نشر الإنجيل وخدمة المجتمع.' };
+                    set(ref(db, 'about'), def).catch(() => {});
+                    document.getElementById('aboutContent').textContent = def.text;
+                    document.getElementById('aboutEditor').value = def.text;
                 }
-            }).catch(() => {
-                document.getElementById('aboutContent').textContent = 'فشل تحميل النبذة';
-            });
+            }).catch(() => {});
         }
 
         function saveAbout() {
             const text = document.getElementById('aboutEditor').value.trim();
-            if (!text) { showToast('الرجاء إدخال نص النبذة', true); return; }
-            const aboutRef = ref(db, 'about');
-            set(aboutRef, { text }).then(() => {
-                showToast('تم حفظ النبذة بنجاح');
+            if (!text) { showToast('أدخل النص', true); return; }
+            set(ref(db, 'about'), { text }).then(() => {
+                showToast('تم الحفظ');
                 loadAbout();
-            }).catch(() => showToast('فشل في حفظ النبذة', true));
+            }).catch(() => showToast('فشل الحفظ', true));
         }
 
         // ====== لوحة التحكم - الأسئلة ======
@@ -1993,25 +1883,19 @@
             const search = document.getElementById('adminSearch').value.toLowerCase();
             const type = document.getElementById('adminFilterType').value;
             const answeredFilter = document.getElementById('adminFilterAnswered').value;
-            const qRef = ref(db, 'questions');
-            get(qRef).then(snap => {
+            get(ref(db, 'questions')).then(snap => {
                 const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                }
-                allQuestionsItems = items;
+                allQuestionsItems = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 renderQuestionsPage(search, type, answeredFilter);
-            }).catch(() => showToast('فشل في تحميل الأسئلة', true));
+            }).catch(() => showToast('فشل تحميل الأسئلة', true));
         }
 
         function renderQuestionsPage(search, type, answeredFilter) {
             let filtered = allQuestionsItems;
             if (search) filtered = filtered.filter(q => q.text && q.text.toLowerCase().includes(search));
             if (type !== 'all') filtered = filtered.filter(q => q.type === type);
-            if (answeredFilter === 'answered') filtered = filtered.filter(q => q.answer && q.answer.trim() !== '');
-            else if (answeredFilter === 'unanswered') filtered = filtered.filter(q => !q.answer || q.answer.trim() === '');
-
+            if (answeredFilter === 'answered') filtered = filtered.filter(q => q.answer && q.answer.trim());
+            else if (answeredFilter === 'unanswered') filtered = filtered.filter(q => !q.answer || !q.answer.trim());
             filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
             const total = filtered.length;
@@ -2019,8 +1903,7 @@
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
             const start = (currentPage - 1) * itemsPerPage;
-            const end = Math.min(start + itemsPerPage, total);
-            const pageItems = filtered.slice(start, end);
+            const pageItems = filtered.slice(start, start + itemsPerPage);
 
             document.getElementById('questionsCount').textContent = `(${total})`;
             document.getElementById('pageInfo').textContent = `صفحة ${currentPage} من ${totalPages}`;
@@ -2028,20 +1911,16 @@
             document.getElementById('nextPageBtn').disabled = (currentPage === totalPages);
 
             const tbody = document.getElementById('adminQuestionsTable');
-            if (pageItems.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>';
-                return;
-            }
+            if (!pageItems.length) { tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>'; return; }
             tbody.innerHTML = pageItems.map(q => {
-                const hasAnswer = q.answer && q.answer.trim() !== '';
+                const hasAnswer = q.answer && q.answer.trim();
                 const shortText = q.text && q.text.length > 50 ? q.text.substring(0, 50) + '...' : q.text || '';
-                const fullText = q.text || '';
                 return `
                     <tr>
                         <td>
                             <div class="question-text">
                                 <span class="short-text">${shortText}</span>
-                                <span class="full-text">${fullText}</span>
+                                <span class="full-text" style="display:none;">${q.text || ''}</span>
                                 ${q.text && q.text.length > 50 ? `<button class="toggle-btn" onclick="this.previousElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'عرض المزيد' ? 'عرض أقل' : 'عرض المزيد';">عرض المزيد</button>` : ''}
                             </div>
                         </td>
@@ -2050,9 +1929,9 @@
                         <td>${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</td>
                         <td>${hasAnswer ? '✅ مجاب' : '⏳ غير مجاب'}</td>
                         <td class="actions">
-                            ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')"><i class="fas fa-reply"></i> إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
+                            ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')">إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')">تعديل</button>`}
                             ${hasAnswer ? `<button class="btn-publish" onclick="window.togglePublish('${q.id}')">${q.published !== false ? 'إخفاء' : 'نشر'}</button>` : ''}
-                            <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')"><i class="fas fa-trash"></i></button>
+                            <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')">حذف</button>
                         </td>
                     </tr>
                 `;
@@ -2074,47 +1953,41 @@
 
         function openEditAnswerModal(id) {
             editingQuestionId = id;
-            const qRef = ref(db, `questions/${id}`);
-            get(qRef).then(snap => {
+            get(ref(db, `questions/${id}`)).then(snap => {
                 const data = snap.val();
                 if (data && data.answer) {
                     document.getElementById('modalTitle').textContent = 'تعديل الإجابة';
                     document.getElementById('modalAnswer').value = data.answer;
                     document.getElementById('answerModal').classList.add('show');
-                } else {
-                    showToast('لم يتم العثور على الإجابة', true);
-                }
+                } else showToast('لا توجد إجابة', true);
             });
         }
 
         function saveAnswer() {
             const answer = document.getElementById('modalAnswer').value.trim();
-            if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
-            if (!editingQuestionId) { showToast('خطأ في تحديد السؤال', true); return; }
+            if (!answer) { showToast('اكتب الإجابة', true); return; }
+            if (!editingQuestionId) { showToast('خطأ', true); return; }
             const qRef = ref(db, `questions/${editingQuestionId}`);
             update(qRef, { answer, answeredAt: Date.now(), published: true }).then(() => {
-                showToast('تم حفظ الإجابة بنجاح');
+                showToast('تم الحفظ');
                 document.getElementById('answerModal').classList.remove('show');
                 loadQuestions();
                 renderAnsweredQuestions();
                 get(qRef).then(snap => {
                     const q = snap.val();
-                    if (q && q.userId) {
-                        addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0, 30)}..."`);
-                    }
+                    if (q && q.userId) addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0,30)}..."`);
                 });
-                addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0, 30)}..."`);
-            }).catch(() => showToast('فشل في حفظ الإجابة', true));
+                addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0,30)}..."`);
+            }).catch(() => showToast('فشل الحفظ', true));
         }
 
         function togglePublish(id) {
-            const qRef = ref(db, `questions/${id}`);
-            get(qRef).then(snap => {
+            get(ref(db, `questions/${id}`)).then(snap => {
                 const q = snap.val();
                 if (q) {
                     const newVal = q.published === false ? true : false;
-                    update(qRef, { published: newVal }).then(() => {
-                        showToast(newVal ? 'تم نشر الإجابة' : 'تم إخفاء الإجابة');
+                    update(ref(db, `questions/${id}`), { published: newVal }).then(() => {
+                        showToast(newVal ? 'تم النشر' : 'تم الإخفاء');
                         loadQuestions();
                         renderAnsweredQuestions();
                     });
@@ -2123,70 +1996,53 @@
         }
 
         function deleteQuestion(id) {
-            if (confirm('هل أنت متأكد من حذف هذا السؤال؟')) {
+            if (confirm('حذف السؤال؟')) {
                 remove(ref(db, `questions/${id}`)).then(() => {
-                    showToast('تم حذف السؤال');
+                    showToast('تم الحذف');
                     loadQuestions();
                     renderAnsweredQuestions();
-                }).catch(() => showToast('فشل في الحذف', true));
+                }).catch(() => showToast('فشل الحذف', true));
             }
         }
 
         function clearAllQuestions() {
-            if (confirm('هل أنت متأكد من حذف جميع الأسئلة؟')) {
-                allQuestionsItems.forEach(q => {
-                    remove(ref(db, `questions/${q.id}`));
-                });
-                showToast('تم حذف جميع الأسئلة');
+            if (confirm('حذف جميع الأسئلة؟')) {
+                allQuestionsItems.forEach(q => remove(ref(db, `questions/${q.id}`)));
+                showToast('تم الحذف');
                 loadQuestions();
                 renderAnsweredQuestions();
             }
         }
 
-        function printQuestions() {
-            window.print();
-        }
+        function printQuestions() { window.print(); }
 
         // ====== طلبات الصلاة ======
         function startPrayersListener() {
             if (prayersUnsubscribe) prayersUnsubscribe();
-            const prayersRef = ref(db, 'prayerRequests');
-            prayersUnsubscribe = onValue(prayersRef, (snapshot) => {
+            prayersUnsubscribe = onValue(ref(db, 'prayerRequests'), (snapshot) => {
                 renderPrayersList(snapshot.val());
-            }, (error) => {
-                console.warn('⚠️ فشل الاستماع لطلبات الصلاة:', error);
-            });
+            }, (err) => console.warn('⚠️ فشل الاستماع للصلاة:', err));
         }
 
         function renderPrayersList(data) {
             const container = document.getElementById('adminPrayersList');
-            let items = [];
-            if (data) {
-                items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            }
+            let items = data ? Object.keys(data).map(k => ({ id: k, ...data[k] })).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
             document.getElementById('prayersCount').textContent = `(${items.length})`;
-            if (items.length === 0) {
-                container.innerHTML = '<p class="no-questions">لا توجد طلبات صلاة</p>';
-                return;
-            }
+            if (!items.length) { container.innerHTML = '<p class="no-questions">لا توجد طلبات صلاة</p>'; return; }
             container.innerHTML = items.map(p => `
                 <div class="my-item-card">
-                    <div class="item-details">${p.text || 'طلب صلاة'}</div>
-                    <div class="item-meta">${p.anonymous ? 'مجهول' : (p.userName || 'مستخدم')} - ${p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                    <div class="item-details">${p.text}</div>
+                    <div class="item-meta">${p.anonymous ? 'مجهول' : p.userName} - ${p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-EG') : ''}</div>
                     ${p.reply ? `<div class="item-answer">${p.reply}</div>` : ''}
                     <div class="actions" style="margin-top:8px;">
-                        ${p.reply ? `<button class="btn-edit" onclick="window.openEditPrayerReply('${p.id}')"><i class="fas fa-edit"></i> تعديل الرد</button>` : `<button class="btn-prayer-reply" onclick="window.openPrayerReply('${p.id}')"><i class="fas fa-reply"></i> رد</button>`}
-                        <button class="btn-delete" onclick="window.deletePrayer('${p.id}')"><i class="fas fa-trash"></i></button>
+                        ${p.reply ? `<button class="btn-edit" onclick="window.openEditPrayerReply('${p.id}')">تعديل الرد</button>` : `<button class="btn-prayer-reply" onclick="window.openPrayerReply('${p.id}')">رد</button>`}
+                        <button class="btn-delete" onclick="window.deletePrayer('${p.id}')">حذف</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function refreshPrayers() {
-            startPrayersListener();
-            showToast('تم تحديث طلبات الصلاة');
-        }
+        function refreshPrayers() { startPrayersListener(); showToast('تم التحديث'); }
 
         function openPrayerReply(id) {
             editingPrayerId = id;
@@ -2197,73 +2053,57 @@
 
         function openEditPrayerReply(id) {
             editingPrayerId = id;
-            const pRef = ref(db, `prayerRequests/${id}`);
-            get(pRef).then(snap => {
+            get(ref(db, `prayerRequests/${id}`)).then(snap => {
                 const data = snap.val();
                 if (data && data.reply) {
                     document.getElementById('prayerModalTitle').textContent = 'تعديل الرد';
                     document.getElementById('prayerReplyAnswer').value = data.reply;
                     document.getElementById('prayerReplyModal').classList.add('show');
-                } else {
-                    showToast('لم يتم العثور على الرد', true);
-                }
+                } else showToast('لا يوجد رد', true);
             });
         }
 
         function savePrayerReply() {
             const reply = document.getElementById('prayerReplyAnswer').value.trim();
-            if (!reply) { showToast('الرجاء كتابة الرد', true); return; }
+            if (!reply) { showToast('اكتب الرد', true); return; }
             if (!editingPrayerId) { showToast('خطأ', true); return; }
             const pRef = ref(db, `prayerRequests/${editingPrayerId}`);
             update(pRef, { reply, repliedAt: Date.now() }).then(() => {
-                showToast('تم حفظ الرد بنجاح');
+                showToast('تم الحفظ');
                 document.getElementById('prayerReplyModal').classList.remove('show');
                 startPrayersListener();
                 get(pRef).then(snap => {
                     const p = snap.val();
-                    if (p && p.userId) {
-                        addUserNotification(p.userId, 'prayer', `تم الرد على طلب صلاتك: "${p.text?.substring(0, 30)}..."`);
-                    }
+                    if (p && p.userId) addUserNotification(p.userId, 'prayer', `تم الرد على طلب صلاتك: "${p.text?.substring(0,30)}..."`);
                 });
-                addNotification('prayer', `تم الرد على طلب صلاة: "${reply.substring(0, 30)}..."`);
-            }).catch(() => showToast('فشل في حفظ الرد', true));
+                addNotification('prayer', `تم الرد على طلب صلاة: "${reply.substring(0,30)}..."`);
+            }).catch(() => showToast('فشل الحفظ', true));
         }
 
         function deletePrayer(id) {
-            if (confirm('هل أنت متأكد من حذف طلب الصلاة؟')) {
-                remove(ref(db, `prayerRequests/${id}`)).then(() => {
-                    showToast('تم الحذف');
-                    startPrayersListener();
-                }).catch(() => showToast('فشل الحذف', true));
+            if (confirm('حذف طلب الصلاة؟')) {
+                remove(ref(db, `prayerRequests/${id}`)).then(() => { showToast('تم الحذف'); startPrayersListener(); }).catch(() => showToast('فشل', true));
             }
         }
 
         function clearAllPrayers() {
-            if (confirm('هل أنت متأكد من حذف جميع طلبات الصلاة؟')) {
-                const refP = ref(db, 'prayerRequests');
-                get(refP).then(snap => {
+            if (confirm('حذف جميع طلبات الصلاة؟')) {
+                get(ref(db, 'prayerRequests')).then(snap => {
                     const data = snap.val();
-                    if (data) {
-                        Object.keys(data).forEach(key => remove(ref(db, `prayerRequests/${key}`)));
-                    }
-                    showToast('تم حذف الكل');
+                    if (data) Object.keys(data).forEach(k => remove(ref(db, `prayerRequests/${k}`)));
+                    showToast('تم الحذف');
                     startPrayersListener();
                 });
             }
         }
 
-        function printPrayers() {
-            window.print();
-        }
+        function printPrayers() { window.print(); }
 
         // ====== إحصائيات ======
         function loadStats() {
-            const qRef = ref(db, 'questions');
-            get(qRef).then(snap => {
+            get(ref(db, 'questions')).then(snap => {
                 const data = snap.val();
-                let total = 0,
-                    month = 0;
-                const typeCount = {};
+                let total = 0, month = 0, typeCount = {};
                 if (data) {
                     const items = Object.values(data);
                     total = items.length;
@@ -2276,21 +2116,16 @@
                 }
                 document.getElementById('statTotal').textContent = total;
                 document.getElementById('statMonth').textContent = month;
-                let topType = '-';
-                let max = 0;
-                for (const [type, count] of Object.entries(typeCount)) {
-                    if (count > max) { max = count;
-                        topType = translateType(type); }
-                }
+                let topType = '-', max = 0;
+                for (const [t, c] of Object.entries(typeCount)) if (c > max) { max = c;
+                    topType = translateType(t); }
                 document.getElementById('statTopType').textContent = topType;
-            }).catch(() => console.warn('⚠️ فشل تحميل الإحصائيات'));
+            }).catch(() => {});
 
-            const pRef = ref(db, 'prayerRequests');
-            get(pRef).then(snap => {
+            get(ref(db, 'prayerRequests')).then(snap => {
                 const data = snap.val();
-                const count = data ? Object.keys(data).length : 0;
-                document.getElementById('statPrayers').textContent = count;
-            }).catch(() => console.warn('⚠️ فشل تحميل طلبات الصلاة'));
+                document.getElementById('statPrayers').textContent = data ? Object.keys(data).length : 0;
+            }).catch(() => {});
         }
 
         function loadAdminData() {
@@ -2300,7 +2135,7 @@
             loadAnnouncements();
         }
 
-        // ====== أسئلتي ======
+        // ====== أسئلتي وطلباتي ======
         function startMyItemsListeners() {
             if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
             if (myPrayersUnsubscribe) myPrayersUnsubscribe();
@@ -2308,45 +2143,27 @@
             const container = document.getElementById('myItemsList');
             const status = document.getElementById('myItemsStatus');
 
-            // استخدام onValue بدلاً من query + orderByChild لتجنب مشكلة الفهرس
+            // جلب الأسئلة وفلترتها يدوياً
             const qRef = ref(db, 'questions');
             myQuestionsUnsubscribe = onValue(qRef, (snapshot) => {
-                const data = snapshot.val();
-                let questions = [];
-                if (data) {
-                    // فلترة يدوية حسب userId
-                    questions = Object.keys(data)
-                        .map(key => ({ id: key, ...data[key] }))
-                        .filter(q => q.userId === currentUserId)
-                        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                // جلب طلبات الصلاة بنفس الطريقة
+                const qData = snapshot.val();
+                let questions = qData ? Object.keys(qData).map(k => ({ id: k, ...qData[k] })).filter(q => q.userId === currentUserId).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
+
                 const pRef = ref(db, 'prayerRequests');
                 get(pRef).then(snap => {
                     const pData = snap.val();
-                    let prayers = [];
-                    if (pData) {
-                        prayers = Object.keys(pData)
-                            .map(key => ({ id: key, ...pData[key] }))
-                            .filter(p => p.userId === currentUserId)
-                            .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                    }
-                    const all = [...questions, ...prayers];
-                    all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-                    if (all.length === 0) {
-                        container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات صلاة</p>';
-                        status.textContent = '';
-                        return;
-                    }
+                    let prayers = pData ? Object.keys(pData).map(k => ({ id: k, ...pData[k] })).filter(p => p.userId === currentUserId).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)) : [];
+                    const all = [...questions, ...prayers].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                    if (!all.length) { container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات</p>';
+                        status.textContent = ''; return; }
                     container.innerHTML = all.map(item => {
                         const isQuestion = !!item.text && item.reply === undefined;
                         return `
                             <div class="my-item-card">
-                                <div class="item-details">${item.text || 'محتوى'}</div>
+                                <div class="item-details">${item.text}</div>
                                 ${item.answer ? `<div class="item-answer">${item.answer}</div>` : ''}
                                 ${item.reply ? `<div class="item-answer">${item.reply}</div>` : ''}
-                                <div class="item-meta">${isQuestion ? 'سؤال' : 'طلب صلاة'} - ${item.type ? translateType(item.type) : ''} - ${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                                <div class="item-meta">${isQuestion ? 'سؤال' : 'طلب صلاة'} - ${translateType(item.type)} - ${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</div>
                                 ${item.answer ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تمت الإجابة</div>` : ''}
                                 ${item.reply ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تم الرد</div>` : ''}
                             </div>
@@ -2354,16 +2171,12 @@
                     }).join('');
                     status.textContent = `(${all.length})`;
                 });
-            }, (error) => {
-                console.warn('⚠️ فشل الاستماع لأسئلتي:', error);
-            });
+            }, (err) => console.warn('⚠️ فشل الاستماع لأسئلتي:', err));
         }
 
         function refreshMyItems() {
-            if (currentUserId) {
-                startMyItemsListeners();
-                showToast('تم تحديث الأسئلة');
-            }
+            if (currentUserId) { startMyItemsListeners();
+                showToast('تم التحديث'); }
         }
 
         // ====== أحداث النماذج ======
@@ -2373,22 +2186,18 @@
             const password = document.getElementById('authPassword').value;
             const name = document.getElementById('authName').value.trim();
             const isLogin = document.getElementById('authSubmitBtn').textContent.includes('تسجيل الدخول');
-
             const errorDiv = document.getElementById('authError');
             errorDiv.textContent = '';
-
             try {
                 if (isLogin) {
                     await signInWithEmailAndPassword(auth, email, password);
-                    showToast('تم تسجيل الدخول بنجاح');
+                    showToast('تم تسجيل الدخول');
                     navigateTo('home');
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    if (name) {
-                        await updateProfile(cred.user, { displayName: name });
-                    }
+                    if (name) await updateProfile(cred.user, { displayName: name });
                     await ensureUserDocument(cred.user.uid, name || cred.user.displayName);
-                    showToast('تم إنشاء الحساب بنجاح');
+                    showToast('تم إنشاء الحساب');
                     navigateTo('home');
                 }
             } catch (err) {
@@ -2401,13 +2210,13 @@
             const isLogin = document.getElementById('authSubmitBtn').textContent.includes('تسجيل الدخول');
             if (isLogin) {
                 document.getElementById('authTitle').innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
-                document.getElementById('authSubtitle').textContent = 'أنشئ حساباً لمتابعة أسئلتك';
+                document.getElementById('authSubtitle').textContent = 'أنشئ حساباً';
                 document.getElementById('authSubmitBtn').innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
                 document.getElementById('authNameGroup').style.display = 'block';
                 this.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
             } else {
                 document.getElementById('authTitle').innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
-                document.getElementById('authSubtitle').textContent = 'سجل الدخول لمتابعة أسئلتك';
+                document.getElementById('authSubtitle').textContent = 'سجل الدخول';
                 document.getElementById('authSubmitBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
                 document.getElementById('authNameGroup').style.display = 'none';
                 this.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
@@ -2422,7 +2231,6 @@
             errorDiv.textContent = '';
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, password);
-                // التحقق غير حساس لحالة الأحرف
                 if (cred.user.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
                     await signOut(auth);
                     errorDiv.textContent = 'هذا الحساب ليس حساب أدمن';
@@ -2430,10 +2238,7 @@
                     return;
                 }
                 showToast('تم تسجيل دخول الأدمن');
-                // انتظر قليلاً حتى يتم تحديث حالة المصادقة
-                setTimeout(() => {
-                    navigateTo('admin');
-                }, 500);
+                setTimeout(() => navigateTo('admin'), 500);
             } catch (err) {
                 errorDiv.textContent = err.message;
                 showToast(err.message, true);
@@ -2442,104 +2247,62 @@
 
         document.getElementById('questionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (!currentUser) {
-                showToast('يجب تسجيل الدخول لطرح سؤال', true);
-                return;
-            }
+            if (!currentUser) { showToast('يجب تسجيل الدخول', true); return; }
             const text = document.getElementById('qDetails').value.trim();
             const type = document.getElementById('qType').value;
             const anonymous = document.getElementById('qAnonymous').checked;
-            if (!text) { showToast('الرجاء كتابة السؤال', true); return; }
-
+            if (!text) { showToast('اكتب السؤال', true); return; }
             try {
                 const qRef = push(ref(db, 'questions'));
-                await set(qRef, {
-                    text,
-                    type,
-                    anonymous,
-                    userId: currentUser.uid,
-                    userName: currentUser.displayName || 'مستخدم',
-                    createdAt: Date.now(),
-                    answer: '',
-                    published: false
-                });
-                addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0, 30)}..."`);
-                addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName || 'مستخدم'}: "${text.substring(0, 30)}..."`);
-
+                await set(qRef, { text, type, anonymous, userId: currentUser.uid, userName: currentUser.displayName || 'مستخدم', createdAt: Date.now(), answer: '', published: false });
+                addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0,30)}..."`);
+                addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
                 document.getElementById('questionFormContainer').querySelector('.card').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
-                showToast('تم إرسال سؤالك بنجاح');
-            } catch (err) {
-                showToast('فشل إرسال السؤال: ' + err.message, true);
-            }
+                showToast('تم الإرسال');
+            } catch (err) { showToast('فشل الإرسال', true); }
         });
 
         document.getElementById('prayerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (!currentUser) {
-                showToast('يجب تسجيل الدخول لطلب صلاة', true);
-                return;
-            }
+            if (!currentUser) { showToast('يجب تسجيل الدخول', true); return; }
             const text = document.getElementById('prayerText').value.trim();
             const anonymous = document.getElementById('prayerAnonymous').checked;
-            if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
-
+            if (!text) { showToast('اكتب طلب الصلاة', true); return; }
             try {
                 const pRef = push(ref(db, 'prayerRequests'));
-                await set(pRef, {
-                    text,
-                    anonymous,
-                    userId: currentUser.uid,
-                    userName: currentUser.displayName || 'مستخدم',
-                    createdAt: Date.now(),
-                    reply: ''
-                });
-                addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0, 30)}..."`);
-                addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName || 'مستخدم'}: "${text.substring(0, 30)}..."`);
-
+                await set(pRef, { text, anonymous, userId: currentUser.uid, userName: currentUser.displayName || 'مستخدم', createdAt: Date.now(), reply: '' });
+                addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0,30)}..."`);
+                addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
                 document.querySelector('#page-prayer .card').style.display = 'none';
                 document.getElementById('prayerSuccess').style.display = 'block';
-                showToast('تم إرسال طلب الصلاة');
-            } catch (err) {
-                showToast('فشل إرسال طلب الصلاة: ' + err.message, true);
-            }
+                showToast('تم الإرسال');
+            } catch (err) { showToast('فشل الإرسال', true); }
         });
 
-        // ====== مستمع حالة المصادقة ======
+        // ====== مستمع المصادقة ======
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 currentUserId = user.uid;
                 document.getElementById('userAuthBtn').innerHTML = `<i class="fas fa-user"></i> ${user.displayName || 'مستخدم'}`;
-                document.getElementById('userAuthBtn').href = '#';
-                document.getElementById('userAuthBtn').onclick = function(e) {
-                    e.preventDefault();
-                    if (confirm('تسجيل الخروج؟')) {
-                        signOut(auth);
-                    }
-                };
+                document.getElementById('userAuthBtn').onclick = (e) => { e.preventDefault(); if (confirm('تسجيل الخروج؟')) signOut(auth); };
                 document.getElementById('myQuestionsLink').style.display = 'inline-block';
                 await ensureUserDocument(user.uid, user.displayName);
                 checkAdmin(user);
                 listenToUserNotifications(user.uid);
                 startMyItemsListeners();
-                if (user.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
-                    updateUserNotifUI();
-                }
+                if (user.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) updateUserNotifUI();
             } else {
                 currentUser = null;
                 currentUserId = null;
                 isAdmin = false;
                 document.getElementById('userAuthBtn').innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
-                document.getElementById('userAuthBtn').href = '#';
-                document.getElementById('userAuthBtn').onclick = function(e) {
-                    e.preventDefault();
-                    navigateTo('user-auth');
-                };
+                document.getElementById('userAuthBtn').onclick = (e) => { e.preventDefault();
+                    navigateTo('user-auth'); };
                 document.getElementById('myQuestionsLink').style.display = 'none';
                 document.getElementById('adminLink').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
-                document.getElementById('adminLoginBtn').style.display = 'inline-block';
                 document.getElementById('notifBell').style.display = 'none';
                 if (userNotifUnsubscribe) userNotifUnsubscribe();
                 if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
@@ -2547,7 +2310,6 @@
                 if (prayersUnsubscribe) prayersUnsubscribe();
                 userNotifications = [];
                 updateUserNotifUI();
-                showToast('تم تسجيل الخروج');
                 navigateTo('home');
             }
         });
@@ -2560,7 +2322,6 @@
             this.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             localStorage.setItem('theme', newTheme);
         });
-
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
         document.getElementById('themeToggle').innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
@@ -2569,10 +2330,7 @@
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 const page = this.dataset.page;
-                if (page === 'admin' && !isAdmin) {
-                    showToast('غير مسموح بالدخول إلى لوحة التحكم', true);
-                    return;
-                }
+                if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); return; }
                 navigateTo(page);
             });
         });
@@ -2609,7 +2367,7 @@
         loadSocialLinks();
         loadAbout();
 
-        // ====== جعل الدوال عامة للاستخدام في HTML ======
+        // ====== جعل الدوال عامة ======
         window.navigateTo = navigateTo;
         window.resetQuestionForm = resetQuestionForm;
         window.resetPrayerForm = resetPrayerForm;
@@ -2618,7 +2376,6 @@
         window.renderAnsweredQuestions = renderAnsweredQuestions;
         window.refreshMyItems = refreshMyItems;
         window.updateDailyVerse = updateDailyVerse;
-        window.loadSocialLinks = loadSocialLinks;
         window.saveSocialLinks = saveSocialLinks;
         window.saveAbout = saveAbout;
         window.addAnnouncement = addAnnouncement;

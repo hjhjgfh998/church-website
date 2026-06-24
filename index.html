@@ -1455,7 +1455,7 @@
     </footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت مع التعديلات ====== -->
+    <!-- ====== جافاسكريبت مع التعديلات النهائية ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -1504,12 +1504,8 @@
 
         // ====== ضبط استمرار المصادقة ======
         setPersistence(auth, browserLocalPersistence)
-            .then(() => {
-                console.log('✅ تم ضبط استمرار المصادقة محلياً');
-            })
-            .catch((error) => {
-                console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', error);
-            });
+            .then(() => console.log('✅ تم ضبط استمرار المصادقة محلياً'))
+            .catch((error) => console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', error));
 
         // ====== مصفوفة آيات اليوم ======
         const dailyVerses = [
@@ -1532,6 +1528,7 @@
             { verse: 'لأَنَّ الْحَيَاةَ هِيَ الْمَسِيحُ وَالْمَوْتُ رِبْحٌ.', reference: 'فيلبي 1:21' }
         ];
 
+        // ====== متغيرات الحالة ======
         let currentUser = null;
         let currentUserId = null;
         let isAdmin = false;
@@ -1594,6 +1591,7 @@
             if (pageId === 'announcements') loadAnnouncements();
             if (pageId === 'my-questions' && currentUser) {
                 startMyQuestionsListener();
+                // تأكد من بدء مستمع الإشعارات أيضاً
                 star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
             }
             if (pageId === 'questions') {
@@ -1676,7 +1674,7 @@
         });
 
         // ====== دالة تحديث واجهة تسجيل الدخول ======
-        let isLoginMode = true; // الوضع الافتراضي هو تسجيل الدخول
+        let isLoginMode = true;
 
         function updateAuthUI() {
             const title = document.getElementById('authTitle');
@@ -1716,6 +1714,7 @@
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
+                    // إلغاء مستمعي المستخدم إن وجدا
                     if (myQuestionsUnsubscribe) {
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
@@ -1732,6 +1731,7 @@
                         window.navigateTo('admin');
                     }
                 } else {
+                    // مستخدم عادي
                     userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
                     userAuthBtn.style.display = 'inline-block';
                     adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
@@ -1739,11 +1739,14 @@
                     document.getElementById('adminDashboard').style.display = 'none';
                     myQuestionsLink.style.display = 'inline-block';
                     notifBell.style.display = 'inline-block';
-                    if (document.getElementById('page-my-questions').classList.contains('active') ||
-                        document.getElementById('page-home').classList.contains('active')) {
-                        star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
+
+                    // === بدء مستمعي الإشعارات للمستخدم فوراً ===
+                    star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
+                    // بدء مستمع أسئلة المستخدم فقط إذا كانت الصفحة نشطة (أو يمكن بدئه دائماً)
+                    if (document.getElementById('page-my-questions').classList.contains('active')) {
                         startMyQuestionsListener();
                     }
+
                     if (document.getElementById('page-admin').classList.contains('active')) {
                         window.navigateTo('home');
                     }
@@ -1752,6 +1755,7 @@
                     }
                 }
             } else {
+                // لا يوجد مستخدم
                 currentUserId = null;
                 isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
@@ -1982,8 +1986,9 @@
             }
         }
 
-        // ====== مستمع إشعارات المستخدم ======
+        // ====== مستمع إشعارات المستخدم (محسّن) ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
+            // إلغاء الاشتراك السابق
             if (userNotifUnsubscribe) {
                 userNotifUnsubscribe();
                 userNotifUnsubscribe = null;
@@ -1995,6 +2000,8 @@
                 return;
             }
 
+            console.log('🔔 بدء مستمع إشعارات المستخدم لـ:', currentUser.uid);
+
             try {
                 const q = query(
                     collection(db, 'userNotifications'),
@@ -2003,9 +2010,11 @@
                 );
 
                 userNotifUnsubscribe = onSnapshot(q, (snapshot) => {
+                    console.log(`📬 تم استلام ${snapshot.size} إشعار للمستخدم`);
                     userNotifications = [];
                     snapshot.forEach(doc => {
-                        userNotifications.push({ id: doc.id, ...doc.data() });
+                        const data = doc.data();
+                        userNotifications.push({ id: doc.id, ...data });
                     });
                     updateUserNotifUI();
 
@@ -2014,15 +2023,16 @@
                         if (change.type === 'added') {
                             const data = change.doc.data();
                             if (!data.read) {
+                                console.log('🔔 إشعار جديد:', data.message);
                                 showToast(`🔔 ${data.message}`, false);
                             }
                         }
                     });
                 }, (error) => {
-                    console.warn('User notifications listener error:', error);
+                    console.warn('❌ خطأ في مستمع إشعارات المستخدم:', error);
                 });
             } catch (error) {
-                console.warn('Could not set up user notifications:', error);
+                console.warn('❌ فشل إعداد مستمع الإشعارات:', error);
             }
         }
 
@@ -2065,6 +2075,7 @@
         window.markUserNotifRead = async function(id) {
             try {
                 await updateDoc(doc(db, 'userNotifications', id), { read: true });
+                console.log('✅ تم تحديث الإشعار كمقروء');
             } catch (e) { console.error(e); }
         };
 
@@ -2213,8 +2224,12 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إضافة إشعار للمستخدم عند الإجابة ======
+        // ====== إضافة إشعار للمستخدم عند الإجابة (محسّن) ======
         async function addUserNotification(userId, message, questionId) {
+            if (!userId) {
+                console.warn('⚠️ محاولة إرسال إشعار بدون userId');
+                return;
+            }
             try {
                 await addDoc(collection(db, 'userNotifications'), {
                     userId: userId,
@@ -2223,7 +2238,7 @@
                     read: false,
                     createdAt: serverTimestamp()
                 });
-                console.log('✅ تم إرسال إشعار للمستخدم:', userId, message);
+                console.log(`✅ تم إرسال إشعار للمستخدم ${userId}: ${message}`);
             } catch (e) {
                 console.error('❌ فشل إرسال إشعار المستخدم:', e);
             }
@@ -2234,7 +2249,6 @@
             const display = document.getElementById('dailyVerseDisplay');
             const refDisplay = document.getElementById('dailyVerseRef');
 
-            // حساب رقم اليوم بناءً على تاريخ ثابت (2000-01-01)
             const startDate = new Date(2000, 0, 1);
             const today = new Date();
             const diffTime = Math.abs(today - startDate);
@@ -2242,16 +2256,13 @@
             const index = diffDays % dailyVerses.length;
             const selected = dailyVerses[index];
 
-            // تحديث الواجهة
             display.textContent = selected.verse;
             refDisplay.textContent = selected.reference;
 
-            // حفظ الآية في Firestore للاستمرارية (اختياري)
             try {
                 const verseRef = doc(db, 'settings', 'dailyVerse');
                 const snap = await getDoc(verseRef);
                 const todayStr = today.toDateString();
-                // إذا كانت الآية المخزنة مختلفة أو تاريخ التحديث مختلف، نقوم بالتحديث
                 if (!snap.exists() || snap.data().verse !== selected.verse || snap.data().lastUpdate !== todayStr) {
                     await setDoc(verseRef, {
                         verse: selected.verse,
@@ -2264,14 +2275,13 @@
             }
         }
 
-        // ====== جدولة تحديث آية اليوم عند منتصف الليل ======
         function scheduleVerseUpdate() {
             const now = new Date();
             const night = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
             const msToMidnight = night - now;
             setTimeout(() => {
                 loadDailyVerse();
-                scheduleVerseUpdate(); // إعادة جدولة التالية
+                scheduleVerseUpdate();
             }, msToMidnight);
         }
 
@@ -2546,20 +2556,17 @@
                     }
                 });
 
-                // تطبيق الفلاتر
                 if (typeFilter !== 'all') items = items.filter(item => item.type === typeFilter);
                 if (answeredFilter === 'answered') items = items.filter(item => item.answered === true);
                 else if (answeredFilter === 'unanswered') items = items.filter(item => item.answered !== true);
                 if (search) items = items.filter(item => item.details.toLowerCase().includes(search));
 
-                // ترتيب تنازلي
                 items.sort((a, b) => {
                     const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
                     const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
                     return db - da;
                 });
 
-                // حفظ العناصر الكاملة وعرض الصفحة الأولى
                 allQuestionsItems = items;
                 currentPage = 1;
                 countEl.textContent = `(${items.length} سؤال)`;
@@ -2572,7 +2579,6 @@
             }
         };
 
-        // ====== عرض صفحة الأسئلة ======
         function renderQuestionsPage() {
             const tbody = document.getElementById('adminQuestionsTable');
             const items = allQuestionsItems;
@@ -2623,12 +2629,10 @@
                 `;
             }).join('');
 
-            // تحديث معلومات الترقيم
             document.getElementById('pageInfo').textContent = `صفحة ${currentPage} من ${totalPages}`;
             document.getElementById('prevPageBtn').disabled = currentPage <= 1;
             document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
 
-            // تفعيل دالة عرض النص الكامل
             window.toggleQuestionText = function(btn) {
                 const container = btn.parentElement;
                 const short = container.querySelector('.short-text');
@@ -2645,7 +2649,6 @@
             };
         }
 
-        // ====== تغيير الصفحة ======
         window.changePage = function(delta) {
             const totalPages = Math.ceil(allQuestionsItems.length / itemsPerPage) || 1;
             const newPage = currentPage + delta;
@@ -2700,7 +2703,7 @@
                     answer: answer
                 });
 
-                // إرسال إشعار للمستخدم
+                // === إرسال إشعار للمستخدم ===
                 if (questionData && questionData.userId) {
                     await addUserNotification(
                         questionData.userId,
@@ -2708,9 +2711,11 @@
                         editingQuestionId
                     );
                     await addNotification(`✅ تمت الإجابة على سؤال للمستخدم ${questionData.userName || 'مستخدم'}`, 'answer');
+                    showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
+                } else {
+                    showToast('✅ تم حفظ الإجابة (بدون إشعار لأن المستخدم غير معروف)');
                 }
 
-                showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
                 modal.classList.remove('show');
                 editingQuestionId = null;
                 loadQuestions();
@@ -2918,7 +2923,7 @@
             } catch (e) { showToast('خطأ', true); }
         };
 
-        // ====== تحديث آية اليوم يدوياً من لوحة التحكم (اختياري) ======
+        // ====== تحديث آية اليوم يدوياً ======
         window.updateDailyVerse = async function() {
             const verse = document.getElementById('verseText').value.trim();
             const ref = document.getElementById('verseRef').value.trim();
@@ -2926,7 +2931,6 @@
             try {
                 await setDoc(doc(db, 'settings', 'dailyVerse'), { verse, reference: ref, lastUpdate: new Date().toDateString() });
                 showToast('تم تحديث آية اليوم');
-                // تحديث الواجهة مباشرة
                 document.getElementById('dailyVerseDisplay').textContent = verse;
                 document.getElementById('dailyVerseRef').textContent = ref;
             } catch (e) { showToast('خطأ', true); }
@@ -2938,10 +2942,9 @@
         renderAnsweredQuestions();
         loadSocialLinks();
         loadAbout();
-        loadDailyVerse(); // تحميل آية اليوم
-        scheduleVerseUpdate(); // جدولة التحديث عند منتصف الليل
+        loadDailyVerse();
+        scheduleVerseUpdate();
 
-        // بدء الاستماع إذا كانت الصفحة نشطة
         setTimeout(() => {
             if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
                 startMyQuestionsListener();
@@ -2960,7 +2963,7 @@
         console.log('📌 تم إزالة orderBy من استعلام أسئلة المستخدم لتجنب أخطاء الفهارس');
         console.log('📧 بريد الأدمن: abshadat.church@gmail.com (غير معروض)');
         console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
-        console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم');
+        console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم (مع مستمع فوري)');
         console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
         console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة نهائياً');
         console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');

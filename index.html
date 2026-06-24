@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* === جميع الأنماط === */
+        /* جميع الأنماط كما هي (نفس الكود السابق) */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1351,6 +1351,7 @@
         </section>
     </main>
 
+    <!-- النوافذ المنبثقة -->
     <div id="userNotifModal" class="modal">
         <div class="modal-content" style="max-width:650px;">
             <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
@@ -1957,7 +1958,8 @@
                         <td>${hasAnswer ? (isPublished ? '✅ منشور' : '⏳ غير منشور') : '⏳ غير مجاب'}</td>
                         <td class="actions">
                             ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')"><i class="fas fa-reply"></i> إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
-                            ${hasAnswer ? `<button class="btn-publish" onclick="window.publishQuestion('${q.id}')"><i class="fas fa-globe"></i> ${isPublished ? 'إخفاء' : 'نشر'}</button>` : ''}
+                            <!-- زر النشر يظهر دائماً، ولكن إذا لم توجد إجابة سيظهر رسالة عند النقر -->
+                            <button class="btn-publish" onclick="window.publishQuestion('${q.id}')"><i class="fas fa-globe"></i> ${isPublished ? 'إخفاء' : 'نشر'}</button>
                             <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')"><i class="fas fa-trash"></i> حذف</button>
                         </td>
                     </tr>
@@ -2016,7 +2018,11 @@
             get(qRef).then(snap => {
                 const q = snap.val();
                 if (!q) { showToast('السؤال غير موجود', true); return; }
-                if (!q.answer || !q.answer.trim()) { showToast('لا يمكن نشر سؤال غير مجاب', true); return; }
+                // التحقق من وجود إجابة
+                if (!q.answer || !q.answer.trim()) {
+                    showToast('⚠️ لا يمكن نشر السؤال لأنه غير مجاب بعد', true);
+                    return;
+                }
                 const newPublished = q.published === true ? false : true;
                 update(qRef, { published: newPublished }).then(() => {
                     showToast(newPublished ? '✅ تم نشر السؤال في أجوبة عامة' : '❌ تم إخفاء السؤال من أجوبة عامة');

@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* ====== جميع الأنماط (نفس السابق، مختصرة) ====== */
+        /* ====== جميع الأنماط (نفس السابق) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1512,6 +1512,7 @@
 
         // ====== دوال التنقل ======
         function navigateTo(page) {
+            console.log(`🔄 التنقل إلى الصفحة: ${page}`);
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
             const target = document.getElementById(`page-${page}`);
             if (target) target.classList.add('active');
@@ -1530,12 +1531,14 @@
             document.getElementById('questionForm').reset();
             document.getElementById('questionSuccess').style.display = 'none';
             document.getElementById('questionFormContainer').querySelector('.card').style.display = 'block';
+            showToast('تم إعادة تعيين النموذج');
         }
 
         function resetPrayerForm() {
             document.getElementById('prayerForm').reset();
             document.getElementById('prayerSuccess').style.display = 'none';
             document.querySelector('#page-prayer .card').style.display = 'block';
+            showToast('تم إعادة تعيين النموذج');
         }
 
         // ====== دوال Firebase ======
@@ -1564,11 +1567,13 @@
                 loadAnnouncementsAdmin();
                 listenToNotifications();
                 startPrayersListener();
+                console.log('✅ تم تفعيل لوحة التحكم للأدمن');
             } else {
                 isAdmin = false;
                 document.getElementById('adminLink').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
                 document.getElementById('adminLoginBtn').style.display = 'inline-block';
+                console.log('👤 مستخدم عادي أو غير أدمن');
             }
         }
 
@@ -1617,6 +1622,7 @@
                     update(notifRef, { read: true });
                 }
             });
+            showToast('تم تحديث جميع الإشعارات كمقروءة');
         }
 
         function deleteAllNotifications() {
@@ -1625,6 +1631,7 @@
                     const notifRef = ref(db, `notifications/${n.id}`);
                     remove(notifRef);
                 });
+                showToast('تم حذف جميع الإشعارات');
             }
         }
 
@@ -1665,6 +1672,7 @@
                     update(notifRef, { read: true });
                 }
             });
+            showToast('تم تحديث جميع إشعاراتك كمقروءة');
         }
 
         function clearAllUserNotifs() {
@@ -1673,6 +1681,7 @@
                     const notifRef = ref(db, `userNotifications/${currentUserId}/${n.id}`);
                     remove(notifRef);
                 });
+                showToast('تم حذف جميع إشعاراتك');
             }
         }
 
@@ -1685,10 +1694,19 @@
                     document.getElementById('dailyVerseDisplay').textContent = data.text || 'لا توجد آية';
                     document.getElementById('dailyVerseRef').textContent = data.reference || '';
                 } else {
-                    document.getElementById('dailyVerseDisplay').textContent = 'لا توجد آية اليوم';
+                    // بيانات افتراضية
+                    const defaultVerse = {
+                        text: 'لأَنَّهُ هَكَذَا أَحَبَّ اللهُ الْعَالَمَ حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.',
+                        reference: 'يوحنا 3:16'
+                    };
+                    set(verseRef, defaultVerse);
+                    document.getElementById('dailyVerseDisplay').textContent = defaultVerse.text;
+                    document.getElementById('dailyVerseRef').textContent = defaultVerse.reference;
+                    console.log('✅ تم إنشاء آية افتراضية');
                 }
-            }).catch(() => {
-                document.getElementById('dailyVerseDisplay').textContent = 'فشل في تحميل الآية';
+            }).catch(err => {
+                console.warn('⚠️ فشل تحميل الآية:', err);
+                document.getElementById('dailyVerseDisplay').textContent = 'لا توجد آية اليوم';
             });
         }
 
@@ -1700,10 +1718,7 @@
             set(verseRef, { text, reference: refText, updatedAt: Date.now() }).then(() => {
                 showToast('تم تحديث آية اليوم بنجاح');
                 loadDailyVerse();
-                // إشعار للمستخدمين
                 addNotification('verse', `تم تحديث آية اليوم: "${text}"`);
-                // إشعار لكل المستخدمين (اختياري)
-                // يمكن إضافته في حلقة للمستخدمين لكننا سنكتفي بالإشعار العام
             }).catch(() => showToast('فشل في تحديث الآية', true));
         }
 
@@ -1841,6 +1856,11 @@
                     document.getElementById('socialFacebookInput').value = data.facebook || '';
                     document.getElementById('socialInstagramInput').value = data.instagram || '';
                     document.getElementById('whatsappInput').value = data.whatsapp || '';
+                } else {
+                    // بيانات افتراضية
+                    const defaultSocial = { facebook: '#', instagram: '#', whatsapp: '' };
+                    set(refSocial, defaultSocial);
+                    console.log('✅ تم إنشاء روابط تواصل افتراضية');
                 }
             });
         }
@@ -1865,7 +1885,11 @@
                     document.getElementById('aboutContent').innerHTML = data.text || 'لا توجد نبذة';
                     document.getElementById('aboutEditor').value = data.text || '';
                 } else {
-                    document.getElementById('aboutContent').textContent = 'لم يتم إضافة نبذة بعد';
+                    const defaultAbout = { text: 'الكنيسة الإنجيلية المشيخية بإبشادات هي كنيسة مسيحية تهدف إلى نشر الإنجيل وخدمة المجتمع.' };
+                    set(aboutRef, defaultAbout);
+                    document.getElementById('aboutContent').textContent = defaultAbout.text;
+                    document.getElementById('aboutEditor').value = defaultAbout.text;
+                    console.log('✅ تم إنشاء نبذة افتراضية');
                 }
             });
         }
@@ -2229,7 +2253,7 @@
                         return;
                     }
                     container.innerHTML = all.map(item => {
-                        const isQuestion = !!item.text && !item.reply; // افتراض أن طلبات الصلاة تحتوي على reply
+                        const isQuestion = !!item.text && item.reply === undefined;
                         const isPrayer = !!item.text && item.reply !== undefined;
                         return `
                             <div class="my-item-card">
@@ -2539,6 +2563,7 @@
         console.log('📢 الإشعارات تعمل: عند الإجابة، النشر، الإعلانات، تحديث الآية');
         console.log('🔄 زر "اسأل سؤال آخر" يعيد تعيين النموذج');
         console.log('📊 جميع طلبات الصلاة تظهر في لوحة التحكم');
+        console.log('📌 تم إضافة بيانات افتراضية لضمان عمل التطبيق فوراً');
     </script>
 </body>
 </html>

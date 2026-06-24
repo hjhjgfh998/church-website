@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* ====== جميع الأنماط (مختصرة لتوفير المساحة، ولكنها كاملة) ====== */
+        /* ====== جميع الأنماط ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -80,7 +80,6 @@
         .mb-4 { margin-bottom:2rem; }
         .mt-2 { margin-top:1rem; }
         .mb-2 { margin-bottom:1rem; }
-        /* ====== الهيدر ====== */
         header { background:var(--bg-surface); border-bottom:1px solid var(--border-color); padding:12px 0; position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); transition:all var(--transition); }
         .header-inner { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
         .logo-area { display:flex; align-items:center; gap:14px; }
@@ -212,7 +211,6 @@
 </head>
 <body>
     <div id="toast" class="toast"></div>
-    <!-- ====== الهيدر ====== -->
     <header>
         <div class="container header-inner">
             <div class="logo-area"><h1>الكنيسة الإنجيلية المشيخية بإبشادات</h1></div>
@@ -239,7 +237,6 @@
             </nav>
         </div>
     </header>
-    <!-- ====== المحتوى ====== -->
     <main class="container">
         <!-- ====== الرئيسية ====== -->
         <section id="page-home" class="page active">
@@ -291,6 +288,10 @@
                     <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                         <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                         <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
+                        <!-- ====== زر لطرح سؤال آخر ====== -->
+                        <button class="btn btn-primary mt-4" id="askAnotherBtn" onclick="window.resetQuestionForm()">
+                            <i class="fas fa-plus"></i> اسأل سؤال آخر
+                        </button>
                     </div>
                 </div>
             </div>
@@ -324,6 +325,7 @@
                 <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                     <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                     <p style="font-size:1.2rem; margin-top:10px;">تم استلام طلب صلاتك، باركك الرب.</p>
+                    <button class="btn btn-primary mt-4" onclick="window.resetPrayerForm()"><i class="fas fa-plus"></i> طلب صلاة آخر</button>
                 </div>
             </div>
         </section>
@@ -434,10 +436,7 @@
                         <select id="adminFilterAnswered" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
                     </div>
                     <div class="table-responsive">
-                        <table>
-                            <thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
-                            <tbody id="adminQuestionsTable"></tbody>
-                        </table>
+                        <table><thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="adminQuestionsTable"></tbody></table>
                     </div>
                     <div class="pagination-controls" id="paginationControls">
                         <button class="btn btn-sm btn-outline" id="prevPageBtn" onclick="window.changePage(-1)"><i class="fas fa-chevron-right"></i> السابق</button>
@@ -445,7 +444,7 @@
                         <button class="btn btn-sm btn-outline" id="nextPageBtn" onclick="window.changePage(1)">التالي <i class="fas fa-chevron-left"></i></button>
                     </div>
                 </div>
-                <!-- ====== طلبات الصلاة (مع مستمع لحظي) ====== -->
+                <!-- طلبات الصلاة -->
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة <span id="prayersCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
@@ -509,20 +508,17 @@
     <footer><div class="container">Designed &amp; Developed by John Osama &copy; <span id="year"></span></div></footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت كامل مع التعديلات ====== -->
+    <!-- ====== جافاسكريبت ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
         import {
-            getFirestore,
-            collection, doc, addDoc, getDocs, updateDoc, deleteDoc,
-            query, where, orderBy, getDoc, setDoc, serverTimestamp,
-            writeBatch, onSnapshot
+            getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc,
+            query, where, orderBy, getDoc, setDoc, serverTimestamp, writeBatch, onSnapshot
         } from "firebase/firestore";
         import {
             getAuth, signInWithEmailAndPassword, onAuthStateChanged,
-            signOut, createUserWithEmailAndPassword, updateProfile,
-            setPersistence, browserLocalPersistence
+            signOut, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence
         } from "firebase/auth";
 
         const firebaseConfig = {
@@ -543,7 +539,6 @@
             .then(() => console.log('✅ تم ضبط استمرار المصادقة محلياً'))
             .catch(err => console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', err));
 
-        // ====== مصفوفة آيات اليوم ======
         const dailyVerses = [
             { verse: 'لأَنَّهُ هكَذَا أَحَبَّ اللهُ الْعَالَمَ، حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
             { verse: 'لاَ تَقْلَقُوا لأَنِّي أَنَا مَعَكُمْ، لاَ تَرْتَعِبُوا لأَنِّي إِلَهُكُمْ. أُشَدِّدُكُمْ وَأُعِينُكُمْ وَأُؤَيِّدُكُمْ بِيَمِينِ بِرِّي.', reference: 'إشعياء 41:10' },
@@ -564,7 +559,7 @@
             { verse: 'لأَنَّ الْحَيَاةَ هِيَ الْمَسِيحُ وَالْمَوْتُ رِبْحٌ.', reference: 'فيلبي 1:21' }
         ];
 
-        // ====== متغيرات الحالة ======
+        // ====== متغيرات ======
         let currentUser = null, currentUserId = null, isAdmin = false;
         let notifications = [], userNotifications = [];
         let editingQuestionId = null, editingPrayerId = null;
@@ -578,7 +573,6 @@
 
         console.log('✅ Firebase initialized');
 
-        // ====== دوال مساعدة ======
         const toastEl = document.getElementById('toast');
         let toastTimeout = null;
         function showToast(msg, isError = false) {
@@ -588,6 +582,22 @@
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
         }
+
+        // ====== دالة إعادة تعيين نموذج السؤال ======
+        window.resetQuestionForm = function() {
+            document.getElementById('questionForm').reset();
+            document.getElementById('questionForm').style.display = 'block';
+            document.getElementById('questionSuccess').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // ====== دالة إعادة تعيين نموذج طلب الصلاة ======
+        window.resetPrayerForm = function() {
+            document.getElementById('prayerForm').reset();
+            document.getElementById('prayerForm').style.display = 'block';
+            document.getElementById('prayerSuccess').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
 
         // ====== الوضع الليلي ======
         const themeToggle = document.getElementById('themeToggle');
@@ -619,6 +629,9 @@
                 const msg = document.getElementById('authRequiredMessage');
                 if (!currentUser) { container.style.display = 'none'; msg.style.display = 'block'; }
                 else { container.style.display = 'block'; msg.style.display = 'none'; }
+                // إعادة تعيين النموذج إذا كان في حالة النجاح
+                document.getElementById('questionForm').style.display = 'block';
+                document.getElementById('questionSuccess').style.display = 'none';
             }
         };
 
@@ -700,8 +713,35 @@
         // ====== إرسال إشعار لجميع المستخدمين ======
         async function notifyAllUsers(message, type) {
             try {
+                // محاولة جلب جميع المستخدمين
                 const usersSnap = await getDocs(collection(db, 'users'));
-                if (usersSnap.empty) { console.log('⚠️ لا يوجد مستخدمين'); return; }
+                if (usersSnap.empty) {
+                    console.log('⚠️ لا يوجد مستخدمين في مجموعة users');
+                    // محاولة إنشاء مستند للمستخدم الحالي إذا كان موجوداً
+                    if (currentUser) {
+                        await ensureUserDocument(currentUser);
+                    }
+                    // المحاولة مرة أخرى
+                    const retrySnap = await getDocs(collection(db, 'users'));
+                    if (retrySnap.empty) {
+                        console.log('⚠️ لا يزال لا يوجد مستخدمين');
+                        return;
+                    }
+                    const batch = writeBatch(db);
+                    let count = 0;
+                    retrySnap.forEach(doc => {
+                        const userId = doc.id;
+                        const notifRef = doc(collection(db, 'userNotifications'));
+                        batch.set(notifRef, {
+                            userId, message, type: type || 'general',
+                            read: false, createdAt: serverTimestamp()
+                        });
+                        count++;
+                    });
+                    await batch.commit();
+                    console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم (بعد المحاولة الثانية)`);
+                    return;
+                }
                 const batch = writeBatch(db);
                 let count = 0;
                 usersSnap.forEach(doc => {
@@ -715,7 +755,9 @@
                 });
                 await batch.commit();
                 console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم`);
-            } catch (e) { console.error('❌ فشل إرسال الإشعارات:', e); }
+            } catch (e) {
+                console.error('❌ فشل إرسال الإشعارات:', e);
+            }
         }
 
         // ====== إدارة المستخدمين ======
@@ -741,7 +783,7 @@
                     updateUserNotifUI();
                     loadAdminData();
                     listenToNotifications();
-                    startPrayersListener(); // بدء مستمع طلبات الصلاة
+                    startPrayersListener();
                     if (document.getElementById('page-admin-login').classList.contains('active')) window.navigateTo('admin');
                 } else {
                     userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
@@ -755,6 +797,8 @@
                     if (document.getElementById('page-my-questions').classList.contains('active')) startMyItemsListeners();
                     if (document.getElementById('page-admin').classList.contains('active')) window.navigateTo('home');
                     if (document.getElementById('page-admin-login').classList.contains('active')) window.navigateTo('home');
+                    // التأكد من أن مستند المستخدم موجود
+                    await ensureUserDocument(user);
                 }
             } else {
                 currentUserId = null; isAdmin = false;
@@ -949,7 +993,9 @@
                     });
                 }, err => {
                     console.warn('❌ خطأ في مستمع الإشعارات:', err);
-                    setTimeout(() => { if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8(); } }, 5000);
+                    setTimeout(() => {
+                        if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8(); }
+                    }, 5000);
                 });
             } catch(e) { console.warn('❌ فشل إعداد مستمع الإشعارات:', e); }
         }
@@ -1324,7 +1370,7 @@
             } catch(e) { console.error('Stats error:', e); }
         }
 
-        // ====== تحميل الأسئلة في لوحة التحكم ======
+        // ====== تحميل الأسئلة ======
         window.loadQuestions = async function() {
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
             const typeFilter = document.getElementById('adminFilterType').value;
@@ -1431,7 +1477,7 @@
             renderQuestionsPage();
         };
 
-        // ====== طلبات الصلاة في لوحة التحكم (مستمع لحظي) ======
+        // ====== طلبات الصلاة في لوحة التحكم ======
         function startPrayersListener() {
             if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
             if (!isAdmin) return;
@@ -1441,7 +1487,6 @@
                 renderPrayersList(snapshot);
             }, (error) => {
                 console.error('خطأ في مستمع طلبات الصلاة:', error);
-                // محاولة إعادة الاتصال
                 setTimeout(() => { if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; startPrayersListener(); } }, 5000);
             });
         }
@@ -1479,7 +1524,6 @@
             if (countEl) countEl.textContent = `(${snapshot.size})`;
         }
 
-        // دالة تحميل أولي (مرة واحدة) لضمان ظهور البيانات حتى قبل المستمع
         async function loadPrayersOnce() {
             try {
                 const q = query(collection(db, 'prayers'), orderBy('createdAt', 'desc'));
@@ -1629,10 +1673,6 @@
                 showToast('✅ تم حفظ الرد وإرسال إشعار للمستخدم');
                 prayerReplyModal.classList.remove('show');
                 editingPrayerId = null;
-                // تحديث طلبات الصلاة في لوحة التحكم
-                if (isAdmin) {
-                    // المستمع سيتولى التحديث تلقائياً
-                }
                 if (document.getElementById('page-my-questions').classList.contains('active')) startMyItemsListeners();
             } catch(e) { showToast('❌ خطأ في حفظ الرد', true); console.error(e); }
         });
@@ -1649,7 +1689,8 @@
                 showToast(current ? 'تم إلغاء النشر' : 'تم نشر السؤال');
                 if (!current) {
                     const data = snap.data();
-                    await notifyAllUsers(`📝 تم نشر إجابة جديدة على سؤال: "${data.details.substring(0,50)}..."`, 'answer');
+                    const displayName = data.anonymous ? 'مستخدم مجهول' : (data.userName || 'مستخدم');
+                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0,50)}..." (بواسطة ${displayName})`, 'answer');
                 }
                 loadQuestions();
                 renderAnsweredQuestions();
@@ -1690,81 +1731,4 @@
                     <h2 style="text-align:center;">قائمة الأسئلة الواردة</h2>
                     <table><thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>${content}</tbody></table>
                     <p style="margin-top:20px; text-align:center;">تم الطباعة في: ${new Date().toLocaleString('ar-EG')}</p>
-                    <script>window.onload = function() { window.print(); }<\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-        };
-
-        // ====== إدارة الإعلانات ======
-        async function loadAnnouncementsAdmin() {
-            const container = document.getElementById('adminAnnouncementsList');
-            container.innerHTML = 'جاري التحميل...';
-            try {
-                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
-                const snap = await getDocs(q);
-                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد إعلانات.</p>'; return; }
-                let html = '';
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    html += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
-                            <div><strong>${data.title}</strong> - ${data.content}</div>
-                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${doc.id}')">حذف</button>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch(e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
-        }
-
-        window.addAnnouncement = async function() {
-            const title = document.getElementById('announceTitle').value.trim();
-            const content = document.getElementById('announceContent').value.trim();
-            if (!title || !content) { showToast('املأ الحقول', true); return; }
-            try {
-                await addDoc(collection(db, 'announcements'), { title, content, date: serverTimestamp() });
-                showToast('تمت الإضافة');
-                document.getElementById('announceTitle').value = '';
-                document.getElementById('announceContent').value = '';
-                loadAnnouncementsAdmin();
-                loadAnnouncements();
-                // إرسال إشعار لجميع المستخدمين
-                await notifyAllUsers(`📢 إعلان جديد: "${title}"`, 'announcement');
-            } catch(e) { showToast('خطأ', true); }
-        };
-
-        window.deleteAnnouncement = async function(id) {
-            if (!confirm('حذف الإعلان؟')) return;
-            try { await deleteDoc(doc(db, 'announcements', id)); showToast('تم الحذف'); loadAnnouncementsAdmin(); loadAnnouncements(); }
-            catch(e) { showToast('خطأ', true); }
-        };
-
-        // ====== التهيئة ======
-        loadAnnouncements();
-        document.getElementById('year').textContent = new Date().getFullYear();
-        renderAnsweredQuestions();
-        loadSocialLinks();
-        loadAbout();
-        loadDailyVerse();
-        scheduleVerseUpdate();
-
-        setTimeout(() => {
-            if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
-                startMyItemsListeners();
-            }
-            if (document.getElementById('page-questions').classList.contains('active')) {
-                if (!currentUser) {
-                    document.getElementById('questionFormContainer').style.display = 'none';
-                    document.getElementById('authRequiredMessage').style.display = 'block';
-                }
-            }
-        }, 100);
-
-        console.log('✅ التطبيق جاهز بالكامل');
-        console.log('✅ إصلاح عرض جميع طلبات الصلاة في لوحة التحكم');
-        console.log('✅ إصلاح إرسال الإشعارات عند إضافة إعلان أو نشر إجابة');
-    </script>
-</body>
-</html>
+                    <script>window.on

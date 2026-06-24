@@ -12,175 +12,1092 @@
         {
             "imports": {
                 "firebase/app": "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js",
-                "firebase/firestore": "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js",
                 "firebase/auth": "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js"
             }
         }
     </script>
     <style>
-        /* ====== جميع الأنماط (نفس السابق، مختصرة) ====== */
-        :root { --color-primary: #1a2a3a; --color-primary-light: #2c4056; --color-gold: #c9a87c; --color-gold-light: #dfc8a8; --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%); --bg-body: #f5f1eb; --bg-surface: #ffffff; --bg-card: #ffffff; --text-primary: #1a1f2a; --text-secondary: #3d4552; --text-muted: #7a8291; --border-color: #e8e2d9; --shadow-md: 0 8px 30px rgba(0,0,0,0.06); --shadow-lg: 0 20px 60px rgba(0,0,0,0.08); --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4,0,0.2,1); --font-family: 'Cairo', sans-serif; --hero-bg: radial-gradient(circle at 30% 40%, rgba(201,168,124,0.15) 0%, transparent 70%); }
-        [data-theme="dark"] { --bg-body: #11161e; --bg-surface: #1a232e; --bg-card: #1e2833; --text-primary: #edf2f7; --text-secondary: #cbd5e0; --text-muted: #94a3b8; --border-color: #2d3b47; --shadow-md: 0 8px 30px rgba(0,0,0,0.4); --shadow-lg: 0 20px 60px rgba(0,0,0,0.5); --hero-bg: radial-gradient(circle at 30% 40%, rgba(201,168,124,0.08) 0%, transparent 70%); }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:var(--font-family); background-color:var(--bg-body); color:var(--text-primary); transition: background-color 0.5s, color 0.5s; line-height:1.7; min-height:100vh; }
-        a { text-decoration:none; color:inherit; }
-        button { font-family:var(--font-family); cursor:pointer; border:none; background:none; color:inherit; }
-        input, select, textarea { font-family:var(--font-family); background:var(--bg-surface); color:var(--text-primary); border:2px solid var(--border-color); border-radius:var(--radius-sm); padding:14px 18px; width:100%; transition: border-color var(--transition), box-shadow var(--transition); font-size:1rem; }
-        input:focus, select:focus, textarea:focus { outline:none; border-color:var(--color-gold); box-shadow:0 0 0 4px rgba(201,168,124,0.15); }
-        textarea { resize:vertical; min-height:120px; }
-        label { font-weight:600; display:block; margin-bottom:8px; color:var(--text-secondary); font-size:0.95rem; }
-        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
-        @media (max-width:640px) { .container { padding:0 16px; } }
-        .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px 34px; border-radius:50px; font-weight:700; font-size:1rem; transition:all var(--transition); border:2px solid transparent; background:var(--color-gold-gradient); color:#fff; box-shadow:0 4px 16px rgba(201,168,124,0.3); position:relative; overflow:hidden; }
-        .btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0.1); transform:translateX(-100%); transition:transform var(--transition); }
-        .btn:hover::after { transform:translateX(0); }
-        .btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(201,168,124,0.4); }
-        .btn-primary { background:var(--color-primary); border-color:var(--color-primary); }
-        .btn-primary:hover { background:var(--color-primary-light); }
-        .btn-danger { background:#c0392b; border-color:#c0392b; }
-        .btn-success { background:#27ae60; border-color:#27ae60; }
-        .btn-sm { padding:8px 18px; font-size:0.85rem; }
-        .btn-outline { background:transparent; border-color:var(--color-gold); color:var(--color-gold); }
-        .btn-outline:hover { background:var(--color-gold); color:#fff; }
-        .btn-refresh { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
-        .btn-refresh:hover { background:var(--color-primary-light); }
-        .card { background:var(--bg-card); border-radius:var(--radius-md); padding:24px 28px; box-shadow:var(--shadow-md); border:1px solid var(--border-color); transition:all var(--transition); }
-        .card:hover { box-shadow:var(--shadow-lg); transform:translateY(-3px); }
-        .section-title { font-size:2.2rem; font-weight:800; margin-bottom:1.8rem; color:var(--text-primary); position:relative; display:inline-block; }
-        .section-title::after { content:''; position:absolute; bottom:-8px; right:0; width:60px; height:4px; background:var(--color-gold-gradient); border-radius:4px; }
-        .section-title.text-center::after { right:50%; transform:translateX(50%); }
-        .text-center { text-align:center; }
-        .mt-4 { margin-top:2rem; }
-        .mb-4 { margin-bottom:2rem; }
-        .mt-2 { margin-top:1rem; }
-        .mb-2 { margin-bottom:1rem; }
-        header { background:var(--bg-surface); border-bottom:1px solid var(--border-color); padding:12px 0; position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); transition:all var(--transition); }
-        .header-inner { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-        .logo-area { display:flex; align-items:center; gap:14px; }
-        .logo-area h1 { font-size:1.3rem; font-weight:800; color:var(--color-primary); transition:color var(--transition); }
-        [data-theme="dark"] .logo-area h1 { color:var(--color-gold); }
-        nav { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-        nav a { padding:8px 18px; border-radius:50px; font-weight:600; font-size:0.95rem; transition:all var(--transition); color:var(--text-secondary); }
-        nav a:hover, nav a.active { background:var(--color-gold-gradient); color:#fff; box-shadow:0 4px 12px rgba(201,168,124,0.25); }
-        .theme-toggle { font-size:1.3rem; padding:8px 14px; border-radius:50px; background:var(--bg-body); border:1px solid var(--border-color); transition:all var(--transition); }
-        .theme-toggle:hover { background:var(--color-gold); color:#fff; }
-        .notification-badge { position:relative; display:inline-block; }
-        .notification-badge .badge-count { position:absolute; top:-8px; right:-8px; background:#e74c3c; color:#fff; border-radius:50%; padding:2px 8px; font-size:0.7rem; font-weight:700; min-width:18px; text-align:center; animation:pulse 1.5s infinite; }
-        @keyframes pulse { 0%{transform:scale(1);} 50%{transform:scale(1.2);} 100%{transform:scale(1);} }
-        .page { display:none; padding:40px 0 60px; animation:fadeIn 0.5s ease; }
-        .page.active { display:block; }
-        @keyframes fadeIn { 0%{opacity:0; transform:translateY(20px);} 100%{opacity:1; transform:translateY(0);} }
-        .hero { position:relative; height:520px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:2.5rem; background:var(--color-primary); display:flex; align-items:center; justify-content:center; text-align:center; color:#fff; padding:20px; background-image:var(--hero-bg); }
-        .hero-content { position:relative; z-index:2; max-width:700px; display:flex; flex-direction:column; align-items:center; gap:14px; }
-        .hero-content h2 { font-size:3rem; font-weight:900; text-shadow:0 4px 30px rgba(0,0,0,0.4); line-height:1.2; }
-        .hero-content p { font-size:1.4rem; opacity:0.95; text-shadow:0 2px 20px rgba(0,0,0,0.3); }
-        #dailyVerseDisplay { font-size:1.25rem; line-height:1.9; word-wrap:break-word; max-height:200px; overflow-y:auto; padding:4px 0; }
-        #dailyVerseDisplay::-webkit-scrollbar { width:4px; }
-        #dailyVerseDisplay::-webkit-scrollbar-thumb { background:var(--color-gold); border-radius:4px; }
-        .question-card { border-right:4px solid var(--color-gold); padding:18px 22px; margin-bottom:16px; background:var(--bg-card); border-radius:0 var(--radius-sm) var(--radius-sm) 0; box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all var(--transition); }
-        .question-card:hover { box-shadow:var(--shadow-md); transform:translateX(-4px); }
-        .question-card .q-title { font-weight:700; font-size:1.1rem; }
-        .question-card .q-answer { margin-top:10px; padding:14px 18px; background:var(--bg-body); border-radius:var(--radius-sm); color:var(--text-secondary); border-right:3px solid var(--color-gold-light); }
-        .question-card .q-meta { font-size:0.85rem; color:var(--text-muted); margin-top:6px; }
-        .my-item-card { border-right:4px solid var(--color-gold); padding:18px 22px; margin-bottom:16px; background:var(--bg-card); border-radius:0 var(--radius-sm) var(--radius-sm) 0; box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all var(--transition); }
-        .my-item-card:hover { box-shadow:var(--shadow-md); transform:translateX(-4px); }
-        .my-item-card .item-details { font-size:1.05rem; margin-bottom:6px; }
-        .my-item-card .item-answer { margin-top:10px; padding:12px 16px; background:var(--bg-body); border-radius:var(--radius-sm); color:var(--text-secondary); border-right:3px solid var(--color-gold-light); }
-        .my-item-card .item-meta { font-size:0.85rem; color:var(--text-muted); margin-top:6px; }
-        .my-item-card .item-notification { margin-top:8px; padding:8px 14px; background:#d4edda; color:#155724; border-radius:var(--radius-sm); font-size:0.9rem; border-right:3px solid #28a745; display:none; }
-        .my-item-card .item-notification.show { display:block; }
-        .announcement-item { padding:18px 0; border-bottom:1px solid var(--border-color); display:flex; gap:16px; align-items:flex-start; }
-        .announcement-item:last-child { border-bottom:none; }
-        .announcement-item .announce-content { flex:1; }
-        .announcement-item h4 { font-size:1.1rem; font-weight:700; color:var(--color-primary); }
-        .announcement-item .date { color:var(--text-muted); font-size:0.85rem; margin-top:4px; }
-        .table-responsive { overflow-x:auto; }
-        table { width:100%; border-collapse:collapse; font-size:0.95rem; }
-        th { background:var(--bg-body); color:var(--text-secondary); font-weight:700; padding:14px 12px; text-align:right; border-bottom:2px solid var(--border-color); white-space:nowrap; }
-        td { padding:14px 12px; border-bottom:1px solid var(--border-color); vertical-align:middle; max-width:300px; }
-        td .question-text { word-wrap:break-word; line-height:1.6; }
-        td .question-text .short-text { display:inline; }
-        td .question-text .full-text { display:none; }
-        td .question-text .full-text.show { display:inline; }
-        td .question-text .toggle-btn { color:var(--color-gold); font-weight:600; cursor:pointer; font-size:0.85rem; background:none; border:none; padding:0 4px; }
-        td .question-text .toggle-btn:hover { text-decoration:underline; }
-        .actions { display:flex; gap:6px; flex-wrap:wrap; }
-        .actions button { padding:4px 14px; border-radius:50px; font-size:0.8rem; font-weight:600; transition:all 0.2s; }
-        .actions .btn-answer { background:var(--color-primary); color:#fff; }
-        .actions .btn-publish { background:var(--color-gold); color:#fff; }
-        .actions .btn-delete { background:#c0392b; color:#fff; }
-        .actions .btn-edit { background:#f39c12; color:#fff; }
-        .actions .btn-prayer-reply { background:#8e44ad; color:#fff; }
-        .search-filter { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem; }
-        .search-filter input, .search-filter select { width:auto; flex:1; min-width:160px; }
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
-        .modal.show { display:flex; }
-        .modal-content { background:var(--bg-card); border-radius:var(--radius-lg); max-width:700px; width:90%; padding:30px; box-shadow:var(--shadow-lg); max-height:90vh; overflow-y:auto; }
-        .modal-content h3 { margin-bottom:16px; color:var(--color-primary); }
-        .modal-content .form-group { margin-bottom:16px; }
-        .modal-content textarea { min-height:200px; font-size:1rem; }
-        .modal-actions { display:flex; gap:12px; justify-content:flex-end; }
-        .admin-section { margin-bottom:3rem; }
-        .admin-section .section-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.2rem; }
-        .admin-section h3 { font-size:1.5rem; font-weight:700; color:var(--text-primary); margin:0; }
-        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:1.2rem; margin-bottom:2.5rem; }
-        .stat-card { background:var(--bg-card); padding:22px 18px; border-radius:var(--radius-md); text-align:center; border:1px solid var(--border-color); box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all var(--transition); }
-        .stat-card:hover { box-shadow:var(--shadow-md); transform:translateY(-4px); }
-        .stat-card .number { font-size:2.4rem; font-weight:900; color:var(--color-gold); }
-        .stat-card .label { font-size:0.9rem; color:var(--text-muted); margin-top:4px; }
-        .login-box { max-width:420px; margin:60px auto; padding:44px 40px; background:var(--bg-card); border-radius:var(--radius-lg); box-shadow:0 30px 80px rgba(0,0,0,0.12); border:1px solid var(--border-color); }
-        .login-box h2 { text-align:center; margin-bottom:28px; font-weight:800; }
-        .login-box .subtitle { text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:0.95rem; }
-        .login-box .toggle-link { text-align:center; margin-top:16px; color:var(--color-gold); cursor:pointer; font-weight:600; }
-        .login-box .toggle-link:hover { text-decoration:underline; }
-        .toast { position:fixed; bottom:30px; left:30px; background:var(--bg-card); color:var(--text-primary); padding:18px 28px; border-radius:var(--radius-sm); box-shadow:0 8px 30px rgba(0,0,0,0.2); border-right:5px solid var(--color-gold); z-index:999; transform:translateY(100px); opacity:0; transition:all 0.4s ease; font-weight:600; max-width:90%; }
-        .toast.show { transform:translateY(0); opacity:1; }
-        .notification-item { padding:12px 16px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; }
-        .notification-item:last-child { border-bottom:none; }
-        .notification-item .notif-time { font-size:0.8rem; color:var(--text-muted); }
-        .notification-item .notif-text { flex:1; margin-left:12px; font-size:1rem; line-height:1.6; }
-        .notification-item .notif-type { padding:2px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; }
-        .notif-type.question { background:var(--color-primary); color:#fff; }
-        .notif-type.prayer { background:var(--color-gold); color:#fff; }
-        .notif-type.answer { background:#27ae60; color:#fff; }
-        .notif-type.verse { background:#3498db; color:#fff; }
-        .notif-type.announcement { background:#e67e22; color:#fff; }
-        .notif-list { max-height:400px; overflow-y:auto; }
-        .notif-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
-        .social-links { display:flex; gap:20px; justify-content:center; font-size:2.2rem; margin:16px 0; }
-        .social-links a { transition:all var(--transition); color:var(--text-secondary); }
-        .social-links a:hover { color:var(--color-gold); transform:scale(1.15); }
-        footer { background:var(--bg-surface); border-top:1px solid var(--border-color); padding:28px 0; text-align:center; color:var(--text-muted); font-size:0.95rem; margin-top:40px; }
-        .about-text { white-space:pre-wrap; line-height:1.9; }
-        .whatsapp-btn { display:inline-flex; align-items:center; gap:12px; padding:14px 34px; border-radius:50px; font-weight:700; font-size:1rem; background:#25d366; color:#fff; border:2px solid #25d366; transition:all var(--transition); box-shadow:0 4px 16px rgba(37,211,102,0.3); text-decoration:none; }
-        .whatsapp-btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(37,211,102,0.4); color:#fff; }
-        .whatsapp-btn i { font-size:1.5rem; }
-        .user-auth-btn { background:var(--color-gold); color:#fff; border-radius:50px; padding:6px 18px; font-size:0.9rem; }
-        .user-auth-btn:hover { background:var(--color-primary); }
-        .admin-login-btn { background:var(--color-primary); color:#fff; border-radius:50px; padding:6px 18px; font-size:0.9rem; }
-        .admin-login-btn:hover { background:var(--color-gold); }
-        .refresh-container { display:flex; justify-content:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
-        .no-questions { text-align:center; color:var(--text-muted); padding:30px 0; }
-        .status-connected { color:#27ae60; }
-        .status-error { color:#c0392b; }
-        .status-loading { color:var(--text-muted); }
-        .pagination-controls { display:flex; justify-content:center; align-items:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
-        .pagination-controls .page-info { font-weight:600; color:var(--text-secondary); padding:0 8px; }
-        .pagination-controls .btn { padding:6px 18px; font-size:0.85rem; min-width:70px; }
-        #notifBell { position:relative; display:none; padding:6px 12px; border-radius:50px; transition:all var(--transition); color:var(--text-secondary); }
-        #notifBell:hover { background:var(--color-gold-gradient); color:#fff; }
-        #notifBell .badge-count { position:absolute; top:-4px; right:-4px; background:#e74c3c; color:#fff; border-radius:50%; padding:2px 7px; font-size:0.65rem; font-weight:700; min-width:18px; text-align:center; animation:pulse 1.5s infinite; }
-        #userNotifModal .modal-content { max-width:650px; }
-        #userNotifModal .modal-actions .btn { padding:8px 18px; font-size:0.9rem; min-width:auto; border-radius:30px; }
-        #userNotifModal .modal-actions .btn-outline { border-color:var(--color-gold); color:var(--color-gold); background:transparent; }
-        #userNotifModal .modal-actions .btn-outline:hover { background:var(--color-gold); color:#fff; }
-        #userNotifModal .modal-actions .btn-danger { background:#c0392b; border-color:#c0392b; }
-        #userNotifModal .modal-actions .btn-primary { background:var(--color-primary); border-color:var(--color-primary); }
-        #userNotifModal .notification-item .notif-text { font-size:1.05rem; line-height:1.8; }
-        @media print { .no-print { display:none !important; } body { background:#fff !important; color:#000 !important; } .card { box-shadow:none !important; border:1px solid #ccc !important; } table { font-size:12px !important; } .actions { display:none !important; } .theme-toggle, nav a, header .logo-area h1 { color:#000 !important; } header { background:#fff !important; border-bottom:1px solid #ccc !important; } .container { max-width:100% !important; padding:0 10px !important; } .page { padding:20px 0 !important; } .btn { display:none !important; } .admin-section .section-header .btn { display:none !important; } .pagination-controls { display:none !important; } }
-        @media (max-width:992px) { .hero { height:420px; } .hero-content h2 { font-size:2.4rem; } .section-title { font-size:1.8rem; } }
-        @media (max-width:768px) { .hero { height:380px; } .hero-content h2 { font-size:2rem; } .hero-content p { font-size:1.1rem; } .logo-area h1 { font-size:1rem; } nav a { padding:6px 12px; font-size:0.85rem; } .stats-grid { grid-template-columns:1fr 1fr; } .login-box { padding:32px 24px; margin:30px 16px; } td { max-width:150px; } .announcement-item { flex-direction:column; align-items:stretch; } .pagination-controls .btn { padding:4px 12px; font-size:0.75rem; min-width:50px; } #userNotifModal .modal-actions .btn { padding:4px 10px; font-size:0.7rem; } #userNotifModal .modal-content { max-width:95%; padding:20px; } }
-        @media (max-width:480px) { .header-inner { flex-direction:column; align-items:stretch; } nav { justify-content:center; } .hero { height:300px; } .hero-content h2 { font-size:1.6rem; } .hero-content p { font-size:1rem; } .btn { padding:12px 24px; font-size:0.9rem; } .card { padding:18px; } .stats-grid { grid-template-columns:1fr 1fr; gap:0.8rem; } .stat-card .number { font-size:1.8rem; } .section-title { font-size:1.5rem; } td { max-width:100px; font-size:0.85rem; } td .question-text .toggle-btn { font-size:0.7rem; } #userNotifModal .modal-actions { flex-direction:column; gap:6px; } #userNotifModal .modal-actions .btn { width:100%; justify-content:center; } #userNotifModal .modal-content { max-width:98%; padding:16px; } }
+        /* ====== جميع الأنماط (نفس السابق، مختصرة لتوفير المساحة) ====== */
+        :root {
+            --color-primary: #1a2a3a;
+            --color-primary-light: #2c4056;
+            --color-gold: #c9a87c;
+            --color-gold-light: #dfc8a8;
+            --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%);
+            --bg-body: #f5f1eb;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a1f2a;
+            --text-secondary: #3d4552;
+            --text-muted: #7a8291;
+            --border-color: #e8e2d9;
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: 'Cairo', sans-serif;
+            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.15) 0%, transparent 70%);
+        }
+        [data-theme="dark"] {
+            --bg-body: #11161e;
+            --bg-surface: #1a232e;
+            --bg-card: #1e2833;
+            --text-primary: #edf2f7;
+            --text-secondary: #cbd5e0;
+            --text-muted: #94a3b8;
+            --border-color: #2d3b47;
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.08) 0%, transparent 70%);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background-color 0.5s, color 0.5s;
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            font-family: var(--font-family);
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+        input,
+        select,
+        textarea {
+            font-family: var(--font-family);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            width: 100%;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            font-size: 1rem;
+        }
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-gold);
+            box-shadow: 0 0 0 4px rgba(201, 168, 124, 0.15);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all var(--transition);
+            border: 2px solid transparent;
+            background: var(--color-gold-gradient);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(201, 168, 124, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform var(--transition);
+        }
+        .btn:hover::after {
+            transform: translateX(0);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(201, 168, 124, 0.4);
+        }
+        .btn-primary {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        .btn-primary:hover {
+            background: var(--color-primary-light);
+        }
+        .btn-danger {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+        .btn-success {
+            background: #27ae60;
+            border-color: #27ae60;
+        }
+        .btn-sm {
+            padding: 8px 18px;
+            font-size: 0.85rem;
+        }
+        .btn-outline {
+            background: transparent;
+            border-color: var(--color-gold);
+            color: var(--color-gold);
+        }
+        .btn-outline:hover {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        .btn-refresh {
+            background: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
+        }
+        .btn-refresh:hover {
+            background: var(--color-primary-light);
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1.8rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            right: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--color-gold-gradient);
+            border-radius: 4px;
+        }
+        .section-title.text-center::after {
+            right: 50%;
+            transform: translateX(50%);
+        }
+        .text-center {
+            text-align: center;
+        }
+        .mt-4 {
+            margin-top: 2rem;
+        }
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        .mt-2 {
+            margin-top: 1rem;
+        }
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+        header {
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            transition: all var(--transition);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .logo-area h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            transition: color var(--transition);
+        }
+        [data-theme="dark"] .logo-area h1 {
+            color: var(--color-gold);
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        nav a {
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        nav a:hover,
+        nav a.active {
+            background: var(--color-gold-gradient);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(201, 168, 124, 0.25);
+        }
+        .theme-toggle {
+            font-size: 1.3rem;
+            padding: 8px 14px;
+            border-radius: 50px;
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            transition: all var(--transition);
+        }
+        .theme-toggle:hover {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+        }
+        .notification-badge .badge-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .page {
+            display: none;
+            padding: 40px 0 60px;
+            animation: fadeIn 0.5s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .hero {
+            position: relative;
+            height: 520px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 2.5rem;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            background-image: var(--hero-bg);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+        .hero-content h2 {
+            font-size: 3rem;
+            font-weight: 900;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            line-height: 1.2;
+        }
+        .hero-content p {
+            font-size: 1.4rem;
+            opacity: 0.95;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+        #dailyVerseDisplay {
+            font-size: 1.25rem;
+            line-height: 1.9;
+            word-wrap: break-word;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+        #dailyVerseDisplay::-webkit-scrollbar {
+            width: 4px;
+        }
+        #dailyVerseDisplay::-webkit-scrollbar-thumb {
+            background: var(--color-gold);
+            border-radius: 4px;
+        }
+        .question-card {
+            border-right: 4px solid var(--color-gold);
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all var(--transition);
+        }
+        .question-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateX(-4px);
+        }
+        .question-card .q-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .question-card .q-answer {
+            margin-top: 10px;
+            padding: 14px 18px;
+            background: var(--bg-body);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            border-right: 3px solid var(--color-gold-light);
+        }
+        .question-card .q-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .my-item-card {
+            border-right: 4px solid var(--color-gold);
+            padding: 18px 22px;
+            margin-bottom: 16px;
+            background: var(--bg-card);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all var(--transition);
+        }
+        .my-item-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateX(-4px);
+        }
+        .my-item-card .item-details {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+        .my-item-card .item-answer {
+            margin-top: 10px;
+            padding: 12px 16px;
+            background: var(--bg-body);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            border-right: 3px solid var(--color-gold-light);
+        }
+        .my-item-card .item-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+        .my-item-card .item-notification {
+            margin-top: 8px;
+            padding: 8px 14px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            border-right: 3px solid #28a745;
+            display: none;
+        }
+        .my-item-card .item-notification.show {
+            display: block;
+        }
+        .announcement-item {
+            padding: 18px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+        .announcement-item:last-child {
+            border-bottom: none;
+        }
+        .announcement-item .announce-content {
+            flex: 1;
+        }
+        .announcement-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+        .announcement-item .date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th {
+            background: var(--bg-body);
+            color: var(--text-secondary);
+            font-weight: 700;
+            padding: 14px 12px;
+            text-align: right;
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            max-width: 300px;
+        }
+        td .question-text {
+            word-wrap: break-word;
+            line-height: 1.6;
+        }
+        td .question-text .short-text {
+            display: inline;
+        }
+        td .question-text .full-text {
+            display: none;
+        }
+        td .question-text .full-text.show {
+            display: inline;
+        }
+        td .question-text .toggle-btn {
+            color: var(--color-gold);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            background: none;
+            border: none;
+            padding: 0 4px;
+        }
+        td .question-text .toggle-btn:hover {
+            text-decoration: underline;
+        }
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .actions button {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .actions .btn-answer {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .actions .btn-publish {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        .actions .btn-delete {
+            background: #c0392b;
+            color: #fff;
+        }
+        .actions .btn-edit {
+            background: #f39c12;
+            color: #fff;
+        }
+        .actions .btn-prayer-reply {
+            background: #8e44ad;
+            color: #fff;
+        }
+        .search-filter {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .search-filter input,
+        .search-filter select {
+            width: auto;
+            flex: 1;
+            min-width: 160px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            max-width: 700px;
+            width: 90%;
+            padding: 30px;
+            box-shadow: var(--shadow-lg);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 {
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+        .modal-content .form-group {
+            margin-bottom: 16px;
+        }
+        .modal-content textarea {
+            min-height: 200px;
+            font-size: 1rem;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .admin-section {
+            margin-bottom: 3rem;
+        }
+        .admin-section .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+        }
+        .admin-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            padding: 22px 18px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all var(--transition);
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-4px);
+        }
+        .stat-card .number {
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: var(--color-gold);
+        }
+        .stat-card .label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .login-box {
+            max-width: 420px;
+            margin: 60px auto;
+            padding: 44px 40px;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
+            border: 1px solid var(--border-color);
+        }
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 28px;
+            font-weight: 800;
+        }
+        .login-box .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+        .login-box .toggle-link {
+            text-align: center;
+            margin-top: 16px;
+            color: var(--color-gold);
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .login-box .toggle-link:hover {
+            text-decoration: underline;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            padding: 18px 28px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border-right: 5px solid var(--color-gold);
+            z-index: 999;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            font-weight: 600;
+            max-width: 90%;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+        .notification-item .notif-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .notification-item .notif-text {
+            flex: 1;
+            margin-left: 12px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        .notification-item .notif-type {
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .notif-type.question {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .notif-type.prayer {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        .notif-type.answer {
+            background: #27ae60;
+            color: #fff;
+        }
+        .notif-type.verse {
+            background: #3498db;
+            color: #fff;
+        }
+        .notif-type.announcement {
+            background: #e67e22;
+            color: #fff;
+        }
+        .notif-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .notif-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 16px 0;
+        }
+        .social-links a {
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        .social-links a:hover {
+            color: var(--color-gold);
+            transform: scale(1.15);
+        }
+        footer {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-color);
+            padding: 28px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 40px;
+        }
+        .about-text {
+            white-space: pre-wrap;
+            line-height: 1.9;
+        }
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 34px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            background: #25d366;
+            color: #fff;
+            border: 2px solid #25d366;
+            transition: all var(--transition);
+            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+            text-decoration: none;
+        }
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
+            color: #fff;
+        }
+        .whatsapp-btn i {
+            font-size: 1.5rem;
+        }
+        .user-auth-btn {
+            background: var(--color-gold);
+            color: #fff;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.9rem;
+        }
+        .user-auth-btn:hover {
+            background: var(--color-primary);
+        }
+        .admin-login-btn {
+            background: var(--color-primary);
+            color: #fff;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.9rem;
+        }
+        .admin-login-btn:hover {
+            background: var(--color-gold);
+        }
+        .refresh-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .no-questions {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 30px 0;
+        }
+        .status-connected {
+            color: #27ae60;
+        }
+        .status-error {
+            color: #c0392b;
+        }
+        .status-loading {
+            color: var(--text-muted);
+        }
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .pagination-controls .page-info {
+            font-weight: 600;
+            color: var(--text-secondary);
+            padding: 0 8px;
+        }
+        .pagination-controls .btn {
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            min-width: 70px;
+        }
+        #notifBell {
+            position: relative;
+            display: none;
+            padding: 6px 12px;
+            border-radius: 50px;
+            transition: all var(--transition);
+            color: var(--text-secondary);
+        }
+        #notifBell:hover {
+            background: var(--color-gold-gradient);
+            color: #fff;
+        }
+        #notifBell .badge-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #e74c3c;
+            color: #fff;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            min-width: 18px;
+            text-align: center;
+            animation: pulse 1.5s infinite;
+        }
+        #userNotifModal .modal-content {
+            max-width: 650px;
+        }
+        #userNotifModal .modal-actions .btn {
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            min-width: auto;
+            border-radius: 30px;
+        }
+        #userNotifModal .modal-actions .btn-outline {
+            border-color: var(--color-gold);
+            color: var(--color-gold);
+            background: transparent;
+        }
+        #userNotifModal .modal-actions .btn-outline:hover {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        #userNotifModal .modal-actions .btn-danger {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+        #userNotifModal .modal-actions .btn-primary {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        #userNotifModal .notification-item .notif-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            body {
+                background: #fff !important;
+                color: #000 !important;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+            table {
+                font-size: 12px !important;
+            }
+            .actions {
+                display: none !important;
+            }
+            .theme-toggle,
+            nav a,
+            header .logo-area h1 {
+                color: #000 !important;
+            }
+            header {
+                background: #fff !important;
+                border-bottom: 1px solid #ccc !important;
+            }
+            .container {
+                max-width: 100% !important;
+                padding: 0 10px !important;
+            }
+            .page {
+                padding: 20px 0 !important;
+            }
+            .btn {
+                display: none !important;
+            }
+            .admin-section .section-header .btn {
+                display: none !important;
+            }
+            .pagination-controls {
+                display: none !important;
+            }
+        }
+        @media (max-width: 992px) {
+            .hero {
+                height: 420px;
+            }
+            .hero-content h2 {
+                font-size: 2.4rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .hero {
+                height: 380px;
+            }
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+            .logo-area h1 {
+                font-size: 1rem;
+            }
+            nav a {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .login-box {
+                padding: 32px 24px;
+                margin: 30px 16px;
+            }
+            td {
+                max-width: 150px;
+            }
+            .announcement-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .pagination-controls .btn {
+                padding: 4px 12px;
+                font-size: 0.75rem;
+                min-width: 50px;
+            }
+            #userNotifModal .modal-actions .btn {
+                padding: 4px 10px;
+                font-size: 0.7rem;
+            }
+            #userNotifModal .modal-content {
+                max-width: 95%;
+                padding: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            nav {
+                justify-content: center;
+            }
+            .hero {
+                height: 300px;
+            }
+            .hero-content h2 {
+                font-size: 1.6rem;
+            }
+            .hero-content p {
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+            .card {
+                padding: 18px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.8rem;
+            }
+            .stat-card .number {
+                font-size: 1.8rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            td {
+                max-width: 100px;
+                font-size: 0.85rem;
+            }
+            td .question-text .toggle-btn {
+                font-size: 0.7rem;
+            }
+            #userNotifModal .modal-actions {
+                flex-direction: column;
+                gap: 6px;
+            }
+            #userNotifModal .modal-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            #userNotifModal .modal-content {
+                max-width: 98%;
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -344,6 +1261,9 @@
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-sign-in-alt"></i> دخول</button>
                     <div id="adminLoginError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
                 </form>
+                <div style="margin-top:12px; text-align:center; font-size:0.85rem; color:var(--text-muted);">
+                    <i class="fas fa-info-circle"></i> يجب أن يكون لديك حساب أدمن مسجل في Firebase
+                </div>
             </div>
         </section>
         <!-- ====== لوحة التحكم ====== -->
@@ -481,18 +1401,12 @@
     <footer><div class="container">Designed &amp; Developed by John Osama &copy; <span id="year"></span></div></footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت مع التعديلات النهائية ====== -->
+    <!-- ====== جافاسكريبت - استخدام Realtime Database ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
-        import {
-            getFirestore, collection, doc, addDoc, getDocs, updateDoc, deleteDoc,
-            query, where, orderBy, getDoc, setDoc, serverTimestamp, writeBatch, onSnapshot
-        } from "firebase/firestore";
-        import {
-            getAuth, signInWithEmailAndPassword, onAuthStateChanged,
-            signOut, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence
-        } from "firebase/auth";
+        import { getDatabase, ref, set, push, get, update, remove, onValue, query, orderByChild, equalTo } from "firebase/database";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "firebase/auth";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBn58yFwHcStPr23UClRLjIxSEQ671-I5Y",
@@ -505,32 +1419,15 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
         const auth = getAuth(app);
 
         setPersistence(auth, browserLocalPersistence)
             .then(() => console.log('✅ تم ضبط استمرار المصادقة محلياً'))
             .catch(err => console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', err));
 
-        const dailyVerses = [
-            { verse: 'لأَنَّهُ هكَذَا أَحَبَّ اللهُ الْعَالَمَ، حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
-            { verse: 'لاَ تَقْلَقُوا لأَنِّي أَنَا مَعَكُمْ، لاَ تَرْتَعِبُوا لأَنِّي إِلَهُكُمْ. أُشَدِّدُكُمْ وَأُعِينُكُمْ وَأُؤَيِّدُكُمْ بِيَمِينِ بِرِّي.', reference: 'إشعياء 41:10' },
-            { verse: 'كُلُّ شَيْءٍ يَسْتَطِيعُ الْمُؤْمِنُ بِالْمَسِيحِ الَّذِي يُقَوِّينِي.', reference: 'فيلبي 4:13' },
-            { verse: 'لِيَكُنْ كَلاَمُكُمْ كُلَّ حِينٍ بِنِعْمَةٍ، مُصْلَحاً بِمِلْحٍ، لِتَعْلَمُوا كَيْفَ يُجِيبُونَ كُلَّ وَاحِدٍ.', reference: 'كولوسي 4:6' },
-            { verse: 'اَلرَّبُّ رَاعِيَّ فَلاَ يُعْوِزُنِي شَيْءٌ.', reference: 'مزمور 23:1' },
-            { verse: 'أَنَا هُوَ الْقِيَامَةُ وَالْحَيَاةُ. مَنْ آمَنَ بِي وَلَوْ مَاتَ فَسَيَحْيَا.', reference: 'يوحنا 11:25' },
-            { verse: 'لأَنَّنَا بِالنِّعْمَةِ مُخَلَّصُونَ، بِالإِيمَانِ، وَذَلِكَ لَيْسَ مِنْكُمْ، بَلْ هُوَ عَطِيَّةُ اللهِ.', reference: 'أفسس 2:8' },
-            { verse: 'أَسْأَلُكُمْ أَنْ تَحْيَا حَيَاةً تَلِيقُ بِالدَّعْوَةِ الَّتِي دُعِيتُمْ بِهَا.', reference: 'أفسس 4:1' },
-            { verse: 'لأَنَّ اللهَ لَمْ يُعْطِنَا رُوحَ الْخَوْفِ، بَلْ رُوحَ الْقُوَّةِ وَالْمَحَبَّةِ وَالنُّصْحِ.', reference: 'تيموثاوس الثانية 1:7' },
-            { verse: 'أَحِبُّوا أَعْدَاءَكُمْ، بَارِكُوا لاَعِنِيكُمْ، أَحْسِنُوا إِلَى مُبْغِضِيكُمْ، وَصَلُّوا لأَجْلِ الَّذِينَ يُسِيئُونَ إِلَيْكُمْ.', reference: 'متى 5:44' },
-            { verse: 'فَكُلُّ مَنْ يَسْتَمِعُ أَقْوَالِي هَذِهِ وَيَعْمَلُ بِهَا، يُشَبَّهُ بِرَجُلٍ عَاقِلٍ بَنَى بَيْتَهُ عَلَى الصَّخْرِ.', reference: 'متى 7:24' },
-            { verse: 'لأَنَّهُ مَهْمَا كَانَ الاِبْنُ حَيًّا فَالآبُ حَيٌّ فِيهِ، وَهَكَذَا مَنْ يَأْكُلُنِي فَإِنَّهُ يَحْيَا بِي.', reference: 'يوحنا 6:57' },
-            { verse: 'اَلرَّبُّ نُورِي وَخَلاَصِي، مِمَّنْ أَخَافُ؟ الرَّبُّ حِصْنُ حَيَاتِي، مِمَّنْ أَرْتَعِبُ؟', reference: 'مزمور 27:1' },
-            { verse: 'اِتَّكِلْ عَلَى الرَّبِّ بِكُلِّ قَلْبِكَ، وَعَلَى فَهْمِكَ لاَ تَعْتَمِدْ.', reference: 'أمثال 3:5' },
-            { verse: 'فَإِنَّنِي عَرَفْتُ الْخُطَطَ الَّتِي أَنَا مُفَكِّرٌ بِهَا مِنْ جِهَتِكُمْ، يَقُولُ الرَّبُّ، خُطَطَ سَلاَمٍ لاَ شَرٍّ، لأُعْطِيَكُمْ آخِرَةً وَرَجَاءً.', reference: 'إرميا 29:11' },
-            { verse: 'فَإِنْ كَانَ ابْنُ اللهِ قَدْ حَرَّرَكُمْ، فَبِالْحَقِيقَةِ تَكُونُونَ أَحْرَارًا.', reference: 'يوحنا 8:36' },
-            { verse: 'لأَنَّ الْحَيَاةَ هِيَ الْمَسِيحُ وَالْمَوْتُ رِبْحٌ.', reference: 'فيلبي 1:21' }
-        ];
+        // ====== ثوابت ======
+        const ADMIN_EMAIL = 'abshadat.church@gmail.com';
 
         // ====== متغيرات ======
         let currentUser = null, currentUserId = null, isAdmin = false;
@@ -541,10 +1438,9 @@
         let currentPage = 1;
         const itemsPerPage = 20;
         let allQuestionsItems = [];
-        const ADMIN_EMAIL = 'abshadat.church@gmail.com';
-        const ADMIN_PASSWORD = 'wysmic-6cabzu-xiqpeT';
 
-        console.log('✅ Firebase initialized');
+        console.log('✅ Firebase initialized (Realtime Database)');
+        console.log('🔒 تم إزالة كلمة المرور من الكود نهائياً');
 
         const toastEl = document.getElementById('toast');
         let toastTimeout = null;
@@ -556,7 +1452,7 @@
             toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
         }
 
-        // ====== دالة إعادة تعيين نموذج السؤال ======
+        // ====== دوال إعادة تعيين النماذج ======
         window.resetQuestionForm = function() {
             document.getElementById('questionForm').reset();
             document.getElementById('questionForm').style.display = 'block';
@@ -629,8 +1525,10 @@
             if (currentUser && !isAdmin) {
                 signOut(auth).then(() => {
                     showToast('تم تسجيل الخروج');
-                    [myQuestionsUnsubscribe, myPrayersUnsubscribe, userNotifUnsubscribe, prayersUnsubscribe]
-                        .forEach(fn => { if (fn) { fn(); } });
+                    if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
+                    if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
+                    if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
+                    if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
                     userNotifications = [];
                     updateUserNotifUI();
                     document.getElementById('myItemsList').innerHTML = '<p class="no-questions">تم تسجيل الخروج</p>';
@@ -668,85 +1566,81 @@
             }
         }
 
-        // ====== إنشاء/تأكيد مستند المستخدم ======
+        // ====== إنشاء مستند المستخدم (في Realtime Database) ======
         async function ensureUserDocument(user) {
             if (!user) return;
-            const userRef = doc(db, 'users', user.uid);
-            const snap = await getDoc(userRef);
-            if (!snap.exists()) {
-                await setDoc(userRef, {
+            const userRef = ref(db, `users/${user.uid}`);
+            const snapshot = await get(userRef);
+            if (!snapshot.exists()) {
+                await set(userRef, {
                     uid: user.uid,
                     email: user.email,
                     displayName: user.displayName || user.email,
-                    createdAt: serverTimestamp()
+                    createdAt: Date.now()
                 });
                 console.log('✅ تم إنشاء مستند المستخدم:', user.uid);
             }
         }
 
-        // ====== إرسال إشعار لجميع المستخدمين (مع إنشاء المستندات المفقودة) ======
+        // ====== التحقق من صلاحية الأدمن ======
+        async function checkAdmin(uid) {
+            if (!uid) return false;
+            try {
+                const adminRef = ref(db, `admins/${uid}`);
+                const snapshot = await get(adminRef);
+                return snapshot.exists();
+            } catch {
+                return false;
+            }
+        }
+
+        // ====== إرسال إشعار لجميع المستخدمين (في Realtime Database) ======
         async function notifyAllUsers(message, type) {
             try {
-                let usersSnap = await getDocs(collection(db, 'users'));
-                // إذا كانت المجموعة فارغة، نحاول إنشاء مستند للمستخدم الحالي
-                if (usersSnap.empty) {
-                    if (currentUser) {
-                        await ensureUserDocument(currentUser);
-                        usersSnap = await getDocs(collection(db, 'users'));
-                    }
-                }
-                if (usersSnap.empty) {
+                const usersRef = ref(db, 'users');
+                const snapshot = await get(usersRef);
+                if (!snapshot.exists()) {
                     console.warn('⚠️ لا يوجد مستخدمين لإرسال الإشعارات');
                     return;
                 }
-                const batch = writeBatch(db);
-                let count = 0;
-                usersSnap.forEach(doc => {
-                    const userId = doc.id;
-                    const notifRef = doc(collection(db, 'userNotifications'));
-                    batch.set(notifRef, {
-                        userId,
+                const users = snapshot.val();
+                const updates = {};
+                for (const uid in users) {
+                    const notifId = push(ref(db, `userNotifications/${uid}`)).key;
+                    updates[`userNotifications/${uid}/${notifId}`] = {
+                        userId: uid,
                         message,
                         type: type || 'general',
                         read: false,
-                        createdAt: serverTimestamp()
-                    });
-                    count++;
-                });
-                await batch.commit();
-                console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم: "${message}"`);
+                        createdAt: Date.now()
+                    };
+                }
+                await update(ref(db), updates);
+                console.log(`✅ تم إرسال إشعار لـ ${Object.keys(users).length} مستخدم`);
             } catch (e) {
                 console.error('❌ فشل إرسال الإشعارات لجميع المستخدمين:', e);
             }
         }
 
-        // ====== إضافة إشعار لمستخدم معين (مع إنشاء المستند إذا لزم الأمر) ======
+        // ====== إرسال إشعار لمستخدم معين ======
         async function addUserNotification(userId, message, type) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
                 return;
             }
             try {
-                // التأكد من وجود مستند المستخدم
-                const userRef = doc(db, 'users', userId);
-                const userSnap = await getDoc(userRef);
-                if (!userSnap.exists()) {
-                    // إذا كان المستخدم هو المستخدم الحالي، ننشئ مستنده
-                    if (currentUser && currentUser.uid === userId) {
-                        await ensureUserDocument(currentUser);
-                    } else {
-                        // قد يكون مستخدم آخر، نحاول إنشاء مستند ببيانات بسيطة
-                        // لكننا لا نملك بياناته، لذلك نمرر
-                        console.warn('⚠️ مستند المستخدم غير موجود:', userId);
-                        // مع ذلك نستمر في إرسال الإشعار (Firestore سيسمح بإضافة مستند في userNotifications)
-                    }
+                const userRef = ref(db, `users/${userId}`);
+                const userSnap = await get(userRef);
+                if (!userSnap.exists() && currentUser && currentUser.uid === userId) {
+                    await ensureUserDocument(currentUser);
                 }
-                await addDoc(collection(db, 'userNotifications'), {
+                const notifRef = push(ref(db, `userNotifications/${userId}`));
+                await set(notifRef, {
                     userId,
                     message,
                     type: type || 'general',
                     read: false,
-                    createdAt: serverTimestamp()
+                    createdAt: Date.now()
                 });
                 console.log(`✅ تم إرسال إشعار للمستخدم ${userId}: "${message}"`);
             } catch (e) {
@@ -759,14 +1653,14 @@
             currentUser = user;
             if (user) {
                 currentUserId = user.uid;
-                const isAdminUser = user.email && user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
-                isAdmin = isAdminUser;
-                // تأكد من وجود مستند لكل مستخدم عادي
-                if (!isAdminUser) {
+                const adminStatus = await checkAdmin(user.uid);
+                isAdmin = adminStatus;
+                // إذا لم يكن أدمن، ننشئ مستنده
+                if (!isAdmin) {
                     await ensureUserDocument(user);
                 }
 
-                if (isAdminUser) {
+                if (isAdmin) {
                     userAuthBtn.style.display = 'none';
                     adminLoginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> خروج الأدمن';
                     adminLink.style.display = 'inline-block';
@@ -774,8 +1668,11 @@
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
-                    [myQuestionsUnsubscribe, myPrayersUnsubscribe, userNotifUnsubscribe, prayersUnsubscribe]
-                        .forEach(fn => { if (fn) { fn(); } });
+                    // إلغاء المستمعات السابقة
+                    if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
+                    if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
+                    if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
+                    if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
                     userNotifications = [];
                     updateUserNotifUI();
                     loadAdminData();
@@ -796,7 +1693,8 @@
                     if (document.getElementById('page-admin-login').classList.contains('active')) window.navigateTo('home');
                 }
             } else {
-                currentUserId = null; isAdmin = false;
+                currentUserId = null;
+                isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
                 userAuthBtn.style.display = 'inline-block';
                 adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
@@ -804,24 +1702,29 @@
                 adminLink.style.display = 'none';
                 notifBell.style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
-                notifications = []; userNotifications = [];
-                updateNotificationUI(); updateUserNotifUI();
-                [myQuestionsUnsubscribe, myPrayersUnsubscribe, userNotifUnsubscribe, prayersUnsubscribe]
-                    .forEach(fn => { if (fn) { fn(); } });
+                notifications = [];
+                userNotifications = [];
+                updateNotificationUI();
+                updateUserNotifUI();
+                if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
+                if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
+                if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
+                if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
                 const myItemsPage = document.getElementById('page-my-questions');
                 if (myItemsPage.classList.contains('active')) {
                     document.getElementById('myItemsList').innerHTML = '<p class="no-questions">يرجى تسجيل الدخول</p>';
                     document.getElementById('myItemsStatus').textContent = '';
                 }
                 const activePage = document.querySelector('.page.active');
-                if (activePage && ['page-my-questions','page-admin','page-admin-login'].includes(activePage.id)) {
+                if (activePage && ['page-my-questions', 'page-admin', 'page-admin-login'].includes(activePage.id)) {
                     window.navigateTo('home');
                 }
-                isLoginMode = true; updateAuthUI();
+                isLoginMode = true;
+                updateAuthUI();
             }
         });
 
-        // ====== تسجيل الدخول/إنشاء حساب ======
+        // ====== تسجيل الدخول/إنشاء حساب للمستخدم العادي ======
         const authForm = document.getElementById('userAuthForm');
         const authToggleLink = document.getElementById('authToggleLink');
         const authError = document.getElementById('authError');
@@ -837,11 +1740,13 @@
             try {
                 if (isLoginMode) {
                     await signInWithEmailAndPassword(auth, email, password);
-                    showToast('تم تسجيل الدخول بنجاح'); window.navigateTo('home');
+                    showToast('تم تسجيل الدخول بنجاح');
+                    window.navigateTo('home');
                 } else {
                     const cred = await createUserWithEmailAndPassword(auth, email, password);
                     if (name) await updateProfile(cred.user, { displayName: name });
-                    showToast('تم إنشاء الحساب'); window.navigateTo('home');
+                    showToast('تم إنشاء الحساب');
+                    window.navigateTo('home');
                 }
             } catch (err) {
                 console.error(err);
@@ -862,23 +1767,27 @@
             const password = document.getElementById('adminLoginPassword').value.trim();
             const errorDiv = document.getElementById('adminLoginError');
             errorDiv.textContent = '';
+
             if (email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) {
-                errorDiv.textContent = '⚠️ البريد غير صحيح.';
-                showToast('البريد غير صحيح', true); return;
+                errorDiv.textContent = '⚠️ هذا البريد ليس حساب أدمن مسجلاً.';
+                showToast('البريد غير صحيح', true);
+                return;
             }
-            if (password !== ADMIN_PASSWORD) {
-                errorDiv.textContent = '⚠️ كلمة المرور غير صحيحة';
-                showToast('كلمة المرور غير صحيحة', true); return;
-            }
+
             try {
                 await signInWithEmailAndPassword(auth, email, password);
                 showToast('✅ تم تسجيل الدخول كأدمن');
             } catch (err) {
                 console.error(err);
-                if (err.code === 'auth/user-not-found') errorDiv.textContent = '❌ الحساب غير موجود. أنشئه أولاً.';
-                else if (err.code === 'auth/wrong-password') errorDiv.textContent = '❌ كلمة المرور غير صحيحة.';
-                else if (err.code === 'auth/too-many-requests') errorDiv.textContent = '❌ طلبات كثيرة. حاول لاحقاً.';
-                else errorDiv.textContent = '❌ ' + err.message;
+                if (err.code === 'auth/user-not-found') {
+                    errorDiv.textContent = '❌ هذا الحساب غير موجود. تأكد من إنشائه في Firebase أولاً.';
+                } else if (err.code === 'auth/wrong-password') {
+                    errorDiv.textContent = '❌ كلمة المرور غير صحيحة.';
+                } else if (err.code === 'auth/too-many-requests') {
+                    errorDiv.textContent = '❌ طلبات كثيرة. حاول لاحقاً.';
+                } else {
+                    errorDiv.textContent = '❌ فشل تسجيل الدخول: ' + err.message;
+                }
                 showToast('فشل تسجيل الدخول', true);
             }
         });
@@ -897,22 +1806,29 @@
             const statusEl = document.getElementById('myItemsStatus');
             if (!currentUser) {
                 container.innerHTML = '<p class="no-questions">يجب تسجيل الدخول</p>';
-                statusEl.textContent = ''; statusEl.className = ''; return;
+                statusEl.textContent = '';
+                statusEl.className = '';
+                return;
             }
             container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
-            statusEl.textContent = '⏳ جاري التحميل...'; statusEl.className = 'status-loading';
-            let questionsData = [], prayersData = [];
+            statusEl.textContent = '⏳ جاري التحميل...';
+            statusEl.className = 'status-loading';
+
+            let questionsData = [];
+            let prayersData = [];
 
             function renderCombined() {
                 const allItems = [...questionsData, ...prayersData];
-                allItems.sort((a,b) => {
-                    const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                    const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                allItems.sort((a, b) => {
+                    const da = a.createdAt || 0;
+                    const db = b.createdAt || 0;
                     return db - da;
                 });
                 if (allItems.length === 0) {
                     container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات</p>';
-                    statusEl.textContent = '✅ محدث'; statusEl.className = 'status-connected'; return;
+                    statusEl.textContent = '✅ محدث';
+                    statusEl.className = 'status-connected';
+                    return;
                 }
                 let html = '';
                 allItems.forEach(item => {
@@ -923,7 +1839,7 @@
                         `<div class="item-answer"><strong>${isQuestion ? 'الإجابة' : 'الرد'}:</strong> ${item.answer || 'لم تكتب إجابة بعد'}</div>` :
                         '<div class="item-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الرد</em></div>';
                     const published = isQuestion && item.published ? ' (منشور عام)' : '';
-                    const dateStr = item.createdAt ? item.createdAt.toDate().toLocaleString('ar-EG') : '';
+                    const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleString('ar-EG') : '';
                     const notifClass = item.answered ? 'show' : '';
                     const notifMessage = item.answered ? `✅ تم ${isQuestion ? 'الإجابة على سؤالك' : 'الرد على طلب صلاتك'}!` : '';
                     html += `
@@ -937,62 +1853,77 @@
                     `;
                 });
                 container.innerHTML = html;
-                statusEl.textContent = '✅ محدث لحظياً'; statusEl.className = 'status-connected';
+                statusEl.textContent = '✅ محدث لحظياً';
+                statusEl.className = 'status-connected';
             }
 
-            const qQuestions = query(collection(db, 'questions'), where('userId', '==', currentUser.uid));
-            myQuestionsUnsubscribe = onSnapshot(qQuestions, snap => {
-                questionsData = [];
-                snap.forEach(doc => questionsData.push({ id: doc.id, ...doc.data(), _type: 'question' }));
+            // استعلام الأسئلة
+            const questionsRef = ref(db, 'questions');
+            const questionsQuery = query(questionsRef, orderByChild('userId'), equalTo(currentUser.uid));
+            myQuestionsUnsubscribe = onValue(questionsQuery, (snapshot) => {
+                const data = snapshot.val();
+                questionsData = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 renderCombined();
-            }, err => { console.error(err); statusEl.textContent = '❌ خطأ في الأسئلة'; statusEl.className = 'status-error'; });
+            }, err => { console.error(err);
+                statusEl.textContent = '❌ خطأ في الأسئلة';
+                statusEl.className = 'status-error'; });
 
-            const qPrayers = query(collection(db, 'prayers'), where('userId', '==', currentUser.uid));
-            myPrayersUnsubscribe = onSnapshot(qPrayers, snap => {
-                prayersData = [];
-                snap.forEach(doc => prayersData.push({ id: doc.id, ...doc.data(), _type: 'prayer' }));
+            // استعلام طلبات الصلاة
+            const prayersRef = ref(db, 'prayers');
+            const prayersQuery = query(prayersRef, orderByChild('userId'), equalTo(currentUser.uid));
+            myPrayersUnsubscribe = onValue(prayersQuery, (snapshot) => {
+                const data = snapshot.val();
+                prayersData = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 renderCombined();
-            }, err => { console.error(err); statusEl.textContent = '❌ خطأ في طلبات الصلاة'; statusEl.className = 'status-error'; });
+            }, err => { console.error(err);
+                statusEl.textContent = '❌ خطأ في طلبات الصلاة';
+                statusEl.className = 'status-error'; });
         }
 
         window.refreshMyItems = function() {
             const statusEl = document.getElementById('myItemsStatus');
-            statusEl.textContent = '⏳ جاري التحديث...'; statusEl.className = 'status-loading';
-            if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
-            if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
-            setTimeout(() => { startMyItemsListeners(); showToast('✅ تم التحديث'); }, 300);
+            statusEl.textContent = '⏳ جاري التحديث...';
+            statusEl.className = 'status-loading';
+            if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe();
+                myQuestionsUnsubscribe = null; }
+            if (myPrayersUnsubscribe) { myPrayersUnsubscribe();
+                myPrayersUnsubscribe = null; }
+            setTimeout(() => { startMyItemsListeners();
+                showToast('✅ تم التحديث'); }, 300);
         };
 
         // ====== مستمع إشعارات المستخدم ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
-            if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
-            if (!currentUser || isAdmin) { userNotifications = []; updateUserNotifUI(); return; }
+            if (userNotifUnsubscribe) { userNotifUnsubscribe();
+                userNotifUnsubscribe = null; }
+            if (!currentUser || isAdmin) { userNotifications = [];
+                updateUserNotifUI(); return; }
             console.log('🔔 بدء مستمع إشعارات المستخدم لـ:', currentUser.uid);
-            try {
-                const q = query(collection(db, 'userNotifications'), where('userId', '==', currentUser.uid));
-                userNotifUnsubscribe = onSnapshot(q, snap => {
-                    console.log(`📬 تم استلام ${snap.size} إشعار`);
-                    userNotifications = [];
-                    snap.forEach(doc => userNotifications.push({ id: doc.id, ...doc.data() }));
-                    userNotifications.sort((a,b) => {
-                        const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                        const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                        return db - da;
-                    });
-                    updateUserNotifUI();
-                    snap.docChanges().forEach(change => {
-                        if (change.type === 'added') {
-                            const data = change.doc.data();
-                            if (!data.read) { console.log('🔔 جديد:', data.message); showToast(`🔔 ${data.message}`, false); }
-                        }
-                    });
-                }, err => {
-                    console.warn('❌ خطأ في مستمع الإشعارات:', err);
-                    setTimeout(() => {
-                        if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8(); }
-                    }, 5000);
+            const userNotifRef = ref(db, `userNotifications/${currentUser.uid}`);
+            userNotifUnsubscribe = onValue(userNotifRef, (snapshot) => {
+                const data = snapshot.val();
+                console.log(`📬 تم استلام ${data ? Object.keys(data).length : 0} إشعار`);
+                userNotifications = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                userNotifications.sort((a, b) => {
+                    const da = a.createdAt || 0;
+                    const db = b.createdAt || 0;
+                    return db - da;
                 });
-            } catch(e) { console.warn('❌ فشل إعداد مستمع الإشعارات:', e); }
+                updateUserNotifUI();
+                // عرض إشعارات جديدة (غير مقروءة)
+                const newNotifs = userNotifications.filter(n => !n.read);
+                if (newNotifs.length > 0) {
+                    const latest = newNotifs[0];
+                    showToast(`🔔 ${latest.message}`, false);
+                }
+            }, err => {
+                console.warn('❌ خطأ في مستمع الإشعارات:', err);
+                setTimeout(() => {
+                    if (userNotifUnsubscribe) { userNotifUnsubscribe();
+                        userNotifUnsubscribe = null;
+                        star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8(); }
+                }, 5000);
+            });
         }
 
         function updateUserNotifUI() {
@@ -1003,27 +1934,39 @@
             console.log(`🔄 تحديث واجهة الإشعارات: ${userNotifications.length} إشعار، ${unread} غير مقروء`);
             if (currentUser && !isAdmin) {
                 bell.style.display = 'inline-block';
-                if (unread > 0) { badge.style.display = 'inline-block'; badge.textContent = unread > 99 ? '99+' : unread; }
-                else { badge.style.display = 'none'; }
-            } else { bell.style.display = 'none'; badge.style.display = 'none'; }
+                if (unread > 0) { badge.style.display = 'inline-block';
+                    badge.textContent = unread > 99 ? '99+' : unread; } else { badge.style.display = 'none'; }
+            } else { bell.style.display = 'none';
+                badge.style.display = 'none'; }
             if (list) {
                 if (userNotifications.length === 0) list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
                 else {
                     list.innerHTML = userNotifications.map(n => {
                         let typeLabel = '';
                         switch (n.type) {
-                            case 'question': typeLabel = 'سؤال'; break;
-                            case 'prayer': typeLabel = 'صلاة'; break;
-                            case 'answer': typeLabel = 'إجابة'; break;
-                            case 'verse': typeLabel = 'آية'; break;
-                            case 'announcement': typeLabel = 'إعلان'; break;
-                            default: typeLabel = 'عام';
+                            case 'question':
+                                typeLabel = 'سؤال';
+                                break;
+                            case 'prayer':
+                                typeLabel = 'صلاة';
+                                break;
+                            case 'answer':
+                                typeLabel = 'إجابة';
+                                break;
+                            case 'verse':
+                                typeLabel = 'آية';
+                                break;
+                            case 'announcement':
+                                typeLabel = 'إعلان';
+                                break;
+                            default:
+                                typeLabel = 'عام';
                         }
                         return `
                             <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
                                 <span class="notif-type ${n.type || 'general'}">${typeLabel}</span>
                                 <span class="notif-text">${n.message}</span>
-                                <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                                <span class="notif-time">${n.createdAt ? new Date(n.createdAt).toLocaleString('ar-EG') : ''}</span>
                                 ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markUserNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
                             </div>
                         `;
@@ -1033,29 +1976,35 @@
         }
 
         window.markUserNotifRead = async function(id) {
-            try { await updateDoc(doc(db, 'userNotifications', id), { read: true }); console.log('✅ تم تحديث الإشعار كمقروء'); }
-            catch(e) { console.error(e); }
+            try {
+                await update(ref(db, `userNotifications/${currentUser.uid}/${id}`), { read: true });
+                console.log('✅ تم تحديث الإشعار كمقروء');
+            } catch (e) { console.error(e); }
         };
         window.markAllUserNotifsRead = async function() {
             if (!userNotifications.length) { showToast('لا توجد إشعارات', true); return; }
             try {
-                const batch = writeBatch(db);
-                userNotifications.forEach(n => { if (!n.read) batch.update(doc(db, 'userNotifications', n.id), { read: true }); });
-                await batch.commit();
+                const updates = {};
+                userNotifications.forEach(n => {
+                    if (!n.read) updates[`userNotifications/${currentUser.uid}/${n.id}/read`] = true;
+                });
+                await update(ref(db), updates);
                 showToast('✅ تم تحديد الكل كمقروء');
-            } catch(e) { showToast('❌ خطأ', true); }
+            } catch (e) { showToast('❌ خطأ', true); }
         };
         window.clearAllUserNotifs = async function() {
             if (!userNotifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
             if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
             try {
-                const batch = writeBatch(db);
-                userNotifications.forEach(n => batch.delete(doc(db, 'userNotifications', n.id)));
-                await batch.commit();
+                const updates = {};
+                userNotifications.forEach(n => {
+                    updates[`userNotifications/${currentUser.uid}/${n.id}`] = null;
+                });
+                await update(ref(db), updates);
                 userNotifications = [];
                 updateUserNotifUI();
                 showToast('✅ تم حذف جميع الإشعارات');
-            } catch(e) { showToast('❌ خطأ', true); }
+            } catch (e) { showToast('❌ خطأ', true); }
         };
 
         document.getElementById('notifBell').addEventListener('click', (e) => {
@@ -1074,14 +2023,15 @@
         // ====== الإشعارات للأدمن ======
         function listenToNotifications() {
             if (!isAdmin) return;
-            onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), snap => {
-                notifications = [];
-                snap.forEach(doc => notifications.push({ id: doc.id, ...doc.data() }));
+            const notifRef = ref(db, 'notifications');
+            onValue(notifRef, (snapshot) => {
+                const data = snapshot.val();
+                notifications = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 updateNotificationUI();
                 const unread = notifications.filter(n => !n.read).length;
                 const badge = document.getElementById('notifBadge');
-                if (unread > 0) { badge.style.display = 'inline-block'; badge.textContent = unread > 99 ? '99+' : unread; }
-                else { badge.style.display = 'none'; }
+                if (unread > 0) { badge.style.display = 'inline-block';
+                    badge.textContent = unread > 99 ? '99+' : unread; } else { badge.style.display = 'none'; }
             }, err => console.warn('Notification listener error:', err));
         }
 
@@ -1097,7 +2047,7 @@
                     <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
                         <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
                         <span class="notif-text">${n.message}</span>
-                        <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                        <span class="notif-time">${n.createdAt ? new Date(n.createdAt).toLocaleString('ar-EG') : ''}</span>
                         ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
                     </div>
                 `).join('');
@@ -1105,64 +2055,93 @@
         }
 
         window.markNotifRead = async function(id) {
-            try { await updateDoc(doc(db, 'notifications', id), { read: true }); } catch(e) { console.error(e); }
+            try {
+                await update(ref(db, `notifications/${id}`), { read: true });
+            } catch (e) { console.error(e); }
         };
         window.markAllNotificationsRead = async function() {
             if (!notifications.length) { showToast('لا توجد إشعارات', true); return; }
             try {
-                const batch = writeBatch(db);
-                notifications.forEach(n => { if (!n.read) batch.update(doc(db, 'notifications', n.id), { read: true }); });
-                await batch.commit();
+                const updates = {};
+                notifications.forEach(n => {
+                    if (!n.read) updates[`notifications/${n.id}/read`] = true;
+                });
+                await update(ref(db), updates);
                 showToast('✅ تم تحديد الكل كمقروء');
-            } catch(e) { showToast('❌ خطأ', true); }
+            } catch (e) { showToast('❌ خطأ', true); }
         };
         window.deleteAllNotifications = async function() {
             if (!notifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
             if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
             try {
-                const batch = writeBatch(db);
-                notifications.forEach(n => batch.delete(doc(db, 'notifications', n.id)));
-                await batch.commit();
+                const updates = {};
+                notifications.forEach(n => {
+                    updates[`notifications/${n.id}`] = null;
+                });
+                await update(ref(db), updates);
                 notifications = [];
                 updateNotificationUI();
                 showToast('✅ تم حذف جميع الإشعارات');
-            } catch(e) { showToast('❌ خطأ', true); }
+            } catch (e) { showToast('❌ خطأ', true); }
         };
 
         async function addNotification(message, type) {
-            try { await addDoc(collection(db, 'notifications'), { message, type, read: false, createdAt: serverTimestamp() }); }
-            catch(e) { console.warn('Error adding notification:', e); }
+            try {
+                const notifRef = push(ref(db, 'notifications'));
+                await set(notifRef, { message, type, read: false, createdAt: Date.now() });
+            } catch (e) { console.warn('Error adding notification:', e); }
         }
 
         // ====== آية اليوم ======
+        const dailyVerses = [
+            { verse: 'لأَنَّهُ هكَذَا أَحَبَّ اللهُ الْعَالَمَ، حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
+            { verse: 'لاَ تَقْلَقُوا لأَنِّي أَنَا مَعَكُمْ، لاَ تَرْتَعِبُوا لأَنِّي إِلَهُكُمْ. أُشَدِّدُكُمْ وَأُعِينُكُمْ وَأُؤَيِّدُكُمْ بِيَمِينِ بِرِّي.', reference: 'إشعياء 41:10' },
+            { verse: 'كُلُّ شَيْءٍ يَسْتَطِيعُ الْمُؤْمِنُ بِالْمَسِيحِ الَّذِي يُقَوِّينِي.', reference: 'فيلبي 4:13' },
+            { verse: 'لِيَكُنْ كَلاَمُكُمْ كُلَّ حِينٍ بِنِعْمَةٍ، مُصْلَحاً بِمِلْحٍ، لِتَعْلَمُوا كَيْفَ يُجِيبُونَ كُلَّ وَاحِدٍ.', reference: 'كولوسي 4:6' },
+            { verse: 'اَلرَّبُّ رَاعِيَّ فَلاَ يُعْوِزُنِي شَيْءٌ.', reference: 'مزمور 23:1' },
+            { verse: 'أَنَا هُوَ الْقِيَامَةُ وَالْحَيَاةُ. مَنْ آمَنَ بِي وَلَوْ مَاتَ فَسَيَحْيَا.', reference: 'يوحنا 11:25' },
+            { verse: 'لأَنَّنَا بِالنِّعْمَةِ مُخَلَّصُونَ، بِالإِيمَانِ، وَذَلِكَ لَيْسَ مِنْكُمْ، بَلْ هُوَ عَطِيَّةُ اللهِ.', reference: 'أفسس 2:8' },
+            { verse: 'أَسْأَلُكُمْ أَنْ تَحْيَا حَيَاةً تَلِيقُ بِالدَّعْوَةِ الَّتِي دُعِيتُمْ بِهَا.', reference: 'أفسس 4:1' },
+            { verse: 'لأَنَّ اللهَ لَمْ يُعْطِنَا رُوحَ الْخَوْفِ، بَلْ رُوحَ الْقُوَّةِ وَالْمَحَبَّةِ وَالنُّصْحِ.', reference: 'تيموثاوس الثانية 1:7' },
+            { verse: 'أَحِبُّوا أَعْدَاءَكُمْ، بَارِكُوا لاَعِنِيكُمْ، أَحْسِنُوا إِلَى مُبْغِضِيكُمْ، وَصَلُّوا لأَجْلِ الَّذِينَ يُسِيئُونَ إِلَيْكُمْ.', reference: 'متى 5:44' },
+            { verse: 'فَكُلُّ مَنْ يَسْتَمِعُ أَقْوَالِي هَذِهِ وَيَعْمَلُ بِهَا، يُشَبَّهُ بِرَجُلٍ عَاقِلٍ بَنَى بَيْتَهُ عَلَى الصَّخْرِ.', reference: 'متى 7:24' },
+            { verse: 'لأَنَّهُ مَهْمَا كَانَ الاِبْنُ حَيًّا فَالآبُ حَيٌّ فِيهِ، وَهَكَذَا مَنْ يَأْكُلُنِي فَإِنَّهُ يَحْيَا بِي.', reference: 'يوحنا 6:57' },
+            { verse: 'اَلرَّبُّ نُورِي وَخَلاَصِي، مِمَّنْ أَخَافُ؟ الرَّبُّ حِصْنُ حَيَاتِي، مِمَّنْ أَرْتَعِبُ؟', reference: 'مزمور 27:1' },
+            { verse: 'اِتَّكِلْ عَلَى الرَّبِّ بِكُلِّ قَلْبِكَ، وَعَلَى فَهْمِكَ لاَ تَعْتَمِدْ.', reference: 'أمثال 3:5' },
+            { verse: 'فَإِنَّنِي عَرَفْتُ الْخُطَطَ الَّتِي أَنَا مُفَكِّرٌ بِهَا مِنْ جِهَتِكُمْ، يَقُولُ الرَّبُّ، خُطَطَ سَلاَمٍ لاَ شَرٍّ، لأُعْطِيَكُمْ آخِرَةً وَرَجَاءً.', reference: 'إرميا 29:11' },
+            { verse: 'فَإِنْ كَانَ ابْنُ اللهِ قَدْ حَرَّرَكُمْ، فَبِالْحَقِيقَةِ تَكُونُونَ أَحْرَارًا.', reference: 'يوحنا 8:36' },
+            { verse: 'لأَنَّ الْحَيَاةَ هِيَ الْمَسِيحُ وَالْمَوْتُ رِبْحٌ.', reference: 'فيلبي 1:21' }
+        ];
+
         async function loadDailyVerse() {
             const display = document.getElementById('dailyVerseDisplay');
             const refDisplay = document.getElementById('dailyVerseRef');
-            const startDate = new Date(2000,0,1);
+            const startDate = new Date(2000, 0, 1);
             const today = new Date();
-            const diffDays = Math.floor(Math.abs(today - startDate) / (1000*60*60*24));
+            const diffDays = Math.floor(Math.abs(today - startDate) / (1000 * 60 * 60 * 24));
             const index = diffDays % dailyVerses.length;
             const selected = dailyVerses[index];
             display.textContent = selected.verse;
             refDisplay.textContent = selected.reference;
             try {
-                const verseRef = doc(db, 'settings', 'dailyVerse');
-                const snap = await getDoc(verseRef);
+                const verseRef = ref(db, 'settings/dailyVerse');
+                const snap = await get(verseRef);
                 const todayStr = today.toDateString();
-                if (!snap.exists() || snap.data().verse !== selected.verse || snap.data().lastUpdate !== todayStr) {
-                    await setDoc(verseRef, { verse: selected.verse, reference: selected.reference, lastUpdate: todayStr });
-                    if (snap.exists() && snap.data().verse !== selected.verse) {
+                if (!snap.exists() || snap.val().verse !== selected.verse || snap.val().lastUpdate !== todayStr) {
+                    await set(verseRef, { verse: selected.verse, reference: selected.reference, lastUpdate: todayStr });
+                    if (snap.exists() && snap.val().verse !== selected.verse) {
                         await notifyAllUsers(`📖 تم تحديث آية اليوم: "${selected.verse}" (${selected.reference})`, 'verse');
                     }
                 }
-            } catch(e) { console.warn('Could not save verse to Firestore:', e); }
+            } catch (e) { console.warn('Could not save verse:', e); }
         }
 
         function scheduleVerseUpdate() {
             const now = new Date();
             const night = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
             const msToMidnight = night - now;
-            setTimeout(() => { loadDailyVerse(); scheduleVerseUpdate(); }, msToMidnight);
+            setTimeout(() => { loadDailyVerse();
+                scheduleVerseUpdate(); }, msToMidnight);
         }
 
         window.updateDailyVerse = async function() {
@@ -1170,12 +2149,12 @@
             const ref = document.getElementById('verseRef').value.trim();
             if (!verse || !ref) { showToast('املأ الحقول', true); return; }
             try {
-                await setDoc(doc(db, 'settings', 'dailyVerse'), { verse, reference: ref, lastUpdate: new Date().toDateString() });
+                await set(ref(db, 'settings/dailyVerse'), { verse, reference: ref, lastUpdate: new Date().toDateString() });
                 showToast('تم تحديث آية اليوم');
                 document.getElementById('dailyVerseDisplay').textContent = verse;
                 document.getElementById('dailyVerseRef').textContent = ref;
                 await notifyAllUsers(`📖 تم تحديث آية اليوم: "${verse}" (${ref})`, 'verse');
-            } catch(e) { showToast('خطأ', true); }
+            } catch (e) { showToast('خطأ', true); }
         };
 
         // ====== إرسال الأسئلة ======
@@ -1187,15 +2166,20 @@
             const anonymous = document.getElementById('qAnonymous').checked;
             if (!details) { showToast('الرجاء كتابة تفاصيل السؤال', true); return; }
             try {
-                await addDoc(collection(db, 'questions'), {
-                    details, type, anonymous,
+                const newRef = push(ref(db, 'questions'));
+                await set(newRef, {
+                    details,
+                    type,
+                    anonymous,
                     userId: currentUser.uid,
                     userName: currentUser.displayName || currentUser.email,
-                    answered: false, answer: '', published: false,
-                    createdAt: serverTimestamp()
+                    answered: false,
+                    answer: '',
+                    published: false,
+                    createdAt: Date.now()
                 });
                 const displayName = anonymous ? 'مستخدم مجهول' : (currentUser.displayName || currentUser.email);
-                await addNotification(`📩 سؤال جديد من ${displayName}: ${details.substring(0,50)}...`, 'question');
+                await addNotification(`📩 سؤال جديد من ${displayName}: ${details.substring(0, 50)}...`, 'question');
                 document.getElementById('questionForm').reset();
                 document.getElementById('questionForm').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
@@ -1203,7 +2187,8 @@
                 if (document.getElementById('page-my-questions').classList.contains('active')) {
                     startMyItemsListeners();
                 }
-            } catch(err) { console.error(err); showToast('حدث خطأ أثناء الإرسال.', true); }
+            } catch (err) { console.error(err);
+                showToast('حدث خطأ أثناء الإرسال.', true); }
         });
 
         // ====== طلبات الصلاة ======
@@ -1213,20 +2198,24 @@
             const anonymous = document.getElementById('prayerAnonymous').checked;
             if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
             try {
-                await addDoc(collection(db, 'prayers'), {
-                    text, anonymous,
+                const newRef = push(ref(db, 'prayers'));
+                await set(newRef, {
+                    text,
+                    anonymous,
                     userId: currentUser ? currentUser.uid : null,
                     userName: currentUser ? (currentUser.displayName || currentUser.email) : 'زائر',
-                    answered: false, answer: '',
-                    createdAt: serverTimestamp()
+                    answered: false,
+                    answer: '',
+                    createdAt: Date.now()
                 });
                 const displayName = anonymous ? 'مستخدم مجهول' : (currentUser ? currentUser.displayName || currentUser.email : 'زائر');
-                await addNotification(`🙏 طلب صلاة جديد من ${displayName}: ${text.substring(0,50)}...`, 'prayer');
+                await addNotification(`🙏 طلب صلاة جديد من ${displayName}: ${text.substring(0, 50)}...`, 'prayer');
                 document.getElementById('prayerForm').reset();
                 document.getElementById('prayerForm').style.display = 'none';
                 document.getElementById('prayerSuccess').style.display = 'block';
                 showToast('تم استلام طلب صلاتك!');
-            } catch(err) { console.error(err); showToast('حدث خطأ أثناء الإرسال.', true); }
+            } catch (err) { console.error(err);
+                showToast('حدث خطأ أثناء الإرسال.', true); }
         });
 
         // ====== الأسئلة المجاب عنها ======
@@ -1235,11 +2224,12 @@
             const container = document.getElementById('answeredList');
             container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
             try {
-                const q = query(collection(db, 'questions'), where('published', '==', true));
-                const snap = await getDocs(q);
-                let items = [];
-                snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-                if (search) items = items.filter(item => item.details.toLowerCase().includes(search) || (item.answer && item.answer.toLowerCase().includes(search)));
+                const snap = await get(ref(db, 'questions'));
+                const data = snap.val();
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                items = items.filter(item => item.published === true);
+                if (search) items = items.filter(item => item.details.toLowerCase().includes(search) || (item.answer && item.answer
+                    .toLowerCase().includes(search)));
                 if (items.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد أسئلة منشورة حالياً.</p>'; return; }
                 container.innerHTML = items.map(item => `
                     <div class="question-card">
@@ -1248,7 +2238,8 @@
                         <div class="q-answer"><strong>الإجابة:</strong> ${item.answer || 'لم يتم توفير إجابة بعد.'}</div>
                     </div>
                 `).join('');
-            } catch(e) { console.error(e); container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الأسئلة.</p>'; }
+            } catch (e) { console.error(e);
+                container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الأسئلة.</p>'; }
         };
 
         // ====== الإعلانات ======
@@ -1256,108 +2247,140 @@
             const container = document.getElementById('announcementsList');
             container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
             try {
-                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
-                const snap = await getDocs(q);
-                if (snap.empty) { container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد إعلانات حالياً.</p>'; return; }
+                const snap = await get(ref(db, 'announcements'));
+                const data = snap.val();
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                items.sort((a, b) => (b.date || 0) - (a.date || 0));
+                if (items.length === 0) { container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">لا توجد إعلانات حالياً.</p>'; return; }
                 let html = '';
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    const date = data.date ? data.date.toDate().toLocaleDateString('ar-EG') : '';
-                    html += `<div class="announcement-item"><div class="announce-content"><h4>${data.title}</h4><p>${data.content}</p><div class="date">${date}</div></div></div>`;
+                items.forEach(item => {
+                    const date = item.date ? new Date(item.date).toLocaleDateString('ar-EG') : '';
+                    html += `
+                        <div class="announcement-item">
+                            <div class="announce-content">
+                                <h4>${item.title}</h4>
+                                <p>${item.content}</p>
+                                <div class="date">${date}</div>
+                            </div>
+                        </div>
+                    `;
                 });
                 container.innerHTML = html;
-            } catch(e) { console.error(e); container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الإعلانات.</p>'; }
+            } catch (e) { console.error(e);
+                container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الإعلانات.</p>'; }
         }
 
         // ====== وسائل التواصل ======
         async function loadSocialLinks() {
             try {
-                const docSnap = await getDoc(doc(db, 'settings', 'socialLinks'));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+                const snap = await get(ref(db, 'settings/socialLinks'));
+                if (snap.exists()) {
+                    const data = snap.val();
                     document.getElementById('socialFacebookInput').value = data.facebook || '';
                     document.getElementById('socialInstagramInput').value = data.instagram || '';
                     document.getElementById('whatsappInput').value = data.whatsapp || '';
                     applySocialLinks(data);
                 }
-            } catch(e) { console.warn('Error loading social links:', e); }
+            } catch (e) { console.warn('Error loading social links:', e); }
         }
+
         function applySocialLinks(data) {
             document.getElementById('socialFacebook').href = data.facebook || '#';
             document.getElementById('socialInstagram').href = data.instagram || '#';
             const whatsappNumber = data.whatsapp || '';
             const whatsappLink = document.getElementById('whatsappLink');
             const whatsappLabel = document.getElementById('whatsappLabel');
-            if (whatsappNumber) { whatsappLink.href = `https://wa.me/${whatsappNumber}`; whatsappLabel.textContent = 'تواصل عبر واتساب'; whatsappLink.style.opacity = '1'; }
-            else { whatsappLink.href = '#'; whatsappLabel.textContent = 'لم يتم تعيين رقم واتساب بعد'; whatsappLink.style.opacity = '0.6'; }
+            if (whatsappNumber) { whatsappLink.href = `https://wa.me/${whatsappNumber}`;
+                whatsappLabel.textContent = 'تواصل عبر واتساب';
+                whatsappLink.style.opacity = '1'; } else { whatsappLink.href = '#';
+                whatsappLabel.textContent = 'لم يتم تعيين رقم واتساب بعد';
+                whatsappLink.style.opacity = '0.6'; }
         }
+
         window.saveSocialLinks = async function() {
             const data = {
                 facebook: document.getElementById('socialFacebookInput').value.trim(),
                 instagram: document.getElementById('socialInstagramInput').value.trim(),
                 whatsapp: document.getElementById('whatsappInput').value.trim()
             };
-            try { await setDoc(doc(db, 'settings', 'socialLinks'), data); applySocialLinks(data); showToast('✅ تم حفظ الروابط'); }
-            catch(e) { showToast('❌ فشل الحفظ', true); }
+            try {
+                await set(ref(db, 'settings/socialLinks'), data);
+                applySocialLinks(data);
+                showToast('✅ تم حفظ الروابط');
+            } catch (e) { showToast('❌ فشل الحفظ', true); }
         };
 
         // ====== نبذة "من نحن" ======
         async function loadAbout() {
             try {
-                const docSnap = await getDoc(doc(db, 'settings', 'aboutText'));
-                if (docSnap.exists()) {
-                    const text = docSnap.data().text || '';
+                const snap = await get(ref(db, 'settings/aboutText'));
+                if (snap.exists()) {
+                    const text = snap.val().text || '';
                     document.getElementById('aboutContent').innerHTML = text || 'لا توجد نبذة حالياً. قم بإضافتها من لوحة التحكم.';
                     document.getElementById('aboutEditor').value = text;
                 } else {
                     document.getElementById('aboutContent').textContent = 'لا توجد نبذة حالياً. قم بإضافتها من لوحة التحكم.';
                     document.getElementById('aboutEditor').value = '';
                 }
-            } catch(e) { console.warn('Error loading about:', e); document.getElementById('aboutContent').textContent = 'فشل تحميل النبذة.'; }
+            } catch (e) { console.warn('Error loading about:', e);
+                document.getElementById('aboutContent').textContent = 'فشل تحميل النبذة.'; }
         }
+
         window.saveAbout = async function() {
             const text = document.getElementById('aboutEditor').value.trim();
             if (!text) { showToast('الرجاء كتابة النبذة أولاً', true); return; }
-            try { await setDoc(doc(db, 'settings', 'aboutText'), { text, updatedAt: serverTimestamp() });
+            try {
+                await set(ref(db, 'settings/aboutText'), { text, updatedAt: Date.now() });
                 document.getElementById('aboutContent').innerHTML = text;
                 showToast('✅ تم حفظ النبذة');
-            } catch(e) { showToast('❌ فشل الحفظ', true); }
+            } catch (e) { showToast('❌ فشل الحفظ', true); }
         };
 
         // ====== ترجمة الأنواع ======
         function translateType(type) {
-            const map = { biblical: 'كتابية', doctrinal: 'عقائدية', personal: 'شخصية', consultation: 'استشارة', suggestion: 'اقتراح', prayer: 'صلاة' };
+            const map = { biblical: 'كتابية', doctrinal: 'عقائدية', personal: 'شخصية', consultation: 'استشارة', suggestion: 'اقتراح',
+                prayer: 'صلاة' };
             return map[type] || type;
         }
 
         // ====== لوحة التحكم ======
         async function loadAdminData() {
             if (!isAdmin) return;
-            await Promise.all([loadStats(), loadQuestions(), loadPrayersOnce(), loadAnnouncementsAdmin(), loadSocialLinks(), loadAbout()]);
+            await Promise.all([loadStats(), loadQuestions(), loadPrayersOnce(), loadAnnouncementsAdmin(), loadSocialLinks(),
+                loadAbout()
+            ]);
         }
 
         async function loadStats() {
             try {
-                const qSnap = await getDocs(collection(db, 'questions'));
-                const pSnap = await getDocs(collection(db, 'prayers'));
-                const total = qSnap.size;
+                const qSnap = await get(ref(db, 'questions'));
+                const pSnap = await get(ref(db, 'prayers'));
+                const qData = qSnap.val();
+                const pData = pSnap.val();
+                const total = qData ? Object.keys(qData).length : 0;
+                const prayersCount = pData ? Object.keys(pData).length : 0;
                 const now = new Date();
                 const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-                let monthCount = 0, typeCount = {};
-                qSnap.forEach(doc => {
-                    const data = doc.data();
-                    const date = data.createdAt ? data.createdAt.toDate() : new Date();
-                    if (date >= startMonth) monthCount++;
-                    const t = data.type || 'other';
-                    typeCount[t] = (typeCount[t] || 0) + 1;
-                });
-                let topType = '-', max = 0;
-                for (const [k,v] of Object.entries(typeCount)) { if (v > max) { max = v; topType = translateType(k); } }
+                let monthCount = 0,
+                    typeCount = {};
+                if (qData) {
+                    for (const key in qData) {
+                        const item = qData[key];
+                        const date = item.createdAt ? new Date(item.createdAt) : new Date(0);
+                        if (date >= startMonth) monthCount++;
+                        const t = item.type || 'other';
+                        typeCount[t] = (typeCount[t] || 0) + 1;
+                    }
+                }
+                let topType = '-',
+                    max = 0;
+                for (const [k, v] of Object.entries(typeCount)) { if (v > max) { max = v;
+                        topType = translateType(k); } }
                 document.getElementById('statTotal').textContent = total;
                 document.getElementById('statMonth').textContent = monthCount;
-                document.getElementById('statPrayers').textContent = pSnap.size;
+                document.getElementById('statPrayers').textContent = prayersCount;
                 document.getElementById('statTopType').textContent = topType;
-            } catch(e) { console.error('Stats error:', e); }
+            } catch (e) { console.error('Stats error:', e); }
         }
 
         // ====== تحميل الأسئلة ======
@@ -1368,28 +2391,21 @@
             const countEl = document.getElementById('questionsCount');
             countEl.textContent = 'جاري التحميل...';
             try {
-                const snap = await getDocs(collection(db, 'questions'));
-                let items = [];
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    if (data.details !== undefined && data.details !== null && data.details.trim() !== '') {
-                        items.push({ id: doc.id, ...data });
-                    } else { deleteDoc(doc.ref).catch(e => console.warn('Delete failed:', e)); }
-                });
+                const snap = await get(ref(db, 'questions'));
+                const data = snap.val();
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
                 if (typeFilter !== 'all') items = items.filter(item => item.type === typeFilter);
                 if (answeredFilter === 'answered') items = items.filter(item => item.answered === true);
                 else if (answeredFilter === 'unanswered') items = items.filter(item => item.answered !== true);
                 if (search) items = items.filter(item => item.details.toLowerCase().includes(search));
-                items.sort((a,b) => {
-                    const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                    const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                    return db - da;
-                });
+                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 allQuestionsItems = items;
                 currentPage = 1;
                 countEl.textContent = `(${items.length} سؤال)`;
                 renderQuestionsPage();
-            } catch(e) { console.error(e); document.getElementById('adminQuestionsTable').innerHTML = '<tr><td colspan="6" style="color:#c0392b;">فشل التحميل</td></tr>'; countEl.textContent = ''; }
+            } catch (e) { console.error(e);
+                document.getElementById('adminQuestionsTable').innerHTML = '<tr><td colspan="6" style="color:#c0392b;">فشل التحميل</td></tr>';
+                countEl.textContent = ''; }
         };
 
         function renderQuestionsPage() {
@@ -1425,7 +2441,7 @@
                         </td>
                         <td>${displayName}</td>
                         <td>${translateType(item.type)}</td>
-                        <td>${item.createdAt ? item.createdAt.toDate().toLocaleDateString('ar-EG') : ''}</td>
+                        <td>${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</td>
                         <td>${item.answered ? '✅ مجاب' : '⏳ قيد الانتظار'}</td>
                         <td>
                             <div class="actions">
@@ -1469,80 +2485,88 @@
 
         // ====== طلبات الصلاة في لوحة التحكم ======
         function startPrayersListener() {
-            if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
+            if (prayersUnsubscribe) { prayersUnsubscribe();
+                prayersUnsubscribe = null; }
             if (!isAdmin) return;
-            const q = query(collection(db, 'prayers'), orderBy('createdAt', 'desc'));
-            prayersUnsubscribe = onSnapshot(q, (snapshot) => {
-                console.log(`🔄 تحديث طلبات الصلاة: ${snapshot.size} طلب`);
-                renderPrayersList(snapshot);
+            const prayersRef = ref(db, 'prayers');
+            prayersUnsubscribe = onValue(prayersRef, (snapshot) => {
+                const data = snapshot.val();
+                const items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                renderPrayersList(items);
             }, (error) => {
                 console.error('خطأ في مستمع طلبات الصلاة:', error);
-                setTimeout(() => { if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; startPrayersListener(); } }, 5000);
+                setTimeout(() => {
+                    if (prayersUnsubscribe) { prayersUnsubscribe();
+                        prayersUnsubscribe = null;
+                        startPrayersListener(); }
+                }, 5000);
             });
         }
 
-        function renderPrayersList(snapshot) {
+        function renderPrayersList(items) {
             const container = document.getElementById('adminPrayersList');
             const countEl = document.getElementById('prayersCount');
             if (!container) return;
-            if (!snapshot || snapshot.empty) {
+            if (!items || items.length === 0) {
                 container.innerHTML = '<p style="color:var(--text-muted);">لا توجد طلبات صلاة.</p>';
                 if (countEl) countEl.textContent = '(0)';
                 return;
             }
             let html = '<ul style="list-style:none; padding:0;">';
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-EG') : '';
-                const userName = data.anonymous ? 'مجهول' : (data.userName || 'زائر');
-                const isAnswered = data.answered || false;
+            items.forEach(item => {
+                const date = item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : '';
+                const userName = item.anonymous ? 'مجهول' : (item.userName || 'زائر');
+                const isAnswered = item.answered || false;
                 html += `
                     <li style="padding:10px 0; border-bottom:1px solid var(--border-color);">
-                        <p><strong>${data.text}</strong></p>
+                        <p><strong>${item.text}</strong></p>
                         <small style="color:var(--text-muted);">${userName} - ${date} | الحالة: ${isAnswered ? '✅ تم الرد' : '⏳ قيد الانتظار'}</small>
                         <div style="margin-top:5px;">
-                            ${!isAnswered ? `<button class="btn btn-sm btn-prayer-reply" onclick="window.openPrayerReplyModal('${doc.id}')"><i class="fas fa-reply"></i> رد</button>` :
-                                `<button class="btn btn-sm btn-edit" onclick="window.openEditPrayerReplyModal('${doc.id}')"><i class="fas fa-edit"></i> تعديل الرد</button>`}
-                            <button class="btn btn-sm btn-danger" onclick="window.deletePrayer('${doc.id}')"><i class="fas fa-trash"></i> حذف</button>
+                            ${!isAnswered ? `<button class="btn btn-sm btn-prayer-reply" onclick="window.openPrayerReplyModal('${item.id}')"><i class="fas fa-reply"></i> رد</button>` :
+                                `<button class="btn btn-sm btn-edit" onclick="window.openEditPrayerReplyModal('${item.id}')"><i class="fas fa-edit"></i> تعديل الرد</button>`}
+                            <button class="btn btn-sm btn-danger" onclick="window.deletePrayer('${item.id}')"><i class="fas fa-trash"></i> حذف</button>
                         </div>
-                        ${isAnswered ? `<div style="margin-top:5px; padding:8px; background:var(--bg-body); border-radius:4px;"><strong>الرد:</strong> ${data.answer}</div>` : ''}
+                        ${isAnswered ? `<div style="margin-top:5px; padding:8px; background:var(--bg-body); border-radius:4px;"><strong>الرد:</strong> ${item.answer}</div>` : ''}
                     </li>
                 `;
             });
             html += '</ul>';
             container.innerHTML = html;
-            if (countEl) countEl.textContent = `(${snapshot.size})`;
+            if (countEl) countEl.textContent = `(${items.length})`;
         }
 
         async function loadPrayersOnce() {
             try {
-                const q = query(collection(db, 'prayers'), orderBy('createdAt', 'desc'));
-                const snap = await getDocs(q);
-                renderPrayersList(snap);
-            } catch(e) { console.error('loadPrayersOnce error:', e); }
+                const snap = await get(ref(db, 'prayers'));
+                const data = snap.val();
+                const items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                renderPrayersList(items);
+            } catch (e) { console.error('loadPrayersOnce error:', e); }
         }
 
         window.refreshPrayers = function() {
-            if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
+            if (prayersUnsubscribe) { prayersUnsubscribe();
+                prayersUnsubscribe = null; }
             startPrayersListener();
             showToast('✅ تم تحديث طلبات الصلاة');
         };
 
         window.deletePrayer = async function(id) {
             if (!confirm('حذف طلب الصلاة؟')) return;
-            try { await deleteDoc(doc(db, 'prayers', id)); showToast('تم الحذف'); }
-            catch(e) { showToast('خطأ', true); }
+            try {
+                await remove(ref(db, `prayers/${id}`));
+                showToast('تم الحذف');
+            } catch (e) { showToast('خطأ', true); }
         };
 
         window.clearAllPrayers = async function() {
             if (!confirm('هل أنت متأكد من حذف جميع طلبات الصلاة؟')) return;
             try {
-                const snap = await getDocs(collection(db, 'prayers'));
-                const batch = writeBatch(db);
-                snap.forEach(doc => batch.delete(doc.ref));
-                await batch.commit();
+                await set(ref(db, 'prayers'), null);
                 showToast('تم حذف جميع طلبات الصلاة');
-            } catch(e) { showToast('خطأ', true); }
+            } catch (e) { showToast('خطأ', true); }
         };
 
         window.printPrayers = function() {
@@ -1581,30 +2605,30 @@
             answerModal.classList.add('show');
         };
 
-        window.openEditAnswerModal = function(questionId) {
-            getDoc(doc(db, 'questions', questionId)).then(snap => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    editingQuestionId = questionId;
-                    answerModalTitle.textContent = 'تعديل الإجابة';
-                    answerModalAnswer.value = data.answer || '';
-                    answerModal.classList.add('show');
-                }
-            }).catch(e => console.error(e));
+        window.openEditAnswerModal = async function(questionId) {
+            const snap = await get(ref(db, `questions/${questionId}`));
+            if (snap.exists()) {
+                const data = snap.val();
+                editingQuestionId = questionId;
+                answerModalTitle.textContent = 'تعديل الإجابة';
+                answerModalAnswer.value = data.answer || '';
+                answerModal.classList.add('show');
+            }
         };
 
-        answerModalCancelBtn.addEventListener('click', () => { answerModal.classList.remove('show'); editingQuestionId = null; });
+        answerModalCancelBtn.addEventListener('click', () => { answerModal.classList.remove('show');
+            editingQuestionId = null; });
         answerModalSaveBtn.addEventListener('click', async () => {
             const answer = answerModalAnswer.value.trim();
             if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
             if (!editingQuestionId) { showToast('خطأ: لم يتم تحديد السؤال', true); return; }
             try {
-                const questionRef = doc(db, 'questions', editingQuestionId);
-                const snap = await getDoc(questionRef);
-                const questionData = snap.data();
-                await updateDoc(questionRef, { answered: true, answer });
+                const snap = await get(ref(db, `questions/${editingQuestionId}`));
+                const questionData = snap.val();
+                await update(ref(db, `questions/${editingQuestionId}`), { answered: true, answer });
                 if (questionData && questionData.userId) {
-                    await addUserNotification(questionData.userId, `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0,50)}..."`, 'answer');
+                    await addUserNotification(questionData.userId, `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
+                        'answer');
                 }
                 const displayName = questionData.anonymous ? 'مستخدم مجهول' : (questionData.userName || 'مستخدم');
                 await addNotification(`✅ تمت الإجابة على سؤال لـ ${displayName}`, 'answer');
@@ -1614,10 +2638,12 @@
                 loadQuestions();
                 renderAnsweredQuestions();
                 if (document.getElementById('page-my-questions').classList.contains('active')) startMyItemsListeners();
-            } catch(e) { showToast('❌ خطأ في حفظ الإجابة', true); console.error(e); }
+            } catch (e) { showToast('❌ خطأ في حفظ الإجابة', true);
+                console.error(e); }
         });
 
-        answerModal.addEventListener('click', (e) => { if (e.target === answerModal) { answerModal.classList.remove('show'); editingQuestionId = null; } });
+        answerModal.addEventListener('click', (e) => { if (e.target === answerModal) { answerModal.classList.remove('show');
+                editingQuestionId = null; } });
 
         // ====== نافذة الرد على طلب صلاة ======
         const prayerReplyModal = document.getElementById('prayerReplyModal');
@@ -1633,30 +2659,30 @@
             prayerReplyModal.classList.add('show');
         };
 
-        window.openEditPrayerReplyModal = function(prayerId) {
-            getDoc(doc(db, 'prayers', prayerId)).then(snap => {
-                if (snap.exists()) {
-                    const data = snap.data();
-                    editingPrayerId = prayerId;
-                    prayerReplyTitle.textContent = 'تعديل الرد على طلب الصلاة';
-                    prayerReplyAnswer.value = data.answer || '';
-                    prayerReplyModal.classList.add('show');
-                }
-            }).catch(e => console.error(e));
+        window.openEditPrayerReplyModal = async function(prayerId) {
+            const snap = await get(ref(db, `prayers/${prayerId}`));
+            if (snap.exists()) {
+                const data = snap.val();
+                editingPrayerId = prayerId;
+                prayerReplyTitle.textContent = 'تعديل الرد على طلب الصلاة';
+                prayerReplyAnswer.value = data.answer || '';
+                prayerReplyModal.classList.add('show');
+            }
         };
 
-        prayerReplyCancelBtn.addEventListener('click', () => { prayerReplyModal.classList.remove('show'); editingPrayerId = null; });
+        prayerReplyCancelBtn.addEventListener('click', () => { prayerReplyModal.classList.remove('show');
+            editingPrayerId = null; });
         prayerReplySaveBtn.addEventListener('click', async () => {
             const answer = prayerReplyAnswer.value.trim();
             if (!answer) { showToast('الرجاء كتابة الرد', true); return; }
             if (!editingPrayerId) { showToast('خطأ: لم يتم تحديد طلب الصلاة', true); return; }
             try {
-                const prayerRef = doc(db, 'prayers', editingPrayerId);
-                const snap = await getDoc(prayerRef);
-                const prayerData = snap.data();
-                await updateDoc(prayerRef, { answered: true, answer });
+                const snap = await get(ref(db, `prayers/${editingPrayerId}`));
+                const prayerData = snap.val();
+                await update(ref(db, `prayers/${editingPrayerId}`), { answered: true, answer });
                 if (prayerData && prayerData.userId) {
-                    await addUserNotification(prayerData.userId, `🙏 تم الرد على طلب صلاتك: "${prayerData.text.substring(0,50)}..."`, 'prayer');
+                    await addUserNotification(prayerData.userId, `🙏 تم الرد على طلب صلاتك: "${prayerData.text.substring(0, 50)}..."`,
+                        'prayer');
                 }
                 const displayName = prayerData.anonymous ? 'مستخدم مجهول' : (prayerData.userName || 'مستخدم');
                 await addNotification(`✅ تم الرد على طلب صلاة لـ ${displayName}`, 'prayer');
@@ -1664,52 +2690,53 @@
                 prayerReplyModal.classList.remove('show');
                 editingPrayerId = null;
                 if (document.getElementById('page-my-questions').classList.contains('active')) startMyItemsListeners();
-            } catch(e) { showToast('❌ خطأ في حفظ الرد', true); console.error(e); }
+            } catch (e) { showToast('❌ خطأ في حفظ الرد', true);
+                console.error(e); }
         });
 
-        prayerReplyModal.addEventListener('click', (e) => { if (e.target === prayerReplyModal) { prayerReplyModal.classList.remove('show'); editingPrayerId = null; } });
+        prayerReplyModal.addEventListener('click', (e) => { if (e.target === prayerReplyModal) { prayerReplyModal.classList.remove(
+                    'show');
+                editingPrayerId = null; } });
 
         // ====== دوال إدارة الأسئلة ======
         window.togglePublish = async function(id) {
             try {
-                const ref = doc(db, 'questions', id);
-                const snap = await getDoc(ref);
-                const current = snap.data()?.published || false;
-                const data = snap.data();
-                await updateDoc(ref, { published: !current });
+                const snap = await get(ref(db, `questions/${id}`));
+                const data = snap.val();
+                const current = data.published || false;
+                await update(ref(db, `questions/${id}`), { published: !current });
                 showToast(current ? 'تم إلغاء النشر' : 'تم نشر السؤال');
-
                 if (!current) {
-                    // إرسال إشعار للمستخدم صاحب السؤال
                     if (data && data.userId) {
-                        await addUserNotification(data.userId, `📢 تم نشر سؤالك في "أجوبة عامة": "${data.details.substring(0,50)}..."`, 'answer');
+                        await addUserNotification(data.userId, `📢 تم نشر سؤالك في "أجوبة عامة": "${data.details.substring(0, 50)}..."`,
+                            'answer');
                     }
-                    // إشعار عام لجميع المستخدمين
                     const displayName = data.anonymous ? 'مستخدم مجهول' : (data.userName || 'مستخدم');
-                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0,50)}..." (بواسطة ${displayName})`, 'answer');
+                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0, 50)}..." (بواسطة ${displayName})`,
+                        'answer');
                 }
                 loadQuestions();
                 renderAnsweredQuestions();
-            } catch(e) { showToast('خطأ', true); }
+            } catch (e) { showToast('خطأ', true); }
         };
 
         window.deleteQuestion = async function(id) {
             if (!confirm('هل أنت متأكد من حذف هذا السؤال؟')) return;
-            try { await deleteDoc(doc(db, 'questions', id)); showToast('تم الحذف'); loadQuestions(); }
-            catch(e) { showToast('خطأ', true); }
+            try {
+                await remove(ref(db, `questions/${id}`));
+                showToast('تم الحذف');
+                loadQuestions();
+            } catch (e) { showToast('خطأ', true); }
         };
 
         window.clearAllQuestions = async function() {
             if (!confirm('هل أنت متأكد من حذف جميع الأسئلة؟')) return;
             try {
-                const snap = await getDocs(collection(db, 'questions'));
-                const batch = writeBatch(db);
-                snap.forEach(doc => batch.delete(doc.ref));
-                await batch.commit();
+                await set(ref(db, 'questions'), null);
                 showToast('تم حذف جميع الأسئلة');
                 loadQuestions();
                 loadStats();
-            } catch(e) { showToast('خطأ', true); }
+            } catch (e) { showToast('خطأ', true); }
         };
 
         window.printQuestions = function() {
@@ -1739,21 +2766,22 @@
             const container = document.getElementById('adminAnnouncementsList');
             container.innerHTML = 'جاري التحميل...';
             try {
-                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
-                const snap = await getDocs(q);
-                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد إعلانات.</p>'; return; }
+                const snap = await get(ref(db, 'announcements'));
+                const data = snap.val();
+                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
+                items.sort((a, b) => (b.date || 0) - (a.date || 0));
+                if (items.length === 0) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد إعلانات.</p>'; return; }
                 let html = '';
-                snap.forEach(doc => {
-                    const data = doc.data();
+                items.forEach(item => {
                     html += `
                         <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
-                            <div><strong>${data.title}</strong> - ${data.content}</div>
-                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${doc.id}')">حذف</button>
+                            <div><strong>${item.title}</strong> - ${item.content}</div>
+                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${item.id}')">حذف</button>
                         </div>
                     `;
                 });
                 container.innerHTML = html;
-            } catch(e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
+            } catch (e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
         }
 
         window.addAnnouncement = async function() {
@@ -1761,21 +2789,25 @@
             const content = document.getElementById('announceContent').value.trim();
             if (!title || !content) { showToast('املأ الحقول', true); return; }
             try {
-                await addDoc(collection(db, 'announcements'), { title, content, date: serverTimestamp() });
+                const newRef = push(ref(db, 'announcements'));
+                await set(newRef, { title, content, date: Date.now() });
                 showToast('تمت الإضافة');
                 document.getElementById('announceTitle').value = '';
                 document.getElementById('announceContent').value = '';
                 loadAnnouncementsAdmin();
                 loadAnnouncements();
-                // إرسال إشعار لجميع المستخدمين
                 await notifyAllUsers(`📢 إعلان جديد: "${title}"`, 'announcement');
-            } catch(e) { showToast('خطأ', true); }
+            } catch (e) { showToast('خطأ', true); }
         };
 
         window.deleteAnnouncement = async function(id) {
             if (!confirm('حذف الإعلان؟')) return;
-            try { await deleteDoc(doc(db, 'announcements', id)); showToast('تم الحذف'); loadAnnouncementsAdmin(); loadAnnouncements(); }
-            catch(e) { showToast('خطأ', true); }
+            try {
+                await remove(ref(db, `announcements/${id}`));
+                showToast('تم الحذف');
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+            } catch (e) { showToast('خطأ', true); }
         };
 
         // ====== التهيئة ======
@@ -1801,10 +2833,10 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل');
-        console.log('✅ تم إصلاح إشعارات النشر (تصل للمستخدم)');
-        console.log('✅ تم إصلاح إشعارات الإعلانات (تصل للجميع)');
-        console.log('✅ تم تحسين إنشاء مستندات المستخدمين تلقائياً');
+        console.log('✅ التطبيق جاهز بالكامل (Realtime Database)');
+        console.log('✅ تم إزالة كلمة المرور من الكود واستخدام Authentication');
+        console.log('✅ التحقق من صلاحية الأدمن عبر مسار /admins');
+        console.log('✅ جميع الإشعارات تعمل عبر مسار /userNotifications');
     </script>
 </body>
 </html>

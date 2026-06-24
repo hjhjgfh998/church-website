@@ -1731,4 +1731,84 @@
                     <h2 style="text-align:center;">قائمة الأسئلة الواردة</h2>
                     <table><thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th></tr></thead><tbody>${content}</tbody></table>
                     <p style="margin-top:20px; text-align:center;">تم الطباعة في: ${new Date().toLocaleString('ar-EG')}</p>
-                    <script>window.on
+                    <script>window.onload = function() { window.print(); }<\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        };
+
+        // ====== إدارة الإعلانات ======
+        async function loadAnnouncementsAdmin() {
+            const container = document.getElementById('adminAnnouncementsList');
+            container.innerHTML = 'جاري التحميل...';
+            try {
+                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
+                const snap = await getDocs(q);
+                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد إعلانات.</p>'; return; }
+                let html = '';
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    html += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
+                            <div><strong>${data.title}</strong> - ${data.content}</div>
+                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${doc.id}')">حذف</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch(e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
+        }
+
+        window.addAnnouncement = async function() {
+            const title = document.getElementById('announceTitle').value.trim();
+            const content = document.getElementById('announceContent').value.trim();
+            if (!title || !content) { showToast('املأ الحقول', true); return; }
+            try {
+                await addDoc(collection(db, 'announcements'), { title, content, date: serverTimestamp() });
+                showToast('تمت الإضافة');
+                document.getElementById('announceTitle').value = '';
+                document.getElementById('announceContent').value = '';
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+                await notifyAllUsers(`📢 إعلان جديد: "${title}"`, 'announcement');
+            } catch(e) { showToast('خطأ', true); }
+        };
+
+        window.deleteAnnouncement = async function(id) {
+            if (!confirm('حذف الإعلان؟')) return;
+            try { await deleteDoc(doc(db, 'announcements', id)); showToast('تم الحذف'); loadAnnouncementsAdmin(); loadAnnouncements(); }
+            catch(e) { showToast('خطأ', true); }
+        };
+
+        // ====== التهيئة ======
+        loadAnnouncements();
+        document.getElementById('year').textContent = new Date().getFullYear();
+        renderAnsweredQuestions();
+        loadSocialLinks();
+        loadAbout();
+        loadDailyVerse();
+        scheduleVerseUpdate();
+
+        setTimeout(() => {
+            if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
+                startMyItemsListeners();
+            }
+            if (document.getElementById('page-questions').classList.contains('active')) {
+                if (!currentUser) {
+                    document.getElementById('questionFormContainer').style.display = 'none';
+                    document.getElementById('authRequiredMessage').style.display = 'block';
+                }
+                // إعادة تعيين النموذج عند فتح الصفحة
+                document.getElementById('questionForm').style.display = 'block';
+                document.getElementById('questionSuccess').style.display = 'none';
+            }
+        }, 100);
+
+        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('✅ إصلاح الإشعارات عند إضافة إعلان أو نشر إجابة');
+        console.log('✅ إضافة زر "اسأل سؤال آخر" لإعادة تعيين النموذج');
+        console.log('✅ إصلاح عرض جميع طلبات الصلاة في لوحة التحكم');
+    </script>
+</body>
+</html>

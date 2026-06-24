@@ -3,1384 +3,177 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>الكنيسة الإنجيلية المشيخية بإبشادات</title>
+    <title>تسجيل الدخول - الكنيسة الإنجيلية المشيخية</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js",
-                "firebase/database": "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js",
-                "firebase/auth": "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js"
-            }
-        }
-    </script>
     <style>
-        /* ====== جميع الأنماط (نفس السابق) ====== */
-        :root {
-            --color-primary: #1a2a3a;
-            --color-primary-light: #2c4056;
-            --color-gold: #c9a87c;
-            --color-gold-light: #dfc8a8;
-            --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%);
-            --bg-body: #f5f1eb;
-            --bg-surface: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #1a1f2a;
-            --text-secondary: #3d4552;
-            --text-muted: #7a8291;
-            --border-color: #e8e2d9;
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
-            --radius-sm: 8px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font-family: 'Cairo', sans-serif;
-            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.15) 0%, transparent 70%);
-        }
-        [data-theme="dark"] {
-            --bg-body: #11161e;
-            --bg-surface: #1a232e;
-            --bg-card: #1e2833;
-            --text-primary: #edf2f7;
-            --text-secondary: #cbd5e0;
-            --text-muted: #94a3b8;
-            --border-color: #2d3b47;
-            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
-            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.08) 0%, transparent 70%);
-        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         body {
-            font-family: var(--font-family);
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            transition: background-color 0.5s, color 0.5s;
-            line-height: 1.7;
+            font-family: 'Cairo', sans-serif;
+            background: #f5f1eb;
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        button {
-            font-family: var(--font-family);
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: inherit;
-        }
-        input,
-        select,
-        textarea {
-            font-family: var(--font-family);
-            background: var(--bg-surface);
-            color: var(--text-primary);
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            padding: 14px 18px;
+        .login-container {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 420px;
             width: 100%;
-            transition: border-color var(--transition), box-shadow var(--transition);
-            font-size: 1rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border: 1px solid #e8e2d9;
         }
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--color-gold);
-            box-shadow: 0 0 0 4px rgba(201, 168, 124, 0.15);
-        }
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        label {
-            font-weight: 600;
-            display: block;
+        .login-container h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a2a3a;
+            text-align: center;
             margin-bottom: 8px;
-            color: var(--text-secondary);
+        }
+        .login-container .subtitle {
+            text-align: center;
+            color: #7a8291;
+            margin-bottom: 32px;
             font-size: 0.95rem;
         }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
+        .form-group {
+            margin-bottom: 20px;
         }
-        @media (max-width: 640px) {
-            .container {
-                padding: 0 16px;
-            }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #3d4552;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e8e2d9;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            background: #faf8f6;
+            transition: border 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #c9a87c;
+            box-shadow: 0 0 0 4px rgba(201,168,124,0.15);
         }
         .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 14px 34px;
+            width: 100%;
+            padding: 16px;
+            border: none;
             border-radius: 50px;
             font-weight: 700;
             font-size: 1rem;
-            transition: all var(--transition);
-            border: 2px solid transparent;
-            background: var(--color-gold-gradient);
+            background: linear-gradient(135deg, #c9a87c, #b8925e);
             color: #fff;
-            box-shadow: 0 4px 16px rgba(201, 168, 124, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        .btn::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(-100%);
-            transition: transform var(--transition);
-        }
-        .btn:hover::after {
-            transform: translateX(0);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 16px rgba(201,168,124,0.3);
         }
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(201, 168, 124, 0.4);
+            box-shadow: 0 8px 30px rgba(201,168,124,0.4);
         }
-        .btn-primary {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
-        .btn-primary:hover {
-            background: var(--color-primary-light);
-        }
-        .btn-danger {
-            background: #c0392b;
-            border-color: #c0392b;
-        }
-        .btn-success {
-            background: #27ae60;
-            border-color: #27ae60;
-        }
-        .btn-sm {
-            padding: 8px 18px;
-            font-size: 0.85rem;
-        }
-        .btn-outline {
-            background: transparent;
-            border-color: var(--color-gold);
-            color: var(--color-gold);
-        }
-        .btn-outline:hover {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        .btn-refresh {
-            background: var(--color-primary);
-            color: #fff;
-            border-color: var(--color-primary);
-        }
-        .btn-refresh:hover {
-            background: var(--color-primary-light);
-        }
-        .card {
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            padding: 24px 28px;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border-color);
-            transition: all var(--transition);
-        }
-        .card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-3px);
-        }
-        .section-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 1.8rem;
-            color: var(--text-primary);
-            position: relative;
-            display: inline-block;
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            right: 0;
-            width: 60px;
-            height: 4px;
-            background: var(--color-gold-gradient);
-            border-radius: 4px;
-        }
-        .section-title.text-center::after {
-            right: 50%;
-            transform: translateX(50%);
-        }
-        .text-center {
-            text-align: center;
-        }
-        .mt-4 {
-            margin-top: 2rem;
-        }
-        .mb-4 {
-            margin-bottom: 2rem;
-        }
-        .mt-2 {
-            margin-top: 1rem;
-        }
-        .mb-2 {
-            margin-bottom: 1rem;
-        }
-        header {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border-color);
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(12px);
-            transition: all var(--transition);
-        }
-        .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .logo-area h1 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--color-primary);
-            transition: color var(--transition);
-        }
-        [data-theme="dark"] .logo-area h1 {
-            color: var(--color-gold);
-        }
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        nav a {
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all var(--transition);
-            color: var(--text-secondary);
-        }
-        nav a:hover,
-        nav a.active {
-            background: var(--color-gold-gradient);
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(201, 168, 124, 0.25);
-        }
-        .theme-toggle {
-            font-size: 1.3rem;
-            padding: 8px 14px;
-            border-radius: 50px;
-            background: var(--bg-body);
-            border: 1px solid var(--border-color);
-            transition: all var(--transition);
-        }
-        .theme-toggle:hover {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        .notification-badge {
-            position: relative;
-            display: inline-block;
-        }
-        .notification-badge .badge-count {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: #e74c3c;
-            color: #fff;
-            border-radius: 50%;
-            padding: 2px 8px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        .page {
-            display: none;
-            padding: 40px 0 60px;
-            animation: fadeIn 0.5s ease;
-        }
-        .page.active {
-            display: block;
-        }
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .hero {
-            position: relative;
-            height: 520px;
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: 2.5rem;
-            background: var(--color-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #fff;
-            padding: 20px;
-            background-image: var(--hero-bg);
-        }
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            max-width: 700px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-        .hero-content h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-            line-height: 1.2;
-        }
-        .hero-content p {
-            font-size: 1.4rem;
-            opacity: 0.95;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-        }
-        #dailyVerseDisplay {
-            font-size: 1.25rem;
-            line-height: 1.9;
-            word-wrap: break-word;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 4px 0;
-        }
-        #dailyVerseDisplay::-webkit-scrollbar {
-            width: 4px;
-        }
-        #dailyVerseDisplay::-webkit-scrollbar-thumb {
-            background: var(--color-gold);
-            border-radius: 4px;
-        }
-        .question-card {
-            border-right: 4px solid var(--color-gold);
-            padding: 18px 22px;
-            margin-bottom: 16px;
-            background: var(--bg-card);
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all var(--transition);
-        }
-        .question-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateX(-4px);
-        }
-        .question-card .q-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        .question-card .q-answer {
-            margin-top: 10px;
-            padding: 14px 18px;
-            background: var(--bg-body);
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-            border-right: 3px solid var(--color-gold-light);
-        }
-        .question-card .q-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-        .my-item-card {
-            border-right: 4px solid var(--color-gold);
-            padding: 18px 22px;
-            margin-bottom: 16px;
-            background: var(--bg-card);
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all var(--transition);
-        }
-        .my-item-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateX(-4px);
-        }
-        .my-item-card .item-details {
-            font-size: 1.05rem;
-            margin-bottom: 6px;
-        }
-        .my-item-card .item-answer {
-            margin-top: 10px;
-            padding: 12px 16px;
-            background: var(--bg-body);
-            border-radius: var(--radius-sm);
-            color: var(--text-secondary);
-            border-right: 3px solid var(--color-gold-light);
-        }
-        .my-item-card .item-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 6px;
-        }
-        .my-item-card .item-notification {
-            margin-top: 8px;
-            padding: 8px 14px;
-            background: #d4edda;
-            color: #155724;
-            border-radius: var(--radius-sm);
+        .error-message {
+            color: #c0392b;
             font-size: 0.9rem;
-            border-right: 3px solid #28a745;
-            display: none;
-        }
-        .my-item-card .item-notification.show {
-            display: block;
-        }
-        .announcement-item {
-            padding: 18px 0;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
-        .announcement-item:last-child {
-            border-bottom: none;
-        }
-        .announcement-item .announce-content {
-            flex: 1;
-        }
-        .announcement-item h4 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--color-primary);
-        }
-        .announcement-item .date {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-top: 4px;
-        }
-        .table-responsive {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-        th {
-            background: var(--bg-body);
-            color: var(--text-secondary);
-            font-weight: 700;
-            padding: 14px 12px;
-            text-align: right;
-            border-bottom: 2px solid var(--border-color);
-            white-space: nowrap;
-        }
-        td {
-            padding: 14px 12px;
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-            max-width: 300px;
-        }
-        td .question-text {
-            word-wrap: break-word;
-            line-height: 1.6;
-        }
-        td .question-text .short-text {
-            display: inline;
-        }
-        td .question-text .full-text {
-            display: none;
-        }
-        td .question-text .full-text.show {
-            display: inline;
-        }
-        td .question-text .toggle-btn {
-            color: var(--color-gold);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            background: none;
-            border: none;
-            padding: 0 4px;
-        }
-        td .question-text .toggle-btn:hover {
-            text-decoration: underline;
-        }
-        .actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .actions button {
-            padding: 4px 14px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .actions .btn-answer {
-            background: var(--color-primary);
-            color: #fff;
-        }
-        .actions .btn-publish {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        .actions .btn-delete {
-            background: #c0392b;
-            color: #fff;
-        }
-        .actions .btn-edit {
-            background: #f39c12;
-            color: #fff;
-        }
-        .actions .btn-prayer-reply {
-            background: #8e44ad;
-            color: #fff;
-        }
-        .search-filter {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        .search-filter input,
-        .search-filter select {
-            width: auto;
-            flex: 1;
-            min-width: 160px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.show {
-            display: flex;
-        }
-        .modal-content {
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            max-width: 700px;
-            width: 90%;
-            padding: 30px;
-            box-shadow: var(--shadow-lg);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-content h3 {
-            margin-bottom: 16px;
-            color: var(--color-primary);
-        }
-        .modal-content .form-group {
-            margin-bottom: 16px;
-        }
-        .modal-content textarea {
-            min-height: 200px;
-            font-size: 1rem;
-        }
-        .modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
-        .admin-section {
-            margin-bottom: 3rem;
-        }
-        .admin-section .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 1.2rem;
-        }
-        .admin-section h3 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin: 0;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 1.2rem;
-            margin-bottom: 2.5rem;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            padding: 22px 18px;
-            border-radius: var(--radius-md);
+            margin-top: 12px;
             text-align: center;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            transition: all var(--transition);
+            min-height: 24px;
         }
-        .stat-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-4px);
-        }
-        .stat-card .number {
-            font-size: 2.4rem;
-            font-weight: 900;
-            color: var(--color-gold);
-        }
-        .stat-card .label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .login-box {
-            max-width: 420px;
-            margin: 60px auto;
-            padding: 44px 40px;
-            background: var(--bg-card);
-            border-radius: var(--radius-lg);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.12);
-            border: 1px solid var(--border-color);
-        }
-        .login-box h2 {
-            text-align: center;
-            margin-bottom: 28px;
-            font-weight: 800;
-        }
-        .login-box .subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 24px;
-            font-size: 0.95rem;
-        }
-        .login-box .toggle-link {
+        .loading {
+            display: none;
             text-align: center;
             margin-top: 16px;
-            color: var(--color-gold);
-            cursor: pointer;
-            font-weight: 600;
+            color: #7a8291;
         }
-        .login-box .toggle-link:hover {
-            text-decoration: underline;
+        .loading.show {
+            display: block;
         }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            background: var(--bg-card);
-            color: var(--text-primary);
-            padding: 18px 28px;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            border-right: 5px solid var(--color-gold);
-            z-index: 999;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.4s ease;
-            font-weight: 600;
-            max-width: 90%;
+        .loading i {
+            margin-left: 8px;
         }
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-        .notification-item {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .notification-item:last-child {
-            border-bottom: none;
-        }
-        .notification-item .notif-time {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-        .notification-item .notif-text {
-            flex: 1;
-            margin-left: 12px;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-        .notification-item .notif-type {
-            padding: 2px 10px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        .notif-type.question {
-            background: var(--color-primary);
-            color: #fff;
-        }
-        .notif-type.prayer {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        .notif-type.answer {
-            background: #27ae60;
-            color: #fff;
-        }
-        .notif-type.verse {
-            background: #3498db;
-            color: #fff;
-        }
-        .notif-type.announcement {
-            background: #e67e22;
-            color: #fff;
-        }
-        .notif-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .notif-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-        .social-links {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            font-size: 2.2rem;
-            margin: 16px 0;
-        }
-        .social-links a {
-            transition: all var(--transition);
-            color: var(--text-secondary);
-        }
-        .social-links a:hover {
-            color: var(--color-gold);
-            transform: scale(1.15);
-        }
-        footer {
-            background: var(--bg-surface);
-            border-top: 1px solid var(--border-color);
-            padding: 28px 0;
+        .footer-text {
             text-align: center;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 40px;
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: #7a8291;
         }
-        .about-text {
-            white-space: pre-wrap;
-            line-height: 1.9;
-        }
-        .whatsapp-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 34px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            background: #25d366;
-            color: #fff;
-            border: 2px solid #25d366;
-            transition: all var(--transition);
-            box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+        .footer-text a {
+            color: #c9a87c;
+            font-weight: 600;
             text-decoration: none;
         }
-        .whatsapp-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(37, 211, 102, 0.4);
-            color: #fff;
-        }
-        .whatsapp-btn i {
-            font-size: 1.5rem;
-        }
-        .user-auth-btn {
-            background: var(--color-gold);
-            color: #fff;
-            border-radius: 50px;
-            padding: 6px 18px;
-            font-size: 0.9rem;
-        }
-        .user-auth-btn:hover {
-            background: var(--color-primary);
-        }
-        .admin-login-btn {
-            background: var(--color-primary);
-            color: #fff;
-            border-radius: 50px;
-            padding: 6px 18px;
-            font-size: 0.9rem;
-        }
-        .admin-login-btn:hover {
-            background: var(--color-gold);
-        }
-        .refresh-container {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .no-questions {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 30px 0;
-        }
-        .status-connected {
-            color: #27ae60;
-        }
-        .status-error {
-            color: #c0392b;
-        }
-        .status-loading {
-            color: var(--text-muted);
-        }
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-        .pagination-controls .page-info {
-            font-weight: 600;
-            color: var(--text-secondary);
-            padding: 0 8px;
-        }
-        .pagination-controls .btn {
-            padding: 6px 18px;
-            font-size: 0.85rem;
-            min-width: 70px;
-        }
-        #notifBell {
-            position: relative;
-            display: none;
-            padding: 6px 12px;
-            border-radius: 50px;
-            transition: all var(--transition);
-            color: var(--text-secondary);
-        }
-        #notifBell:hover {
-            background: var(--color-gold-gradient);
-            color: #fff;
-        }
-        #notifBell .badge-count {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #e74c3c;
-            color: #fff;
-            border-radius: 50%;
-            padding: 2px 7px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
-            animation: pulse 1.5s infinite;
-        }
-        #userNotifModal .modal-content {
-            max-width: 650px;
-        }
-        #userNotifModal .modal-actions .btn {
-            padding: 8px 18px;
-            font-size: 0.9rem;
-            min-width: auto;
-            border-radius: 30px;
-        }
-        #userNotifModal .modal-actions .btn-outline {
-            border-color: var(--color-gold);
-            color: var(--color-gold);
-            background: transparent;
-        }
-        #userNotifModal .modal-actions .btn-outline:hover {
-            background: var(--color-gold);
-            color: #fff;
-        }
-        #userNotifModal .modal-actions .btn-danger {
-            background: #c0392b;
-            border-color: #c0392b;
-        }
-        #userNotifModal .modal-actions .btn-primary {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-        #userNotifModal .notification-item .notif-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-        }
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-            body {
-                background: #fff !important;
-                color: #000 !important;
-            }
-            .card {
-                box-shadow: none !important;
-                border: 1px solid #ccc !important;
-            }
-            table {
-                font-size: 12px !important;
-            }
-            .actions {
-                display: none !important;
-            }
-            .theme-toggle,
-            nav a,
-            header .logo-area h1 {
-                color: #000 !important;
-            }
-            header {
-                background: #fff !important;
-                border-bottom: 1px solid #ccc !important;
-            }
-            .container {
-                max-width: 100% !important;
-                padding: 0 10px !important;
-            }
-            .page {
-                padding: 20px 0 !important;
-            }
-            .btn {
-                display: none !important;
-            }
-            .admin-section .section-header .btn {
-                display: none !important;
-            }
-            .pagination-controls {
-                display: none !important;
-            }
-        }
-        @media (max-width: 992px) {
-            .hero {
-                height: 420px;
-            }
-            .hero-content h2 {
-                font-size: 2.4rem;
-            }
-            .section-title {
-                font-size: 1.8rem;
-            }
-        }
-        @media (max-width: 768px) {
-            .hero {
-                height: 380px;
-            }
-            .hero-content h2 {
-                font-size: 2rem;
-            }
-            .hero-content p {
-                font-size: 1.1rem;
-            }
-            .logo-area h1 {
-                font-size: 1rem;
-            }
-            nav a {
-                padding: 6px 12px;
-                font-size: 0.85rem;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .login-box {
-                padding: 32px 24px;
-                margin: 30px 16px;
-            }
-            td {
-                max-width: 150px;
-            }
-            .announcement-item {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .pagination-controls .btn {
-                padding: 4px 12px;
-                font-size: 0.75rem;
-                min-width: 50px;
-            }
-            #userNotifModal .modal-actions .btn {
-                padding: 4px 10px;
-                font-size: 0.7rem;
-            }
-            #userNotifModal .modal-content {
-                max-width: 95%;
-                padding: 20px;
-            }
+        .footer-text a:hover {
+            text-decoration: underline;
         }
         @media (max-width: 480px) {
-            .header-inner {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            nav {
-                justify-content: center;
-            }
-            .hero {
-                height: 300px;
-            }
-            .hero-content h2 {
-                font-size: 1.6rem;
-            }
-            .hero-content p {
-                font-size: 1rem;
-            }
-            .btn {
-                padding: 12px 24px;
-                font-size: 0.9rem;
-            }
-            .card {
-                padding: 18px;
-            }
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.8rem;
-            }
-            .stat-card .number {
-                font-size: 1.8rem;
-            }
-            .section-title {
-                font-size: 1.5rem;
-            }
-            td {
-                max-width: 100px;
-                font-size: 0.85rem;
-            }
-            td .question-text .toggle-btn {
-                font-size: 0.7rem;
-            }
-            #userNotifModal .modal-actions {
-                flex-direction: column;
-                gap: 6px;
-            }
-            #userNotifModal .modal-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            #userNotifModal .modal-content {
-                max-width: 98%;
-                padding: 16px;
+            .login-container {
+                padding: 32px 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="toast" class="toast"></div>
-    <header>
-        <div class="container header-inner">
-            <div class="logo-area"><h1>الكنيسة الإنجيلية المشيخية بإبشادات</h1></div>
-            <nav id="mainNav">
-                <a href="#" data-page="home" class="active"><i class="fas fa-home"></i> الرئيسية</a>
-                <a href="#" data-page="questions"><i class="fas fa-question-circle"></i> اسأل</a>
-                <a href="#" data-page="my-questions" id="myQuestionsLink" style="display:none;"><i class="fas fa-list"></i> أسئلتي</a>
-                <a href="#" data-page="prayer"><i class="fas fa-hands-praying"></i> صلاة</a>
-                <a href="#" data-page="answered"><i class="fas fa-check-circle"></i> أجوبة عامة</a>
-                <a href="#" data-page="announcements"><i class="fas fa-bullhorn"></i> إعلانات</a>
-                <a href="#" data-page="about"><i class="fas fa-info-circle"></i> من نحن</a>
-                <a href="#" data-page="contact"><i class="fas fa-envelope"></i> تواصل</a>
-                <a href="#" data-page="admin" id="adminLink" style="display:none;" class="notification-badge">
-                    <i class="fas fa-user-shield"></i> لوحة التحكم
-                    <span class="badge-count" id="notifBadge" style="display:none;">0</span>
-                </a>
-                <a href="#" id="notifBell" title="الإشعارات">
-                    <i class="fas fa-bell" style="font-size:1.3rem;"></i>
-                    <span class="badge-count" id="userNotifBadge" style="display:none;">0</span>
-                </a>
-                <a href="#" id="userAuthBtn" class="user-auth-btn"><i class="fas fa-user"></i> تسجيل الدخول</a>
-                <a href="#" data-page="admin-login" id="adminLoginBtn" class="admin-login-btn"><i class="fas fa-lock"></i> أدمن</a>
-                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
-            </nav>
-        </div>
-    </header>
-    <main class="container">
-        <section id="page-home" class="page active">
-            <div class="hero">
-                <div class="hero-content">
-                    <h2>الكنيسة الإنجيلية المشيخية بإبشادات</h2>
-                    <p>«أَنَا هُوَ الطَّرِيقُ وَالْحَقُّ وَالْحَيَاةُ» (يوحنا ١٤: ٦)</p>
-                    <button class="btn btn-primary mt-2" onclick="window.navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
-                </div>
-            </div>
-            <div id="dailyVerseContainer" class="card text-center mb-4">
-                <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> آية اليوم</h3>
-                <div id="dailyVerseDisplay">جاري التحميل...</div>
-                <div id="dailyVerseRef" style="color:var(--text-muted); margin-top:6px;"></div>
-            </div>
-            <div class="text-center mt-4">
-                <button class="btn btn-primary" onclick="window.navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
-            </div>
-        </section>
-        <section id="page-user-auth" class="page">
-            <div class="login-box">
-                <h2 id="authTitle"><i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
-                <p class="subtitle" id="authSubtitle">سجل الدخول لمتابعة أسئلتك</p>
-                <form id="userAuthForm">
-                    <div class="form-group"><label for="authEmail">البريد الإلكتروني</label><input type="email" id="authEmail" required placeholder="أدخل بريدك الإلكتروني" /></div>
-                    <div class="form-group"><label for="authPassword">كلمة المرور</label><input type="password" id="authPassword" required placeholder="أدخل كلمة المرور (6 أحرف على الأقل)" minlength="6" /></div>
-                    <div id="authNameGroup" class="form-group" style="display:none;"><label for="authName">الاسم (ظاهر للآخرين)</label><input type="text" id="authName" placeholder="أدخل اسمك" /></div>
-                    <button type="submit" class="btn" style="width:100%;" id="authSubmitBtn"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</button>
-                    <div id="authError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
-                    <div class="toggle-link" id="authToggleLink">ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span></div>
-                </form>
-            </div>
-        </section>
-        <section id="page-questions" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
-            <div id="questionFormContainer">
-                <div class="card" style="max-width:700px; margin:0 auto;">
-                    <form id="questionForm">
-                        <div class="form-group"><label for="qDetails">تفاصيل السؤال</label><textarea id="qDetails" required placeholder="اكتب تفاصيل سؤالك هنا..."></textarea></div>
-                        <div class="form-group"><label for="qType">تصنيف السؤال</label><select id="qType"><option value="biblical">أسئلة كتابية</option><option value="doctrinal">أسئلة عقائدية</option><option value="personal">مشاكل شخصية</option><option value="consultation">طلب استشارة</option><option value="suggestion">اقتراحات للكنيسة</option><option value="prayer">طلب صلاة</option></select></div>
-                        <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
-                            <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
-                            <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول (لن يظهر اسمك)</label>
-                        </div>
-                        <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
-                    </form>
-                    <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
-                        <i class="fas fa-check-circle" style="font-size:3rem;"></i>
-                        <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
-                        <button class="btn btn-primary mt-4" onclick="window.resetQuestionForm()"><i class="fas fa-plus"></i> اسأل سؤال آخر</button>
-                    </div>
-                </div>
-            </div>
-            <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
-                <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
-                <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
-                <button class="btn btn-primary mt-2" onclick="window.navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
-            </div>
-        </section>
-        <section id="page-my-questions" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
-            <div class="refresh-container">
-                <button class="btn btn-refresh btn-sm" onclick="window.refreshMyItems()"><i class="fas fa-sync-alt"></i> تحديث</button>
-                <span id="myItemsStatus" style="color:var(--text-muted); font-size:0.85rem;"></span>
-            </div>
-            <div id="myItemsList"></div>
-        </section>
-        <section id="page-prayer" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">طلبات الصلاة</h2>
-            <div class="card" style="max-width:600px; margin:0 auto;">
-                <form id="prayerForm">
-                    <div class="form-group"><label for="prayerText">طلب الصلاة</label><textarea id="prayerText" required placeholder="اكتب طلب صلاتك..."></textarea></div>
-                    <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
-                        <input type="checkbox" id="prayerAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
-                        <label for="prayerAnonymous" style="margin:0; font-weight:400;">إرسال مجهول</label>
-                    </div>
-                    <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال طلب الصلاة</button>
-                </form>
-                <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
-                    <i class="fas fa-check-circle" style="font-size:3rem;"></i>
-                    <p style="font-size:1.2rem; margin-top:10px;">تم استلام طلب صلاتك، باركك الرب.</p>
-                    <button class="btn btn-primary mt-4" onclick="window.resetPrayerForm()"><i class="fas fa-plus"></i> طلب صلاة آخر</button>
-                </div>
-            </div>
-        </section>
-        <section id="page-answered" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
-            <div class="search-filter"><input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" /></div>
-            <div id="answeredList"></div>
-        </section>
-        <section id="page-announcements" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">الإعلانات والأنشطة</h2>
-            <div id="announcementsList"></div>
-        </section>
-        <section id="page-about" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">من نحن</h2>
-            <div class="card">
-                <h3 style="color:var(--color-gold);">تاريخ الكنيسة</h3>
-                <div id="aboutContent" class="about-text">جاري تحميل النبذة...</div>
-                <h3 style="color:var(--color-gold); margin-top:1.2rem;">خدماتنا</h3>
-                <ul style="padding-right:20px;"><li>اجتماعات العبادة الأسبوعية</li><li>اجتماعات الشباب والطلائع</li><li>خدمة التعليم المسيحي</li><li>الخدمة الاجتماعية والزيارات</li></ul>
-            </div>
-        </section>
-        <section id="page-contact" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">تواصل معنا</h2>
-            <div class="text-center card" style="max-width:600px; margin:0 auto;">
-                <p style="margin-bottom:16px;">تواصل معنا عبر واتساب:</p>
-                <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i><span id="whatsappLabel">تواصل عبر واتساب</span></a>
-                <p style="margin-top:24px; margin-bottom:12px;">تابعونا على وسائل التواصل الاجتماعي:</p>
-                <div class="social-links"><a href="#" id="socialFacebook" target="_blank"><i class="fab fa-facebook"></i></a><a href="#" id="socialInstagram" target="_blank"><i class="fab fa-instagram"></i></a></div>
-            </div>
-        </section>
-        <section id="page-admin-login" class="page">
-            <div class="login-box">
-                <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
-                <p class="subtitle">أدخل بيانات حساب الأدمن المسجلة في Firebase</p>
-                <form id="adminLoginForm">
-                    <div class="form-group"><label for="adminLoginEmail">البريد الإلكتروني</label><input type="email" id="adminLoginEmail" required placeholder="أدخل بريد الأدمن" /></div>
-                    <div class="form-group"><label for="adminLoginPassword">كلمة المرور</label><input type="password" id="adminLoginPassword" required placeholder="أدخل كلمة المرور" /></div>
-                    <button type="submit" class="btn" style="width:100%;"><i class="fas fa-sign-in-alt"></i> دخول</button>
-                    <div id="adminLoginError" style="color:#c0392b; margin-top:12px; text-align:center;"></div>
-                </form>
-                <div style="margin-top:12px; text-align:center; font-size:0.85rem; color:var(--text-muted);">
-                    <i class="fas fa-info-circle"></i> يجب أن يكون لديك حساب أدمن مسجل في Firebase
-                </div>
-            </div>
-        </section>
-        <section id="page-admin" class="page">
-            <div id="adminDashboard" style="display:none;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem;">
-                    <h2 class="section-title" style="margin-bottom:0;">لوحة التحكم</h2>
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span id="adminUserEmail" style="color:var(--text-muted); font-weight:600;"></span>
-                        <button id="adminLogoutBtn" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> خروج</button>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
-                    <div class="card">
-                        <div id="notificationsList" class="notif-list"><p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p></div>
-                        <div class="notif-actions">
-                            <button class="btn btn-sm btn-outline" onclick="window.markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
-                            <button class="btn btn-sm btn-danger" onclick="window.deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="stats-grid" id="statsContainer">
-                    <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">إجمالي الأسئلة</div></div>
-                    <div class="stat-card"><div class="number" id="statMonth">0</div><div class="label">هذا الشهر</div></div>
-                    <div class="stat-card"><div class="number" id="statPrayers">0</div><div class="label">طلبات الصلاة</div></div>
-                    <div class="stat-card"><div class="number" id="statTopType">-</div><div class="label">أكثر نوع شيوعًا</div></div>
-                </div>
-                <div class="admin-section">
-                    <h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> إدارة وسائل التواصل</h3>
-                    <div class="card">
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-                            <div class="form-group"><label for="socialFacebookInput">رابط فيسبوك</label><input type="url" id="socialFacebookInput" placeholder="https://facebook.com/..." /></div>
-                            <div class="form-group"><label for="socialInstagramInput">رابط إنستغرام</label><input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." /></div>
-                            <div class="form-group" style="grid-column: 1 / -1;"><label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label><input type="text" id="whatsappInput" placeholder="مثال: 201234567890" /><small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small></div>
-                        </div>
-                        <button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
-                    <div class="card">
-                        <div class="form-group"><label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label><textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea></div>
-                        <button class="btn btn-success btn-sm" onclick="window.saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة <span id="questionsCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button class="btn btn-outline btn-sm no-print" onclick="window.printQuestions()"><i class="fas fa-print"></i> طباعة</button>
-                            <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
-                        </div>
-                    </div>
-                    <div class="search-filter">
-                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="window.loadQuestions()" />
-                        <select id="adminFilterType" onchange="window.loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
-                        <select id="adminFilterAnswered" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
-                    </div>
-                    <div class="table-responsive">
-                        <table><thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="adminQuestionsTable"></tbody></table>
-                    </div>
-                    <div class="pagination-controls" id="paginationControls">
-                        <button class="btn btn-sm btn-outline" id="prevPageBtn" onclick="window.changePage(-1)"><i class="fas fa-chevron-right"></i> السابق</button>
-                        <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
-                        <button class="btn btn-sm btn-outline" id="nextPageBtn" onclick="window.changePage(1)">التالي <i class="fas fa-chevron-left"></i></button>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة <span id="prayersCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
-                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                            <button class="btn btn-refresh btn-sm" onclick="window.refreshPrayers()"><i class="fas fa-sync-alt"></i> تحديث</button>
-                            <button class="btn btn-outline btn-sm no-print" onclick="window.printPrayers()"><i class="fas fa-print"></i> طباعة</button>
-                            <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button>
-                        </div>
-                    </div>
-                    <div id="adminPrayersList"></div>
-                </div>
-                <div class="admin-section">
-                    <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
-                    <div class="card mb-4">
-                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;"><input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" /><input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" /></div>
-                        <button class="btn btn-success" onclick="window.addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
-                    </div>
-                    <div id="adminAnnouncementsList"></div>
-                </div>
-                <div class="admin-section">
-                    <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
-                    <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
-                </div>
-            </div>
-        </section>
-    </main>
 
-    <div id="userNotifModal" class="modal">
-        <div class="modal-content" style="max-width:650px;">
-            <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
-            <div id="userNotifList" class="notif-list"><p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p></div>
-            <div class="modal-actions" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start; margin-top:12px;">
-                <button class="btn btn-sm btn-outline" onclick="window.markAllUserNotifsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
-                <button class="btn btn-sm btn-danger" onclick="window.clearAllUserNotifs()"><i class="fas fa-trash"></i> حذف الكل</button>
-                <button class="btn btn-sm btn-primary" id="closeUserNotifModal"><i class="fas fa-times"></i> إغلاق</button>
+    <div class="login-container">
+        <h1><i class="fas fa-church" style="color:#c9a87c;"></i> تسجيل الدخول</h1>
+        <p class="subtitle">أدخل بريدك الإلكتروني وكلمة المرور</p>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" required placeholder="example@domain.com" />
             </div>
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" required placeholder="أدخل كلمة المرور" minlength="6" />
+            </div>
+            <button type="submit" class="btn" id="loginBtn"><i class="fas fa-sign-in-alt"></i> دخول</button>
+            <div id="errorMessage" class="error-message"></div>
+            <div class="loading" id="loadingIndicator"><i class="fas fa-spinner fa-spin"></i> جاري التحقق...</div>
+        </form>
+
+        <div class="footer-text">
+            ليس لديك حساب؟ <a href="#" id="createAccountLink">إنشاء حساب جديد</a>
         </div>
     </div>
 
-    <div id="answerModal" class="modal">
-        <div class="modal-content">
-            <h3 id="modalTitle">كتابة الإجابة</h3>
-            <div class="form-group"><label for="modalAnswer">الإجابة</label><textarea id="modalAnswer" rows="8" placeholder="اكتب الإجابة هنا..."></textarea></div>
-            <div class="modal-actions"><button class="btn btn-outline" id="modalCancelBtn">إلغاء</button><button class="btn btn-success" id="modalSaveBtn">حفظ</button></div>
-        </div>
-    </div>
-
-    <div id="prayerReplyModal" class="modal">
-        <div class="modal-content">
-            <h3 id="prayerModalTitle">الرد على طلب الصلاة</h3>
-            <div class="form-group"><label for="prayerReplyAnswer">الرد</label><textarea id="prayerReplyAnswer" rows="6" placeholder="اكتب ردك على طلب الصلاة..."></textarea></div>
-            <div class="modal-actions"><button class="btn btn-outline" id="prayerReplyCancelBtn">إلغاء</button><button class="btn btn-success" id="prayerReplySaveBtn">حفظ الرد</button></div>
-        </div>
-    </div>
-
-    <footer><div class="container">Designed &amp; Developed by John Osama &copy; <span id="year"></span></div></footer>
+    <!-- Import Firebase SDK via importmap -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js",
+                "firebase/database": "https://www.gstatic.com/firebasejs/12.15.0/firebase-database.js"
+            }
+        }
+    </script>
 
     <script type="module">
         import { initializeApp } from "firebase/app";
-        import { getDatabase, ref, set, push, get, update, remove, onValue, query, orderByChild, equalTo } from "firebase/database";
-        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "firebase/auth";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "firebase/auth";
+        import { getDatabase, ref, get, set } from "firebase/database";
 
+        // 🔥 إعدادات Firebase (تأكد من استبدالها ببيانات مشروعك)
         const firebaseConfig = {
             apiKey: "AIzaSyBn58yFwHcStPr23UClRLjIxSEQ671-I5Y",
             authDomain: "wep-site-ch.firebaseapp.com",
@@ -1391,1179 +184,173 @@
             appId: "1:892256170869:web:eff22b472e848c72c7993c"
         };
 
+        // تهيئة Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
         const auth = getAuth(app);
+        const db = getDatabase(app);
 
+        // ضبط استمرار الجلسة
         setPersistence(auth, browserLocalPersistence)
             .then(() => console.log('✅ تم ضبط استمرار المصادقة محلياً'))
             .catch(err => console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', err));
 
-        const ADMIN_EMAIL = 'abshadat.church@gmail.com';
-
-        let currentUser = null,
-            currentUserId = null,
-            isAdmin = false;
-        let notifications = [],
-            userNotifications = [];
-        let editingQuestionId = null,
-            editingPrayerId = null;
-        let myQuestionsUnsubscribe = null,
-            myPrayersUnsubscribe = null;
-        let userNotifUnsubscribe = null,
-            prayersUnsubscribe = null;
-        let currentPage = 1;
-        const itemsPerPage = 20;
-        let allQuestionsItems = [];
-
-        console.log('✅ Firebase initialized (Realtime Database)');
-
-        const toastEl = document.getElementById('toast');
-        let toastTimeout = null;
-
-        function showToast(msg, isError = false) {
-            toastEl.textContent = msg;
-            toastEl.style.borderRightColor = isError ? '#c0392b' : 'var(--color-gold)';
-            toastEl.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
-        }
-
-        // ====== دوال تحديث واجهة الإشعارات ======
-        function updateUserNotifUI() {
-            const badge = document.getElementById('userNotifBadge');
-            const bell = document.getElementById('notifBell');
-            const list = document.getElementById('userNotifList');
-            const unread = userNotifications.filter(n => !n.read).length;
-
-            console.log(`🔄 تحديث واجهة الإشعارات: ${userNotifications.length} إشعار، ${unread} غير مقروء`);
-
-            if (currentUser && !isAdmin) {
-                bell.style.display = 'inline-block';
-                if (unread > 0) {
-                    badge.style.display = 'inline-block';
-                    badge.textContent = unread > 99 ? '99+' : unread;
-                } else {
-                    badge.style.display = 'none';
-                }
-            } else {
-                bell.style.display = 'none';
-                badge.style.display = 'none';
-            }
-
-            if (list) {
-                if (userNotifications.length === 0) {
-                    list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
-                } else {
-                    list.innerHTML = userNotifications.map(n => {
-                        let typeLabel = '';
-                        switch (n.type) {
-                            case 'question':
-                                typeLabel = 'سؤال';
-                                break;
-                            case 'prayer':
-                                typeLabel = 'صلاة';
-                                break;
-                            case 'answer':
-                                typeLabel = 'إجابة';
-                                break;
-                            case 'verse':
-                                typeLabel = 'آية';
-                                break;
-                            case 'announcement':
-                                typeLabel = 'إعلان';
-                                break;
-                            default:
-                                typeLabel = 'عام';
-                        }
-                        return `
-                            <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                                <span class="notif-type ${n.type || 'general'}">${typeLabel}</span>
-                                <span class="notif-text">${n.message}</span>
-                                <span class="notif-time">${n.createdAt ? new Date(n.createdAt).toLocaleString('ar-EG') : ''}</span>
-                                ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markUserNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
-                            </div>
-                        `;
-                    }).join('');
-                }
-            }
-        }
-
-        function updateNotificationUI() {
-            const countEl = document.getElementById('notifCount');
-            const list = document.getElementById('notificationsList');
-            const unread = notifications.filter(n => !n.read).length;
-            if (countEl) countEl.textContent = unread ? `(${unread} جديدة)` : '';
-
-            if (!list) return;
-            if (notifications.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
-                return;
-            }
-            list.innerHTML = notifications.map(n => `
-                <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
-                    <span class="notif-text">${n.message}</span>
-                    <span class="notif-time">${n.createdAt ? new Date(n.createdAt).toLocaleString('ar-EG') : ''}</span>
-                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
-                </div>
-            `).join('');
-        }
-
-        // ====== دوال التنقل ======
-        function navigateTo(page) {
-            console.log(`🔄 التنقل إلى الصفحة: ${page}`);
-            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(`page-${page}`);
-            if (target) target.classList.add('active');
-            document.querySelectorAll('nav a[data-page]').forEach(el => el.classList.remove('active'));
-            const navLink = document.querySelector(`nav a[data-page="${page}"]`);
-            if (navLink) navLink.classList.add('active');
-            if (page === 'admin' && !isAdmin) {
-                showToast('غير مسموح بالدخول إلى لوحة التحكم', true);
-                navigateTo('home');
-                return;
-            }
-        }
-
-        // ====== دوال إعادة تعيين النماذج ======
-        function resetQuestionForm() {
-            document.getElementById('questionForm').reset();
-            document.getElementById('questionSuccess').style.display = 'none';
-            document.getElementById('questionFormContainer').querySelector('.card').style.display = 'block';
-            showToast('تم إعادة تعيين النموذج');
-        }
-
-        function resetPrayerForm() {
-            document.getElementById('prayerForm').reset();
-            document.getElementById('prayerSuccess').style.display = 'none';
-            document.querySelector('#page-prayer .card').style.display = 'block';
-            showToast('تم إعادة تعيين النموذج');
-        }
-
-        // ====== دوال Firebase ======
-        async function ensureUserDocument(userId, displayName) {
-            const userRef = ref(db, `users/${userId}`);
-            const snap = await get(userRef);
-            if (!snap.exists()) {
-                await set(userRef, {
-                    name: displayName || 'مستخدم',
-                    email: currentUser.email,
-                    createdAt: Date.now()
-                });
-            }
-        }
-
-        function checkAdmin(user) {
-            if (user && user.email === ADMIN_EMAIL) {
-                isAdmin = true;
-                document.getElementById('adminLink').style.display = 'inline-block';
-                document.getElementById('adminDashboard').style.display = 'block';
-                document.getElementById('adminLoginBtn').style.display = 'none';
-                document.getElementById('adminUserEmail').textContent = user.email;
-                loadAdminData();
-                loadStats();
-                loadQuestions();
-                loadAnnouncementsAdmin();
-                listenToNotifications();
-                startPrayersListener();
-                console.log('✅ تم تفعيل لوحة التحكم للأدمن');
-            } else {
-                isAdmin = false;
-                document.getElementById('adminLink').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'none';
-                document.getElementById('adminLoginBtn').style.display = 'inline-block';
-                console.log('👤 مستخدم عادي أو غير أدمن');
-            }
-        }
-
-        // ====== الإشعارات العامة ======
-        function addNotification(type, message) {
-            const notifRef = push(ref(db, 'notifications'));
-            set(notifRef, {
-                type,
-                message,
-                createdAt: Date.now(),
-                read: false
-            });
-        }
-
-        function listenToNotifications() {
-            const notifRef = ref(db, 'notifications');
-            onValue(notifRef, (snapshot) => {
-                const data = snapshot.val();
-                notifications = [];
-                if (data) {
-                    notifications = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    notifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                updateNotificationUI();
-                // تحديث الباج الخاص بالأدمن
-                const badge = document.getElementById('notifBadge');
-                const unread = notifications.filter(n => !n.read).length;
-                if (unread > 0 && isAdmin) {
-                    badge.style.display = 'inline-block';
-                    badge.textContent = unread;
-                } else {
-                    badge.style.display = 'none';
-                }
-            });
-        }
-
-        function markNotifRead(id) {
-            const notifRef = ref(db, `notifications/${id}`);
-            update(notifRef, { read: true });
-        }
-
-        function markAllNotificationsRead() {
-            notifications.forEach(n => {
-                if (!n.read) {
-                    const notifRef = ref(db, `notifications/${n.id}`);
-                    update(notifRef, { read: true });
-                }
-            });
-            showToast('تم تحديث جميع الإشعارات كمقروءة');
-        }
-
-        function deleteAllNotifications() {
-            if (confirm('هل أنت متأكد من حذف جميع الإشعارات؟')) {
-                notifications.forEach(n => {
-                    const notifRef = ref(db, `notifications/${n.id}`);
-                    remove(notifRef);
-                });
-                showToast('تم حذف جميع الإشعارات');
-            }
-        }
-
-        // ====== إشعارات المستخدمين ======
-        function addUserNotification(userId, type, message) {
-            const notifRef = push(ref(db, `userNotifications/${userId}`));
-            set(notifRef, {
-                type,
-                message,
-                createdAt: Date.now(),
-                read: false
-            });
-        }
-
-        function listenToUserNotifications(userId) {
-            if (userNotifUnsubscribe) userNotifUnsubscribe();
-            const notifRef = ref(db, `userNotifications/${userId}`);
-            userNotifUnsubscribe = onValue(notifRef, (snapshot) => {
-                const data = snapshot.val();
-                userNotifications = [];
-                if (data) {
-                    userNotifications = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    userNotifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                updateUserNotifUI();
-            });
-        }
-
-        function markUserNotifRead(id) {
-            const notifRef = ref(db, `userNotifications/${currentUserId}/${id}`);
-            update(notifRef, { read: true });
-        }
-
-        function markAllUserNotifsRead() {
-            userNotifications.forEach(n => {
-                if (!n.read) {
-                    const notifRef = ref(db, `userNotifications/${currentUserId}/${n.id}`);
-                    update(notifRef, { read: true });
-                }
-            });
-            showToast('تم تحديث جميع إشعاراتك كمقروءة');
-        }
-
-        function clearAllUserNotifs() {
-            if (confirm('هل أنت متأكد من حذف جميع إشعاراتك؟')) {
-                userNotifications.forEach(n => {
-                    const notifRef = ref(db, `userNotifications/${currentUserId}/${n.id}`);
-                    remove(notifRef);
-                });
-                showToast('تم حذف جميع إشعاراتك');
-            }
-        }
-
-        // ====== آية اليوم ======
-        function loadDailyVerse() {
-            const verseRef = ref(db, 'dailyVerse');
-            get(verseRef).then(snap => {
-                const data = snap.val();
-                if (data) {
-                    document.getElementById('dailyVerseDisplay').textContent = data.text || 'لا توجد آية';
-                    document.getElementById('dailyVerseRef').textContent = data.reference || '';
-                } else {
-                    // بيانات افتراضية
-                    const defaultVerse = {
-                        text: 'لأَنَّهُ هَكَذَا أَحَبَّ اللهُ الْعَالَمَ حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.',
-                        reference: 'يوحنا 3:16'
-                    };
-                    set(verseRef, defaultVerse);
-                    document.getElementById('dailyVerseDisplay').textContent = defaultVerse.text;
-                    document.getElementById('dailyVerseRef').textContent = defaultVerse.reference;
-                    console.log('✅ تم إنشاء آية افتراضية');
-                }
-            }).catch(err => {
-                console.warn('⚠️ فشل تحميل الآية:', err);
-                document.getElementById('dailyVerseDisplay').textContent = 'لا توجد آية اليوم';
-            });
-        }
-
-        function updateDailyVerse() {
-            const text = document.getElementById('verseText').value.trim();
-            const refText = document.getElementById('verseRef').value.trim();
-            if (!text) { showToast('الرجاء إدخال نص الآية', true); return; }
-            const verseRef = ref(db, 'dailyVerse');
-            set(verseRef, { text, reference: refText, updatedAt: Date.now() }).then(() => {
-                showToast('تم تحديث آية اليوم بنجاح');
-                loadDailyVerse();
-                addNotification('verse', `تم تحديث آية اليوم: "${text}"`);
-            }).catch(() => showToast('فشل في تحديث الآية', true));
-        }
-
-        // ====== الأسئلة المجاب عنها (عامة) ======
-        function renderAnsweredQuestions() {
-            const search = document.getElementById('answeredSearch').value.toLowerCase();
-            const container = document.getElementById('answeredList');
-            const qRef = ref(db, 'questions');
-            get(qRef).then(snap => {
-                const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    items = items.filter(q => q.answer && q.answer.trim() !== '' && q.published !== false);
-                    if (search) items = items.filter(q => q.text && q.text.toLowerCase().includes(search));
-                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                if (items.length === 0) {
-                    container.innerHTML = '<p class="no-questions">لا توجد أسئلة مجاب عنها</p>';
-                    return;
-                }
-                container.innerHTML = items.map(q => `
-                    <div class="question-card">
-                        <div class="q-title">${q.text || 'سؤال'}</div>
-                        <div class="q-answer">${q.answer}</div>
-                        <div class="q-meta">${q.type ? translateType(q.type) : ''} - ${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                    </div>
-                `).join('');
-            }).catch(() => {
-                container.innerHTML = '<p class="no-questions">حدث خطأ في تحميل البيانات</p>';
-            });
-        }
-
-        function translateType(type) {
-            const map = {
-                'biblical': 'كتابي',
-                'doctrinal': 'عقائدي',
-                'personal': 'شخصي',
-                'consultation': 'استشارة',
-                'suggestion': 'اقتراح',
-                'prayer': 'صلاة'
-            };
-            return map[type] || type;
-        }
-
-        // ====== الإعلانات ======
-        function loadAnnouncements() {
-            const container = document.getElementById('announcementsList');
-            const refAnn = ref(db, 'announcements');
-            get(refAnn).then(snap => {
-                const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                if (items.length === 0) {
-                    container.innerHTML = '<p class="no-questions">لا توجد إعلانات حالياً</p>';
-                    return;
-                }
-                container.innerHTML = items.map(a => `
-                    <div class="announcement-item">
-                        <div class="announce-content">
-                            <h4>${a.title || 'إعلان'}</h4>
-                            <p>${a.content || ''}</p>
-                            <div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                        </div>
-                    </div>
-                `).join('');
-            });
-        }
-
-        function loadAnnouncementsAdmin() {
-            const container = document.getElementById('adminAnnouncementsList');
-            const refAnn = ref(db, 'announcements');
-            get(refAnn).then(snap => {
-                const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                if (items.length === 0) {
-                    container.innerHTML = '<p class="no-questions">لا توجد إعلانات</p>';
-                    return;
-                }
-                container.innerHTML = items.map(a => `
-                    <div class="announcement-item">
-                        <div class="announce-content">
-                            <h4>${a.title || 'إعلان'}</h4>
-                            <p>${a.content || ''}</p>
-                            <div class="date">${a.createdAt ? new Date(a.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                        </div>
-                        <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${a.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                `).join('');
-            });
-        }
-
-        function addAnnouncement() {
-            const title = document.getElementById('announceTitle').value.trim();
-            const content = document.getElementById('announceContent').value.trim();
-            if (!title || !content) { showToast('الرجاء ملء جميع الحقول', true); return; }
-            const refAnn = push(ref(db, 'announcements'));
-            set(refAnn, { title, content, createdAt: Date.now() }).then(() => {
-                showToast('تم إضافة الإعلان بنجاح');
-                document.getElementById('announceTitle').value = '';
-                document.getElementById('announceContent').value = '';
-                loadAnnouncementsAdmin();
-                loadAnnouncements();
-                addNotification('announcement', `إعلان جديد: ${title}`);
-            }).catch(() => showToast('فشل في إضافة الإعلان', true));
-        }
-
-        function deleteAnnouncement(id) {
-            if (confirm('هل أنت متأكد من حذف هذا الإعلان؟')) {
-                remove(ref(db, `announcements/${id}`)).then(() => {
-                    showToast('تم حذف الإعلان');
-                    loadAnnouncementsAdmin();
-                    loadAnnouncements();
-                }).catch(() => showToast('فشل الحذف', true));
-            }
-        }
-
-        // ====== وسائل التواصل ======
-        function loadSocialLinks() {
-            const refSocial = ref(db, 'socialLinks');
-            get(refSocial).then(snap => {
-                const data = snap.val();
-                if (data) {
-                    document.getElementById('socialFacebook').href = data.facebook || '#';
-                    document.getElementById('socialInstagram').href = data.instagram || '#';
-                    document.getElementById('whatsappLink').href = data.whatsapp ? `https://wa.me/${data.whatsapp}` : '#';
-                    document.getElementById('whatsappLabel').textContent = data.whatsapp ? 'تواصل عبر واتساب' : 'رقم واتساب غير متاح';
-                    document.getElementById('socialFacebookInput').value = data.facebook || '';
-                    document.getElementById('socialInstagramInput').value = data.instagram || '';
-                    document.getElementById('whatsappInput').value = data.whatsapp || '';
-                } else {
-                    // بيانات افتراضية
-                    const defaultSocial = { facebook: '#', instagram: '#', whatsapp: '' };
-                    set(refSocial, defaultSocial);
-                    console.log('✅ تم إنشاء روابط تواصل افتراضية');
-                }
-            });
-        }
-
-        function saveSocialLinks() {
-            const facebook = document.getElementById('socialFacebookInput').value.trim();
-            const instagram = document.getElementById('socialInstagramInput').value.trim();
-            const whatsapp = document.getElementById('whatsappInput').value.trim();
-            const refSocial = ref(db, 'socialLinks');
-            set(refSocial, { facebook, instagram, whatsapp }).then(() => {
-                showToast('تم حفظ الروابط بنجاح');
-                loadSocialLinks();
-            }).catch(() => showToast('فشل في حفظ الروابط', true));
-        }
-
-        // ====== نبذة "من نحن" ======
-        function loadAbout() {
-            const aboutRef = ref(db, 'about');
-            get(aboutRef).then(snap => {
-                const data = snap.val();
-                if (data) {
-                    document.getElementById('aboutContent').innerHTML = data.text || 'لا توجد نبذة';
-                    document.getElementById('aboutEditor').value = data.text || '';
-                } else {
-                    const defaultAbout = { text: 'الكنيسة الإنجيلية المشيخية بإبشادات هي كنيسة مسيحية تهدف إلى نشر الإنجيل وخدمة المجتمع.' };
-                    set(aboutRef, defaultAbout);
-                    document.getElementById('aboutContent').textContent = defaultAbout.text;
-                    document.getElementById('aboutEditor').value = defaultAbout.text;
-                    console.log('✅ تم إنشاء نبذة افتراضية');
-                }
-            });
-        }
-
-        function saveAbout() {
-            const text = document.getElementById('aboutEditor').value.trim();
-            if (!text) { showToast('الرجاء إدخال نص النبذة', true); return; }
-            const aboutRef = ref(db, 'about');
-            set(aboutRef, { text }).then(() => {
-                showToast('تم حفظ النبذة بنجاح');
-                loadAbout();
-            }).catch(() => showToast('فشل في حفظ النبذة', true));
-        }
-
-        // ====== لوحة التحكم - الأسئلة ======
-        function loadQuestions() {
-            const search = document.getElementById('adminSearch').value.toLowerCase();
-            const type = document.getElementById('adminFilterType').value;
-            const answeredFilter = document.getElementById('adminFilterAnswered').value;
-            const qRef = ref(db, 'questions');
-            get(qRef).then(snap => {
-                const data = snap.val();
-                let items = [];
-                if (data) {
-                    items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                }
-                allQuestionsItems = items;
-                renderQuestionsPage(search, type, answeredFilter);
-            }).catch(() => showToast('فشل في تحميل الأسئلة', true));
-        }
-
-        function renderQuestionsPage(search, type, answeredFilter) {
-            let filtered = allQuestionsItems;
-            if (search) filtered = filtered.filter(q => q.text && q.text.toLowerCase().includes(search));
-            if (type !== 'all') filtered = filtered.filter(q => q.type === type);
-            if (answeredFilter === 'answered') filtered = filtered.filter(q => q.answer && q.answer.trim() !== '');
-            else if (answeredFilter === 'unanswered') filtered = filtered.filter(q => !q.answer || q.answer.trim() === '');
-
-            filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-            const total = filtered.length;
-            const totalPages = Math.ceil(total / itemsPerPage) || 1;
-            if (currentPage > totalPages) currentPage = totalPages;
-            if (currentPage < 1) currentPage = 1;
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = Math.min(start + itemsPerPage, total);
-            const pageItems = filtered.slice(start, end);
-
-            document.getElementById('questionsCount').textContent = `(${total})`;
-            document.getElementById('pageInfo').textContent = `صفحة ${currentPage} من ${totalPages}`;
-            document.getElementById('prevPageBtn').disabled = (currentPage === 1);
-            document.getElementById('nextPageBtn').disabled = (currentPage === totalPages);
-
-            const tbody = document.getElementById('adminQuestionsTable');
-            if (pageItems.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">لا توجد أسئلة</td></tr>';
-                return;
-            }
-            tbody.innerHTML = pageItems.map(q => {
-                const hasAnswer = q.answer && q.answer.trim() !== '';
-                const shortText = q.text && q.text.length > 50 ? q.text.substring(0, 50) + '...' : q.text || '';
-                const fullText = q.text || '';
-                return `
-                    <tr>
-                        <td>
-                            <div class="question-text">
-                                <span class="short-text">${shortText}</span>
-                                <span class="full-text">${fullText}</span>
-                                ${q.text && q.text.length > 50 ? `<button class="toggle-btn" onclick="this.previousElementSibling.classList.toggle('show'); this.textContent = this.textContent === 'عرض المزيد' ? 'عرض أقل' : 'عرض المزيد';">عرض المزيد</button>` : ''}
-                            </div>
-                        </td>
-                        <td>${q.anonymous ? 'مجهول' : (q.userName || 'مستخدم')}</td>
-                        <td>${translateType(q.type)}</td>
-                        <td>${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</td>
-                        <td>${hasAnswer ? '✅ مجاب' : '⏳ غير مجاب'}</td>
-                        <td class="actions">
-                            ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')"><i class="fas fa-reply"></i> إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
-                            ${hasAnswer ? `<button class="btn-publish" onclick="window.togglePublish('${q.id}')">${q.published !== false ? 'إخفاء' : 'نشر'}</button>` : ''}
-                            <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function changePage(delta) {
-            currentPage += delta;
-            loadQuestions();
-        }
-
-        // ====== الإجابة على الأسئلة ======
-        function openAnswerModal(id) {
-            editingQuestionId = id;
-            document.getElementById('modalTitle').textContent = 'كتابة الإجابة';
-            document.getElementById('modalAnswer').value = '';
-            document.getElementById('answerModal').classList.add('show');
-        }
-
-        function openEditAnswerModal(id) {
-            editingQuestionId = id;
-            const qRef = ref(db, `questions/${id}`);
-            get(qRef).then(snap => {
-                const data = snap.val();
-                if (data && data.answer) {
-                    document.getElementById('modalTitle').textContent = 'تعديل الإجابة';
-                    document.getElementById('modalAnswer').value = data.answer;
-                    document.getElementById('answerModal').classList.add('show');
-                } else {
-                    showToast('لم يتم العثور على الإجابة', true);
-                }
-            });
-        }
-
-        function saveAnswer() {
-            const answer = document.getElementById('modalAnswer').value.trim();
-            if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
-            if (!editingQuestionId) { showToast('خطأ في تحديد السؤال', true); return; }
-            const qRef = ref(db, `questions/${editingQuestionId}`);
-            update(qRef, { answer, answeredAt: Date.now(), published: true }).then(() => {
-                showToast('تم حفظ الإجابة بنجاح');
-                document.getElementById('answerModal').classList.remove('show');
-                loadQuestions();
-                renderAnsweredQuestions();
-                // إشعار للمستخدم صاحب السؤال
-                get(qRef).then(snap => {
-                    const q = snap.val();
-                    if (q && q.userId) {
-                        addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0, 30)}..."`);
-                    }
-                });
-                addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0, 30)}..."`);
-            }).catch(() => showToast('فشل في حفظ الإجابة', true));
-        }
-
-        function togglePublish(id) {
-            const qRef = ref(db, `questions/${id}`);
-            get(qRef).then(snap => {
-                const q = snap.val();
-                if (q) {
-                    const newVal = q.published === false ? true : false;
-                    update(qRef, { published: newVal }).then(() => {
-                        showToast(newVal ? 'تم نشر الإجابة' : 'تم إخفاء الإجابة');
-                        loadQuestions();
-                        renderAnsweredQuestions();
-                    });
-                }
-            });
-        }
-
-        function deleteQuestion(id) {
-            if (confirm('هل أنت متأكد من حذف هذا السؤال؟')) {
-                remove(ref(db, `questions/${id}`)).then(() => {
-                    showToast('تم حذف السؤال');
-                    loadQuestions();
-                    renderAnsweredQuestions();
-                }).catch(() => showToast('فشل في الحذف', true));
-            }
-        }
-
-        function clearAllQuestions() {
-            if (confirm('هل أنت متأكد من حذف جميع الأسئلة؟')) {
-                allQuestionsItems.forEach(q => {
-                    remove(ref(db, `questions/${q.id}`));
-                });
-                showToast('تم حذف جميع الأسئلة');
-                loadQuestions();
-                renderAnsweredQuestions();
-            }
-        }
-
-        function printQuestions() {
-            window.print();
-        }
-
-        // ====== طلبات الصلاة ======
-        function startPrayersListener() {
-            if (prayersUnsubscribe) prayersUnsubscribe();
-            const prayersRef = ref(db, 'prayerRequests');
-            prayersUnsubscribe = onValue(prayersRef, (snapshot) => {
-                renderPrayersList(snapshot.val());
-            });
-        }
-
-        function renderPrayersList(data) {
-            const container = document.getElementById('adminPrayersList');
-            let items = [];
-            if (data) {
-                items = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            }
-            document.getElementById('prayersCount').textContent = `(${items.length})`;
-            if (items.length === 0) {
-                container.innerHTML = '<p class="no-questions">لا توجد طلبات صلاة</p>';
-                return;
-            }
-            container.innerHTML = items.map(p => `
-                <div class="my-item-card">
-                    <div class="item-details">${p.text || 'طلب صلاة'}</div>
-                    <div class="item-meta">${p.anonymous ? 'مجهول' : (p.userName || 'مستخدم')} - ${p.createdAt ? new Date(p.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                    ${p.reply ? `<div class="item-answer">${p.reply}</div>` : ''}
-                    <div class="actions" style="margin-top:8px;">
-                        ${p.reply ? `<button class="btn-edit" onclick="window.openEditPrayerReply('${p.id}')"><i class="fas fa-edit"></i> تعديل الرد</button>` : `<button class="btn-prayer-reply" onclick="window.openPrayerReply('${p.id}')"><i class="fas fa-reply"></i> رد</button>`}
-                        <button class="btn-delete" onclick="window.deletePrayer('${p.id}')"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function refreshPrayers() {
-            startPrayersListener();
-            showToast('تم تحديث طلبات الصلاة');
-        }
-
-        function openPrayerReply(id) {
-            editingPrayerId = id;
-            document.getElementById('prayerModalTitle').textContent = 'الرد على طلب الصلاة';
-            document.getElementById('prayerReplyAnswer').value = '';
-            document.getElementById('prayerReplyModal').classList.add('show');
-        }
-
-        function openEditPrayerReply(id) {
-            editingPrayerId = id;
-            const pRef = ref(db, `prayerRequests/${id}`);
-            get(pRef).then(snap => {
-                const data = snap.val();
-                if (data && data.reply) {
-                    document.getElementById('prayerModalTitle').textContent = 'تعديل الرد';
-                    document.getElementById('prayerReplyAnswer').value = data.reply;
-                    document.getElementById('prayerReplyModal').classList.add('show');
-                } else {
-                    showToast('لم يتم العثور على الرد', true);
-                }
-            });
-        }
-
-        function savePrayerReply() {
-            const reply = document.getElementById('prayerReplyAnswer').value.trim();
-            if (!reply) { showToast('الرجاء كتابة الرد', true); return; }
-            if (!editingPrayerId) { showToast('خطأ', true); return; }
-            const pRef = ref(db, `prayerRequests/${editingPrayerId}`);
-            update(pRef, { reply, repliedAt: Date.now() }).then(() => {
-                showToast('تم حفظ الرد بنجاح');
-                document.getElementById('prayerReplyModal').classList.remove('show');
-                startPrayersListener();
-                // إشعار للمستخدم
-                get(pRef).then(snap => {
-                    const p = snap.val();
-                    if (p && p.userId) {
-                        addUserNotification(p.userId, 'prayer', `تم الرد على طلب صلاتك: "${p.text?.substring(0, 30)}..."`);
-                    }
-                });
-                addNotification('prayer', `تم الرد على طلب صلاة: "${reply.substring(0, 30)}..."`);
-            }).catch(() => showToast('فشل في حفظ الرد', true));
-        }
-
-        function deletePrayer(id) {
-            if (confirm('هل أنت متأكد من حذف طلب الصلاة؟')) {
-                remove(ref(db, `prayerRequests/${id}`)).then(() => {
-                    showToast('تم الحذف');
-                    startPrayersListener();
-                }).catch(() => showToast('فشل الحذف', true));
-            }
-        }
-
-        function clearAllPrayers() {
-            if (confirm('هل أنت متأكد من حذف جميع طلبات الصلاة؟')) {
-                const refP = ref(db, 'prayerRequests');
-                get(refP).then(snap => {
-                    const data = snap.val();
-                    if (data) {
-                        Object.keys(data).forEach(key => remove(ref(db, `prayerRequests/${key}`)));
-                    }
-                    showToast('تم حذف الكل');
-                    startPrayersListener();
-                });
-            }
-        }
-
-        function printPrayers() {
-            window.print();
-        }
-
-        // ====== إحصائيات ======
-        function loadStats() {
-            const qRef = ref(db, 'questions');
-            get(qRef).then(snap => {
-                const data = snap.val();
-                let total = 0,
-                    month = 0;
-                const typeCount = {};
-                if (data) {
-                    const items = Object.values(data);
-                    total = items.length;
-                    const now = new Date();
-                    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-                    items.forEach(q => {
-                        if (q.createdAt && q.createdAt >= monthStart) month++;
-                        if (q.type) typeCount[q.type] = (typeCount[q.type] || 0) + 1;
-                    });
-                }
-                document.getElementById('statTotal').textContent = total;
-                document.getElementById('statMonth').textContent = month;
-                let topType = '-';
-                let max = 0;
-                for (const [type, count] of Object.entries(typeCount)) {
-                    if (count > max) { max = count;
-                        topType = translateType(type); }
-                }
-                document.getElementById('statTopType').textContent = topType;
-            });
-
-            // عدد طلبات الصلاة
-            const pRef = ref(db, 'prayerRequests');
-            get(pRef).then(snap => {
-                const data = snap.val();
-                const count = data ? Object.keys(data).length : 0;
-                document.getElementById('statPrayers').textContent = count;
-            });
-        }
-
-        function loadAdminData() {
-            loadDailyVerse();
-            loadSocialLinks();
-            loadAbout();
-            loadAnnouncements();
-        }
-
-        // ====== أسئلتي وطلباتي (للمستخدم العادي) ======
-        function startMyItemsListeners() {
-            if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
-            if (myPrayersUnsubscribe) myPrayersUnsubscribe();
-
-            const container = document.getElementById('myItemsList');
-            const status = document.getElementById('myItemsStatus');
-
-            // استماع للأسئلة
-            const qRef = query(ref(db, 'questions'), orderByChild('userId'), equalTo(currentUserId));
-            myQuestionsUnsubscribe = onValue(qRef, (snapshot) => {
-                const data = snapshot.val();
-                let questions = [];
-                if (data) {
-                    questions = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                    questions.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                }
-                // استماع لطلبات الصلاة
-                const pRef = query(ref(db, 'prayerRequests'), orderByChild('userId'), equalTo(currentUserId));
-                get(pRef).then(snap => {
-                    const pData = snap.val();
-                    let prayers = [];
-                    if (pData) {
-                        prayers = Object.keys(pData).map(key => ({ id: key, ...pData[key] }));
-                        prayers.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                    }
-                    // دمج وترتيب
-                    const all = [...questions, ...prayers];
-                    all.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-
-                    if (all.length === 0) {
-                        container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات صلاة</p>';
-                        status.textContent = '';
-                        return;
-                    }
-                    container.innerHTML = all.map(item => {
-                        const isQuestion = !!item.text && item.reply === undefined;
-                        const isPrayer = !!item.text && item.reply !== undefined;
-                        return `
-                            <div class="my-item-card">
-                                <div class="item-details">${item.text || 'محتوى'}</div>
-                                ${item.answer ? `<div class="item-answer">${item.answer}</div>` : ''}
-                                ${item.reply ? `<div class="item-answer">${item.reply}</div>` : ''}
-                                <div class="item-meta">${isQuestion ? 'سؤال' : 'طلب صلاة'} - ${item.type ? translateType(item.type) : ''} - ${item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                                ${item.answer ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تمت الإجابة</div>` : ''}
-                                ${item.reply ? `<div class="item-notification show"><i class="fas fa-check-circle"></i> تم الرد</div>` : ''}
-                            </div>
-                        `;
-                    }).join('');
-                    status.textContent = `(${all.length})`;
-                });
-            });
-        }
-
-        function refreshMyItems() {
-            if (currentUserId) {
-                startMyItemsListeners();
-                showToast('تم تحديث الأسئلة');
-            }
-        }
-
-        // ====== أحداث النماذج ======
-        // نموذج تسجيل المستخدمين
-        document.getElementById('userAuthForm').addEventListener('submit', async function(e) {
+        // عناصر DOM
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorDiv = document.getElementById('errorMessage');
+        const loadingDiv = document.getElementById('loadingIndicator');
+        const createLink = document.getElementById('createAccountLink');
+
+        // حالة تسجيل الدخول (تسجيل الدخول أو إنشاء حساب)
+        let isLoginMode = true;
+
+        // تبديل النص والوظيفة
+        createLink.addEventListener('click', (e) => {
             e.preventDefault();
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value;
-            const name = document.getElementById('authName').value.trim();
-            const isLogin = document.getElementById('authSubmitBtn').textContent.includes('تسجيل الدخول');
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+                createLink.innerHTML = 'ليس لديك حساب؟ <span style="color:#c9a87c;">إنشاء حساب جديد</span>';
+                document.querySelector('.subtitle').textContent = 'أدخل بريدك الإلكتروني وكلمة المرور';
+            } else {
+                loginBtn.innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
+                createLink.innerHTML = 'لديك حساب؟ <span style="color:#c9a87c;">تسجيل الدخول</span>';
+                document.querySelector('.subtitle').textContent = 'أنشئ حساباً جديداً للوصول إلى المنصة';
+            }
+            errorDiv.textContent = '';
+        });
 
-            const errorDiv = document.getElementById('authError');
+        // دالة مساعدة لعرض الأخطاء
+        function showError(msg) {
+            errorDiv.textContent = msg;
+            loadingDiv.classList.remove('show');
+            loginBtn.disabled = false;
+        }
+
+        // دالة التوجيه حسب الدور
+        async function redirectBasedOnRole(user) {
+            try {
+                const uid = user.uid;
+                const userRef = ref(db, `users/${uid}`);
+                const snapshot = await get(userRef);
+                
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    const role = userData.role || 'user'; // افتراضي user
+                    console.log(`✅ دور المستخدم: ${role}`);
+                    
+                    if (role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'index.html'; // الصفحة الرئيسية للمستخدم العادي
+                    }
+                } else {
+                    // إذا لم يكن للمستخدم بيانات في قاعدة البيانات، ننشئها بدور user افتراضي
+                    console.warn('⚠️ لا توجد بيانات للمستخدم، سيتم إنشاء سجل جديد بدور user');
+                    await set(userRef, {
+                        name: user.displayName || 'مستخدم',
+                        email: user.email,
+                        role: 'user',
+                        createdAt: Date.now()
+                    });
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('❌ خطأ في جلب دور المستخدم:', error);
+                showError('حدث خطأ في التحقق من صلاحياتك. حاول مرة أخرى.');
+                // في حال فشل جلب الدور، نوجه إلى الصفحة الرئيسية كحل احتياطي
+                // window.location.href = 'index.html';
+            }
+        }
+
+        // معالجة نموذج تسجيل الدخول / إنشاء حساب
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError('الرجاء ملء جميع الحقول');
+                return;
+            }
+            if (password.length < 6) {
+                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            // تعطيل الزر وإظهار مؤشر التحميل
+            loginBtn.disabled = true;
+            loadingDiv.classList.add('show');
             errorDiv.textContent = '';
 
             try {
-                if (isLogin) {
-                    await signInWithEmailAndPassword(auth, email, password);
-                    showToast('تم تسجيل الدخول بنجاح');
-                    navigateTo('home');
+                let userCredential;
+                if (isLoginMode) {
+                    // تسجيل الدخول
+                    userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    console.log('✅ تم تسجيل الدخول بنجاح:', userCredential.user.email);
                 } else {
-                    const cred = await createUserWithEmailAndPassword(auth, email, password);
-                    if (name) {
-                        await updateProfile(cred.user, { displayName: name });
-                    }
-                    await ensureUserDocument(cred.user.uid, name || cred.user.displayName);
-                    showToast('تم إنشاء الحساب بنجاح');
-                    navigateTo('home');
+                    // إنشاء حساب جديد
+                    userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    console.log('✅ تم إنشاء الحساب بنجاح:', userCredential.user.email);
+                    // ننشئ له سجل في قاعدة البيانات بدور user
+                    const uid = userCredential.user.uid;
+                    await set(ref(db, `users/${uid}`), {
+                        name: 'مستخدم جديد',
+                        email: email,
+                        role: 'user',
+                        createdAt: Date.now()
+                    });
+                    console.log('✅ تم إنشاء سجل المستخدم في قاعدة البيانات');
                 }
-            } catch (err) {
-                errorDiv.textContent = err.message;
-                showToast(err.message, true);
-            }
-        });
 
-        document.getElementById('authToggleLink').addEventListener('click', function() {
-            const isLogin = document.getElementById('authSubmitBtn').textContent.includes('تسجيل الدخول');
-            if (isLogin) {
-                document.getElementById('authTitle').innerHTML = '<i class="fas fa-user-plus" style="color:var(--color-gold);"></i> إنشاء حساب';
-                document.getElementById('authSubtitle').textContent = 'أنشئ حساباً لمتابعة أسئلتك';
-                document.getElementById('authSubmitBtn').innerHTML = '<i class="fas fa-user-plus"></i> إنشاء حساب';
-                document.getElementById('authNameGroup').style.display = 'block';
-                this.innerHTML = 'لديك حساب؟ <span style="color:var(--color-gold);">تسجيل الدخول</span>';
-            } else {
-                document.getElementById('authTitle').innerHTML = '<i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول';
-                document.getElementById('authSubtitle').textContent = 'سجل الدخول لمتابعة أسئلتك';
-                document.getElementById('authSubmitBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i> تسجيل الدخول';
-                document.getElementById('authNameGroup').style.display = 'none';
-                this.innerHTML = 'ليس لديك حساب؟ <span style="color:var(--color-gold);">إنشاء حساب</span>';
-            }
-        });
+                // بعد نجاح المصادقة، ننتظر حتى يتم تحديث حالة المستخدم ثم نوجه
+                // لكننا سنستخدم onAuthStateChanged للتعامل مع التوجيه
+                // لكن بما أننا بالفعل مسجلون، نستدعي التوجيه مباشرة
+                await redirectBasedOnRole(userCredential.user);
 
-        // نموذج تسجيل الأدمن
-        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const email = document.getElementById('adminLoginEmail').value.trim();
-            const password = document.getElementById('adminLoginPassword').value;
-            const errorDiv = document.getElementById('adminLoginError');
-            errorDiv.textContent = '';
-            try {
-                const cred = await signInWithEmailAndPassword(auth, email, password);
-                if (cred.user.email !== ADMIN_EMAIL) {
-                    await signOut(auth);
-                    errorDiv.textContent = 'هذا الحساب ليس حساب أدمن';
-                    showToast('غير مسموح', true);
-                    return;
+            } catch (error) {
+                console.error('❌ فشل عملية المصادقة:', error);
+                let msg = 'فشل تسجيل الدخول. تحقق من البريد وكلمة المرور.';
+                if (error.code === 'auth/user-not-found') {
+                    msg = 'لا يوجد حساب بهذا البريد الإلكتروني.';
+                } else if (error.code === 'auth/wrong-password') {
+                    msg = 'كلمة المرور غير صحيحة.';
+                } else if (error.code === 'auth/email-already-in-use') {
+                    msg = 'هذا البريد الإلكتروني مستخدم بالفعل.';
+                } else if (error.code === 'auth/weak-password') {
+                    msg = 'كلمة المرور ضعيفة (يجب أن تكون 6 أحرف على الأقل).';
+                } else if (error.code === 'auth/invalid-email') {
+                    msg = 'البريد الإلكتروني غير صحيح.';
+                } else {
+                    msg = error.message;
                 }
-                showToast('تم تسجيل دخول الأدمن');
-                navigateTo('admin');
-            } catch (err) {
-                errorDiv.textContent = err.message;
-                showToast(err.message, true);
+                showError(msg);
+            } finally {
+                loginBtn.disabled = false;
+                loadingDiv.classList.remove('show');
             }
         });
 
-        // نموذج الأسئلة
-        document.getElementById('questionForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                showToast('يجب تسجيل الدخول لطرح سؤال', true);
-                return;
-            }
-            const text = document.getElementById('qDetails').value.trim();
-            const type = document.getElementById('qType').value;
-            const anonymous = document.getElementById('qAnonymous').checked;
-            if (!text) { showToast('الرجاء كتابة السؤال', true); return; }
-
-            const qRef = push(ref(db, 'questions'));
-            await set(qRef, {
-                text,
-                type,
-                anonymous,
-                userId: currentUser.uid,
-                userName: currentUser.displayName || 'مستخدم',
-                createdAt: Date.now(),
-                answer: '',
-                published: false
-            });
-            // إشعار للمستخدم
-            addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0, 30)}..."`);
-            // إشعار عام للأدمن
-            addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName || 'مستخدم'}: "${text.substring(0, 30)}..."`);
-
-            document.getElementById('questionFormContainer').querySelector('.card').style.display = 'none';
-            document.getElementById('questionSuccess').style.display = 'block';
-            showToast('تم إرسال سؤالك بنجاح');
-        });
-
-        // نموذج الصلاة
-        document.getElementById('prayerForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                showToast('يجب تسجيل الدخول لطلب صلاة', true);
-                return;
-            }
-            const text = document.getElementById('prayerText').value.trim();
-            const anonymous = document.getElementById('prayerAnonymous').checked;
-            if (!text) { showToast('الرجاء كتابة طلب الصلاة', true); return; }
-
-            const pRef = push(ref(db, 'prayerRequests'));
-            await set(pRef, {
-                text,
-                anonymous,
-                userId: currentUser.uid,
-                userName: currentUser.displayName || 'مستخدم',
-                createdAt: Date.now(),
-                reply: ''
-            });
-            addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0, 30)}..."`);
-            addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName || 'مستخدم'}: "${text.substring(0, 30)}..."`);
-
-            document.querySelector('#page-prayer .card').style.display = 'none';
-            document.getElementById('prayerSuccess').style.display = 'block';
-            showToast('تم إرسال طلب الصلاة');
-        });
-
-        // ====== مستمع حالة المصادقة ======
+        // التحقق من حالة المصادقة عند تحميل الصفحة (إذا كان المستخدم مسجلاً بالفعل)
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                currentUser = user;
-                currentUserId = user.uid;
-                document.getElementById('userAuthBtn').innerHTML = `<i class="fas fa-user"></i> ${user.displayName || 'مستخدم'}`;
-                document.getElementById('userAuthBtn').href = '#';
-                document.getElementById('userAuthBtn').onclick = function(e) {
-                    e.preventDefault();
-                    if (confirm('تسجيل الخروج؟')) {
-                        signOut(auth);
-                    }
-                };
-                document.getElementById('myQuestionsLink').style.display = 'inline-block';
-                await ensureUserDocument(user.uid, user.displayName);
-                checkAdmin(user);
-                listenToUserNotifications(user.uid);
-                startMyItemsListeners();
-                // إذا كان مستخدمًا عاديًا وليس أدمن، نعرض الإشعارات
-                if (user.email !== ADMIN_EMAIL) {
-                    updateUserNotifUI();
-                }
+                console.log('👤 مستخدم مسجل بالفعل:', user.email);
+                // التحقق من دوره وتوجيهه فوراً
+                await redirectBasedOnRole(user);
             } else {
-                currentUser = null;
-                currentUserId = null;
-                isAdmin = false;
-                document.getElementById('userAuthBtn').innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
-                document.getElementById('userAuthBtn').href = '#';
-                document.getElementById('userAuthBtn').onclick = function(e) {
-                    e.preventDefault();
-                    navigateTo('user-auth');
-                };
-                document.getElementById('myQuestionsLink').style.display = 'none';
-                document.getElementById('adminLink').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'none';
-                document.getElementById('adminLoginBtn').style.display = 'inline-block';
-                document.getElementById('notifBell').style.display = 'none';
-                if (userNotifUnsubscribe) userNotifUnsubscribe();
-                if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
-                if (myPrayersUnsubscribe) myPrayersUnsubscribe();
-                if (prayersUnsubscribe) prayersUnsubscribe();
-                // إعادة تعيين الإشعارات
-                userNotifications = [];
-                updateUserNotifUI();
-                showToast('تم تسجيل الخروج');
-                navigateTo('home');
+                console.log('👤 لا يوجد مستخدم مسجل');
+                // نبقى في صفحة تسجيل الدخول
             }
         });
 
-        // ====== أحداث الأزرار ======
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            const current = document.documentElement.getAttribute('data-theme');
-            const newTheme = current === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', newTheme);
-            this.innerHTML = newTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-            localStorage.setItem('theme', newTheme);
-        });
+        // عند نجاح تسجيل الدخول، سنقوم بالتوجيه عبر onAuthStateChanged، ولكننا نستدعي التوجيه مباشرة بعد المصادقة
+        // لضمان سرعة التوجيه.
 
-        // استعادة الثيم
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('themeToggle').innerHTML = savedTheme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-
-        // أحداث التنقل
-        document.querySelectorAll('nav a[data-page]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const page = this.dataset.page;
-                if (page === 'admin' && !isAdmin) {
-                    showToast('غير مسموح', true);
-                    return;
-                }
-                navigateTo(page);
-            });
-        });
-
-        // زر الإشعارات
-        document.getElementById('notifBell').addEventListener('click', function(e) {
-            e.preventDefault();
-            if (!currentUser) return;
-            document.getElementById('userNotifModal').classList.add('show');
-        });
-
-        document.getElementById('closeUserNotifModal').addEventListener('click', function() {
-            document.getElementById('userNotifModal').classList.remove('show');
-        });
-
-        // أزرار النوافذ المنبثقة
-        document.getElementById('modalCancelBtn').addEventListener('click', function() {
-            document.getElementById('answerModal').classList.remove('show');
-        });
-        document.getElementById('modalSaveBtn').addEventListener('click', saveAnswer);
-
-        document.getElementById('prayerReplyCancelBtn').addEventListener('click', function() {
-            document.getElementById('prayerReplyModal').classList.remove('show');
-        });
-        document.getElementById('prayerReplySaveBtn').addEventListener('click', savePrayerReply);
-
-        // زر تسجيل خروج الأدمن
-        document.getElementById('adminLogoutBtn').addEventListener('click', function() {
-            signOut(auth);
-        });
-
-        // سنة حقوق النشر
-        document.getElementById('year').textContent = new Date().getFullYear();
-
-        // تحميل البيانات الأولية
-        loadAnnouncements();
-        loadDailyVerse();
-        loadSocialLinks();
-        loadAbout();
-
-        // ====== جعل الدوال عامة للاستخدام في HTML ======
-        window.navigateTo = navigateTo;
-        window.resetQuestionForm = resetQuestionForm;
-        window.resetPrayerForm = resetPrayerForm;
-        window.loadQuestions = loadQuestions;
-        window.changePage = changePage;
-        window.renderAnsweredQuestions = renderAnsweredQuestions;
-        window.refreshMyItems = refreshMyItems;
-        window.updateDailyVerse = updateDailyVerse;
-        window.loadSocialLinks = loadSocialLinks;
-        window.saveSocialLinks = saveSocialLinks;
-        window.saveAbout = saveAbout;
-        window.addAnnouncement = addAnnouncement;
-        window.deleteAnnouncement = deleteAnnouncement;
-        window.openAnswerModal = openAnswerModal;
-        window.openEditAnswerModal = openEditAnswerModal;
-        window.togglePublish = togglePublish;
-        window.deleteQuestion = deleteQuestion;
-        window.clearAllQuestions = clearAllQuestions;
-        window.printQuestions = printQuestions;
-        window.openPrayerReply = openPrayerReply;
-        window.openEditPrayerReply = openEditPrayerReply;
-        window.deletePrayer = deletePrayer;
-        window.clearAllPrayers = clearAllPrayers;
-        window.refreshPrayers = refreshPrayers;
-        window.printPrayers = printPrayers;
-        window.markNotifRead = markNotifRead;
-        window.markAllNotificationsRead = markAllNotificationsRead;
-        window.deleteAllNotifications = deleteAllNotifications;
-        window.markUserNotifRead = markUserNotifRead;
-        window.markAllUserNotifsRead = markAllUserNotifsRead;
-        window.clearAllUserNotifs = clearAllUserNotifs;
-        window.updateUserNotifUI = updateUserNotifUI; // جعلها عامة
-
-        console.log('✅ التطبيق جاهز بالكامل');
-        console.log('🔒 تم إزالة كلمة المرور من الكود نهائياً');
-        console.log('🔐 التحقق من الأدمن يتم عبر البريد الإلكتروني و UID');
-        console.log('📢 الإشعارات تعمل: عند الإجابة، النشر، الإعلانات، تحديث الآية');
-        console.log('🔄 زر "اسأل سؤال آخر" يعيد تعيين النموذج');
-        console.log('📊 جميع طلبات الصلاة تظهر في لوحة التحكم');
-        console.log('📌 تم إضافة بيانات افتراضية لضمان عمل التطبيق فوراً');
+        console.log('✅ تم تحميل صفحة تسجيل الدخول بنجاح');
     </script>
+
 </body>
 </html>

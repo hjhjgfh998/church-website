@@ -2710,6 +2710,7 @@
                         `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
                         editingQuestionId
                     );
+                    // إشعار للأدمن (اختياري)
                     await addNotification(`✅ تمت الإجابة على سؤال للمستخدم ${questionData.userName || 'مستخدم'}`, 'answer');
                     showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
                 } else {

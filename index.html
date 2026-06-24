@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* الأنماط (كما هي سابقاً) */
+        /* جميع الأنماط (نفس الكود السابق) */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1419,11 +1419,7 @@
             { text: 'اَلَّذِي يَسْكُنُ فِي سِتْرِ الْعَلِيِّ، فِي ظِلِّ الْقَدِيرِ يَبِيتُ.', reference: 'مزمور 91:1' },
             { text: 'لاَ تَخَفْ لأَنِّي مَعَكَ. لاَ تَرْتَعِبْ لأَنِّي إِلَهُكَ. قَدْ أَيَّدْتُكَ وَأَعَنْتُكَ وَعَضَدْتُكَ بِيَمِينِ بِرِّي.', reference: 'إشعياء 41:10' },
             { text: 'أَحِبُّوا أَعْدَاءَكُمْ، بَارِكُوا لاَعِنِيكُمْ، أَحْسِنُوا إِلَى مُبْغِضِيكُمْ، وَصَلُّوا لأَجْلِ الَّذِينَ يُسِيئُونَ إِلَيْكُمْ.', reference: 'متى 5:44' },
-            { text: 'لأَنَّهُ مَهْمَا كَانَ ابْنُ اللهِ مِنَ الْمَوَاعِيدِ، فَفِيهِ النَّعَمْ وَفِيهِ الآمِينَ، لِمَجْدِ اللهِ بِوَاسِطَتِنَا.', reference: 'كورنثوس الثانية 1:20' },
-            { text: 'وَلَكِنَّ الْعَامِلِينَ بِالْحَقِّ يُقْبِلُونَ إِلَى النُّورِ، لِتُظْهَرَ أَعْمَالُهُمْ أَنَّهَا بِاللهِ مَعْمُولَةٌ.', reference: 'يوحنا 3:21' },
-            { text: 'اُطْلُبُوا الرَّبَّ حِينَ يُوجَدُ. ادْعُوهُ وَهُوَ قَرِيبٌ.', reference: 'إشعياء 55:6' },
-            { text: 'عَلَى جَبَلٍ عَالٍ اصْعَدِي يَا مُبَشِّرَةَ صِهْيَوْنَ. ارْفَعِي صَوْتَكِ بِقُوَّةٍ يَا مُبَشِّرَةَ أُورُشَلِيمَ.', reference: 'إشعياء 40:9' },
-            { text: 'فَلْيَكُنْ كَلاَمُكُمْ كُلُّ حِينٍ بِنِعْمَةٍ، مُصْلَحًا بِمِلْحٍ، لِتَعْلَمُوا كَيْفَ يُجِيبُونَ كُلَّ وَاحِدٍ.', reference: 'كولوسي 4:6' }
+            { text: 'لأَنَّهُ مَهْمَا كَانَ ابْنُ اللهِ مِنَ الْمَوَاعِيدِ، فَفِيهِ النَّعَمْ وَفِيهِ الآمِينَ، لِمَجْدِ اللهِ بِوَاسِطَتِنَا.', reference: 'كورنثوس الثانية 1:20' }
         ];
 
         let currentUser = null,
@@ -1587,7 +1583,6 @@
                             document.getElementById('dailyVerseRef').textContent = newVerse.reference;
                             document.getElementById('verseUpdateInfo').textContent = '✅ تم تحديث آية اليوم';
                             addNotification('verse', `آية اليوم الجديدة: "${newVerse.text.substring(0, 30)}..."`);
-                            // إشعار للمستخدمين بتحديث الآية
                             sendNotificationToAllUsers('verse', `تم تحديث آية اليوم: "${newVerse.text}"`);
                         })
                         .catch(err => {
@@ -1622,20 +1617,18 @@
 
         // ====== دوال إرسال الإشعارات لكل المستخدمين ======
         function sendNotificationToAllUsers(type, message) {
-            // جلب جميع المستخدمين من قاعدة البيانات
             const usersRef = ref(db, 'users');
             get(usersRef).then(snap => {
                 const users = snap.val();
                 if (users) {
                     Object.keys(users).forEach(userId => {
-                        // لا نرسل إشعار للأدمن لأنه يستخدم الإشعارات العامة
                         if (userId !== currentUserId) {
                             addUserNotification(userId, type, message);
                         }
                     });
                     console.log(`✅ تم إرسال إشعار "${type}" لجميع المستخدمين`);
                 }
-            }).catch(err => console.warn('⚠️ فشل جلب المستخدمين لإرسال الإشعارات:', err));
+            }).catch(err => console.warn('⚠️ فشل جلب المستخدمين:', err));
         }
 
         // ====== دوال Firebase ======
@@ -1837,7 +1830,6 @@
                 loadAnnouncementsAdmin();
                 loadAnnouncements();
                 addNotification('announcement', `إعلان جديد: ${title}`);
-                // إرسال إشعار لكل المستخدمين
                 sendNotificationToAllUsers('announcement', `إعلان جديد: ${title}`);
             }).catch(() => showToast('فشل في إضافة الإعلان', true));
         }
@@ -2005,18 +1997,13 @@
                     const q = snap.val();
                     if (q && q.userId) {
                         addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0, 30)}..."`);
-                        // إذا كان السؤال منشوراً بالفعل، أرسل إشعار إضافي
-                        if (q.published) {
-                            addUserNotification(q.userId, 'answer', `تم نشر سؤالك في أجوبة عامة: "${q.text?.substring(0, 30)}..."`);
-                        }
                     }
                 });
                 addNotification('answer', `تمت الإجابة على سؤال: "${answer.substring(0, 30)}..."`);
-                showToast('تم حفظ الإجابة');
             }).catch(() => showToast('فشل الحفظ', true));
         }
 
-        // دالة نشر السؤال (جديدة)
+        // دالة نشر السؤال
         function publishQuestion(id) {
             const qRef = ref(db, `questions/${id}`);
             get(qRef).then(snap => {
@@ -2028,7 +2015,6 @@
                     showToast(newPublished ? 'تم نشر السؤال في أجوبة عامة' : 'تم إخفاء السؤال من أجوبة عامة');
                     loadQuestions();
                     renderAnsweredQuestions();
-                    // إشعار لصاحب السؤال إذا تم النشر
                     if (newPublished && q.userId) {
                         addUserNotification(q.userId, 'answer', `تم نشر سؤالك في أجوبة عامة: "${q.text?.substring(0, 30)}..."`);
                     }
@@ -2429,7 +2415,7 @@
         window.deleteAnnouncement = deleteAnnouncement;
         window.openAnswerModal = openAnswerModal;
         window.openEditAnswerModal = openEditAnswerModal;
-        window.publishQuestion = publishQuestion; // الدالة الجديدة
+        window.publishQuestion = publishQuestion;
         window.deleteQuestion = deleteQuestion;
         window.clearAllQuestions = clearAllQuestions;
         window.printQuestions = printQuestions;

@@ -7,7 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- تم تحديث رابط Font Awesome إلى الإصدار 6.5.2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script type="importmap">
         {
             "imports": {
@@ -1314,6 +1315,9 @@
                 document.getElementById('userAuthBtn').innerHTML = `<i class="fas fa-user"></i> ${user.displayName || 'مستخدم'}`;
                 document.getElementById('userAuthBtn').onclick = (e) => { e.preventDefault(); if (confirm('تسجيل الخروج؟')) signOut(auth); };
                 document.getElementById('myQuestionsLink').style.display = 'inline-block';
+                // إخفاء رسالة "يجب تسجيل الدخول" في صفحة الأسئلة
+                document.getElementById('authRequiredMessage').style.display = 'none';
+                document.getElementById('questionFormContainer').style.display = 'block';
                 await ensureUserDocument(user.uid, user.displayName);
                 checkAdmin(user);
                 listenToUserNotifications(user.uid);
@@ -1327,6 +1331,9 @@
                 document.getElementById('adminLink').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
                 document.getElementById('notifBell').style.display = 'none';
+                // إظهار رسالة "يجب تسجيل الدخول" في صفحة الأسئلة
+                document.getElementById('authRequiredMessage').style.display = 'block';
+                document.getElementById('questionFormContainer').style.display = 'none';
                 if (userNotifUnsubscribe) userNotifUnsubscribe();
                 if (myQuestionsUnsubscribe) myQuestionsUnsubscribe();
                 if (myPrayersUnsubscribe) myPrayersUnsubscribe();

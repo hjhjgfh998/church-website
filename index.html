@@ -18,108 +18,207 @@
         }
     </script>
     <style>
-        /* جميع الأنماط (مختصرة) */
+        /* جميع الأنماط كما في الكود السابق مع الحفاظ على الألوان */
         :root {
             --color-primary: #1a2a3a;
+            --color-primary-light: #2c4056;
             --color-gold: #c9a87c;
+            --color-gold-light: #dfc8a8;
+            --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%);
             --bg-body: #f5f1eb;
+            --bg-surface: #ffffff;
             --bg-card: #ffffff;
             --text-primary: #1a1f2a;
             --text-secondary: #3d4552;
+            --text-muted: #7a8291;
             --border-color: #e8e2d9;
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.08);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-family: 'Cairo', sans-serif;
+            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.15) 0%, transparent 70%);
         }
-        [data-theme="dark"] { --bg-body: #11161e; --bg-card: #1e2833; --text-primary: #edf2f7; --border-color: #2d3b47; }
+        [data-theme="dark"] {
+            --bg-body: #11161e;
+            --bg-surface: #1a232e;
+            --bg-card: #1e2833;
+            --text-primary: #edf2f7;
+            --text-secondary: #cbd5e0;
+            --text-muted: #94a3b8;
+            --border-color: #2d3b47;
+            --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201, 168, 124, 0.08) 0%, transparent 70%);
+        }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Cairo',sans-serif; background:var(--bg-body); color:var(--text-primary); line-height:1.7; }
+        body { font-family:var(--font-family); background-color:var(--bg-body); color:var(--text-primary); transition:background-color 0.5s, color 0.5s; line-height:1.7; min-height:100vh; }
+        a { text-decoration:none; color:inherit; }
+        button { font-family:var(--font-family); cursor:pointer; border:none; background:none; color:inherit; }
+        input, select, textarea { font-family:var(--font-family); background:var(--bg-surface); color:var(--text-primary); border:2px solid var(--border-color); border-radius:var(--radius-sm); padding:14px 18px; width:100%; transition:border-color var(--transition), box-shadow var(--transition); font-size:1rem; }
+        input:focus, select:focus, textarea:focus { outline:none; border-color:var(--color-gold); box-shadow:0 0 0 4px rgba(201,168,124,0.15); }
+        textarea { resize:vertical; min-height:120px; }
+        label { font-weight:600; display:block; margin-bottom:8px; color:var(--text-secondary); font-size:0.95rem; }
         .container { max-width:1200px; margin:0 auto; padding:0 24px; }
-        .btn { display:inline-flex; align-items:center; gap:10px; padding:14px 34px; border-radius:50px; font-weight:700; background:linear-gradient(135deg,#c9a87c,#b8925e); color:#fff; border:2px solid transparent; transition:0.3s; cursor:pointer; }
+        @media (max-width:640px) { .container { padding:0 16px; } }
+        .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:14px 34px; border-radius:50px; font-weight:700; font-size:1rem; transition:all var(--transition); border:2px solid transparent; background:var(--color-gold-gradient); color:#fff; box-shadow:0 4px 16px rgba(201,168,124,0.3); position:relative; overflow:hidden; }
+        .btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0.1); transform:translateX(-100%); transition:transform var(--transition); }
+        .btn:hover::after { transform:translateX(0); }
         .btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(201,168,124,0.4); }
-        .btn-primary { background:var(--color-primary); }
-        .btn-success { background:#27ae60; }
+        .btn-primary { background:var(--color-primary); border-color:var(--color-primary); }
+        .btn-primary:hover { background:var(--color-primary-light); }
+        .btn-danger { background:#c0392b; border-color:#c0392b; }
+        .btn-success { background:#27ae60; border-color:#27ae60; }
         .btn-sm { padding:8px 18px; font-size:0.85rem; }
-        .card { background:var(--bg-card); border-radius:16px; padding:24px 28px; box-shadow:0 8px 30px rgba(0,0,0,0.06); border:1px solid var(--border-color); }
-        .section-title { font-size:2.2rem; font-weight:800; margin-bottom:1.8rem; display:inline-block; position:relative; }
-        .section-title::after { content:''; position:absolute; bottom:-8px; right:0; width:60px; height:4px; background:linear-gradient(135deg,#c9a87c,#b8925e); border-radius:4px; }
+        .btn-outline { background:transparent; border-color:var(--color-gold); color:var(--color-gold); }
+        .btn-outline:hover { background:var(--color-gold); color:#fff; }
+        .btn-refresh { background:var(--color-primary); color:#fff; border-color:var(--color-primary); }
+        .btn-refresh:hover { background:var(--color-primary-light); }
+        .card { background:var(--bg-card); border-radius:var(--radius-md); padding:24px 28px; box-shadow:var(--shadow-md); border:1px solid var(--border-color); transition:all var(--transition); }
+        .card:hover { box-shadow:var(--shadow-lg); transform:translateY(-3px); }
+        .section-title { font-size:2.2rem; font-weight:800; margin-bottom:1.8rem; color:var(--text-primary); position:relative; display:inline-block; }
+        .section-title::after { content:''; position:absolute; bottom:-8px; right:0; width:60px; height:4px; background:var(--color-gold-gradient); border-radius:4px; }
+        .section-title.text-center::after { right:50%; transform:translateX(50%); }
         .text-center { text-align:center; }
-        .page { display:none; padding:40px 0 60px; animation:fadeIn 0.5s; }
-        .page.active { display:block; }
-        @keyframes fadeIn { 0%{opacity:0;transform:translateY(20px)} 100%{opacity:1;transform:translateY(0)} }
-        header { background:var(--bg-card); border-bottom:1px solid var(--border-color); padding:12px 0; position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); }
+        .mt-4 { margin-top:2rem; }
+        .mb-4 { margin-bottom:2rem; }
+        .mt-2 { margin-top:1rem; }
+        .mb-2 { margin-bottom:1rem; }
+        header { background:var(--bg-surface); border-bottom:1px solid var(--border-color); padding:12px 0; position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); transition:all var(--transition); }
         .header-inner { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
-        .logo-area h1 { font-size:1.3rem; font-weight:800; color:var(--color-primary); }
+        .logo-area { display:flex; align-items:center; gap:14px; }
+        .logo-area h1 { font-size:1.3rem; font-weight:800; color:var(--color-primary); transition:color var(--transition); }
+        [data-theme="dark"] .logo-area h1 { color:var(--color-gold); }
         nav { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-        nav a { padding:8px 18px; border-radius:50px; font-weight:600; font-size:0.95rem; color:var(--text-secondary); transition:0.3s; }
-        nav a:hover, nav a.active { background:linear-gradient(135deg,#c9a87c,#b8925e); color:#fff; }
-        .theme-toggle { font-size:1.3rem; padding:8px 14px; border-radius:50px; background:var(--bg-body); border:1px solid var(--border-color); }
-        .hero { height:520px; border-radius:24px; background:var(--color-primary); display:flex; align-items:center; justify-content:center; text-align:center; color:#fff; padding:20px; margin-bottom:2.5rem; background-image:radial-gradient(circle at 30% 40%, rgba(201,168,124,0.15) 0%, transparent 70%); }
-        .hero-content h2 { font-size:3rem; font-weight:900; }
-        .login-box { max-width:420px; margin:60px auto; padding:44px 40px; background:var(--bg-card); border-radius:24px; border:1px solid var(--border-color); }
-        .login-box h2 { text-align:center; margin-bottom:28px; }
-        .login-box .toggle-link { text-align:center; margin-top:16px; color:var(--color-gold); cursor:pointer; font-weight:600; }
-        .toast { position:fixed; bottom:30px; left:30px; background:var(--bg-card); padding:18px 28px; border-radius:8px; box-shadow:0 8px 30px rgba(0,0,0,0.2); border-right:5px solid var(--color-gold); z-index:999; transform:translateY(100px); opacity:0; transition:0.4s; font-weight:600; max-width:90%; }
-        .toast.show { transform:translateY(0); opacity:1; }
-        .question-card { border-right:4px solid var(--color-gold); padding:18px 22px; margin-bottom:16px; background:var(--bg-card); border-radius:0 8px 8px 0; }
-        .question-card .q-answer { margin-top:10px; padding:14px 18px; background:var(--bg-body); border-radius:8px; border-right:3px solid #dfc8a8; }
-        .my-item-card { border-right:4px solid var(--color-gold); padding:18px 22px; margin-bottom:16px; background:var(--bg-card); border-radius:0 8px 8px 0; }
-        .announcement-item { padding:18px 0; border-bottom:1px solid var(--border-color); display:flex; gap:16px; }
-        .table-responsive { overflow-x:auto; }
-        table { width:100%; border-collapse:collapse; }
-        th { background:var(--bg-body); padding:14px 12px; text-align:right; border-bottom:2px solid var(--border-color); }
-        td { padding:14px 12px; border-bottom:1px solid var(--border-color); vertical-align:middle; }
-        .actions { display:flex; gap:6px; flex-wrap:wrap; }
-        .actions button { padding:4px 14px; border-radius:50px; font-size:0.8rem; font-weight:600; }
-        .actions .btn-answer { background:var(--color-primary); color:#fff; }
-        .actions .btn-publish { background:var(--color-gold); color:#fff; }
-        .actions .btn-delete { background:#c0392b; color:#fff; }
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
-        .modal.show { display:flex; }
-        .modal-content { background:var(--bg-card); border-radius:24px; max-width:700px; width:90%; padding:30px; max-height:90vh; overflow-y:auto; }
-        .modal-actions { display:flex; gap:12px; justify-content:flex-end; margin-top:16px; }
-        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:1.2rem; margin-bottom:2.5rem; }
-        .stat-card { background:var(--bg-card); padding:22px 18px; border-radius:16px; text-align:center; border:1px solid var(--border-color); }
-        .stat-card .number { font-size:2.4rem; font-weight:900; color:var(--color-gold); }
-        .whatsapp-btn { display:inline-flex; align-items:center; gap:12px; padding:14px 34px; border-radius:50px; background:#25d366; color:#fff; border:2px solid #25d366; transition:0.3s; text-decoration:none; }
-        .social-links { display:flex; gap:20px; justify-content:center; font-size:2.2rem; margin:16px 0; }
-        .social-links a { transition:0.3s; color:var(--text-secondary); }
-        .social-links a:hover { color:var(--color-gold); transform:scale(1.15); }
-        .notif-list { max-height:400px; overflow-y:auto; }
-        .notification-item { padding:12px 16px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
-        #notifBell { display:none; padding:6px 12px; border-radius:50px; position:relative; }
-        #notifBell .badge-count { position:absolute; top:-4px; right:-4px; background:#e74c3c; color:#fff; border-radius:50%; padding:2px 7px; font-size:0.65rem; font-weight:700; min-width:18px; text-align:center; }
-        footer { background:var(--bg-card); border-top:1px solid var(--border-color); padding:28px 0; text-align:center; color:var(--text-muted); margin-top:40px; }
-        @media(max-width:768px){ .hero { height:380px; } .hero-content h2 { font-size:2rem; } .stats-grid { grid-template-columns:1fr 1fr; } }
-        .form-group { margin-bottom:20px; }
-        .form-group label { display:block; font-weight:600; margin-bottom:6px; }
-        .form-group input, .form-group select, .form-group textarea { width:100%; padding:14px 18px; border:2px solid var(--border-color); border-radius:12px; font-family:inherit; background:var(--bg-surface); color:var(--text-primary); transition:0.3s; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--color-gold); outline:none; box-shadow:0 0 0 4px rgba(201,168,124,0.15); }
-        .checkbox-group { display:flex; align-items:center; gap:12px; margin:8px 0; }
-        .checkbox-group input[type="checkbox"] { width:20px; height:20px; accent-color:var(--color-gold); }
-        .question-success-box { display:none; text-align:center; padding:20px; color:#27ae60; }
-        .question-success-box i { font-size:3rem; }
-        .question-success-box p { font-size:1.2rem; margin-top:10px; }
-        .reset-btn-wrapper { margin-top:16px; display:flex; justify-content:center; gap:12px; flex-wrap:wrap; }
-        .auth-required { display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:16px; margin-top:30px; }
-        .auth-required i { font-size:3rem; color:var(--color-gold); }
-        .auth-required p { font-size:1.3rem; margin-top:16px; }
-        #dailyVerseDisplay { font-size:1.25rem; line-height:1.9; }
-        #dailyVerseRef { color:var(--text-muted); margin-top:6px; }
-        .verse-info { color:var(--text-muted); font-size:0.8rem; margin-top:4px; }
-        .search-filter { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem; }
-        .search-filter input, .search-filter select { width:auto; flex:1; min-width:160px; }
-        .pagination-controls { display:flex; justify-content:center; align-items:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
-        .pagination-controls .page-info { font-weight:600; color:var(--text-secondary); padding:0 8px; }
-        .pagination-controls .btn { padding:6px 18px; font-size:0.85rem; min-width:70px; }
-        .refresh-container { display:flex; justify-content:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
-        .admin-section { margin-bottom:3rem; }
-        .admin-section .section-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.2rem; }
-        .admin-section h3 { font-size:1.5rem; font-weight:700; margin:0; }
-        .admin-login-btn { background:var(--color-primary); color:#fff; border-radius:50px; padding:6px 18px; font-size:0.9rem; }
-        .admin-login-btn:hover { background:var(--color-gold); }
-        .user-auth-btn { background:var(--color-gold); color:#fff; border-radius:50px; padding:6px 18px; font-size:0.9rem; }
-        .user-auth-btn:hover { background:var(--color-primary); }
+        nav a { padding:8px 18px; border-radius:50px; font-weight:600; font-size:0.95rem; transition:all var(--transition); color:var(--text-secondary); }
+        nav a:hover, nav a.active { background:var(--color-gold-gradient); color:#fff; box-shadow:0 4px 12px rgba(201,168,124,0.25); }
+        .theme-toggle { font-size:1.3rem; padding:8px 14px; border-radius:50px; background:var(--bg-body); border:1px solid var(--border-color); transition:all var(--transition); }
+        .theme-toggle:hover { background:var(--color-gold); color:#fff; }
         .notification-badge { position:relative; display:inline-block; }
         .notification-badge .badge-count { position:absolute; top:-8px; right:-8px; background:#e74c3c; color:#fff; border-radius:50%; padding:2px 8px; font-size:0.7rem; font-weight:700; min-width:18px; text-align:center; animation:pulse 1.5s infinite; }
         @keyframes pulse { 0%{transform:scale(1)} 50%{transform:scale(1.2)} 100%{transform:scale(1)} }
+        .page { display:none; padding:40px 0 60px; animation:fadeIn 0.5s ease; }
+        .page.active { display:block; }
+        @keyframes fadeIn { 0%{opacity:0; transform:translateY(20px)} 100%{opacity:1; transform:translateY(0)} }
+        .hero { position:relative; height:520px; border-radius:var(--radius-lg); overflow:hidden; margin-bottom:2.5rem; background:var(--color-primary); display:flex; align-items:center; justify-content:center; text-align:center; color:#fff; padding:20px; background-image:var(--hero-bg); }
+        .hero-content { position:relative; z-index:2; max-width:700px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+        .hero-content h2 { font-size:3rem; font-weight:900; text-shadow:0 4px 30px rgba(0,0,0,0.4); line-height:1.2; }
+        .hero-content p { font-size:1.4rem; opacity:0.95; text-shadow:0 2px 20px rgba(0,0,0,0.3); }
+        #dailyVerseDisplay { font-size:1.25rem; line-height:1.9; word-wrap:break-word; max-height:200px; overflow-y:auto; padding:4px 0; }
+        #dailyVerseDisplay::-webkit-scrollbar { width:4px; }
+        #dailyVerseDisplay::-webkit-scrollbar-thumb { background:var(--color-gold); border-radius:4px; }
+        .question-card { border-right:4px solid var(--color-gold); padding:18px 22px; margin-bottom:16px; background:var(--bg-card); border-radius:0 var(--radius-sm) var(--radius-sm) 0; box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all var(--transition); }
+        .question-card:hover { box-shadow:var(--shadow-md); transform:translateX(-4px); }
+        .question-card .q-title { font-weight:700; font-size:1.1rem; }
+        .question-card .q-answer { margin-top:10px; padding:14px 18px; background:var(--bg-body); border-radius:var(--radius-sm); color:var(--text-secondary); border-right:3px solid var(--color-gold-light); }
+        .question-card .q-meta { font-size:0.85rem; color:var(--text-muted); margin-top:6px; }
+        .my-item-card { border-right:4px solid var(--color-gold); padding:18px 22px; margin-bottom:16px; background:var(--bg-card); border-radius:0 var(--radius-sm) var(--radius-sm) 0; box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all var(--transition); }
+        .my-item-card:hover { box-shadow:var(--shadow-md); transform:translateX(-4px); }
+        .my-item-card .item-details { font-size:1.05rem; margin-bottom:6px; }
+        .my-item-card .item-answer { margin-top:10px; padding:12px 16px; background:var(--bg-body); border-radius:var(--radius-sm); color:var(--text-secondary); border-right:3px solid var(--color-gold-light); }
+        .my-item-card .item-meta { font-size:0.85rem; color:var(--text-muted); margin-top:6px; }
+        .my-item-card .item-notification { margin-top:8px; padding:8px 14px; background:#d4edda; color:#155724; border-radius:var(--radius-sm); font-size:0.9rem; border-right:3px solid #28a745; display:none; }
+        .my-item-card .item-notification.show { display:block; }
+        .announcement-item { padding:18px 0; border-bottom:1px solid var(--border-color); display:flex; gap:16px; align-items:flex-start; }
+        .announcement-item:last-child { border-bottom:none; }
+        .announcement-item .announce-content { flex:1; }
+        .announcement-item h4 { font-size:1.1rem; font-weight:700; color:var(--color-primary); }
+        .announcement-item .date { color:var(--text-muted); font-size:0.85rem; margin-top:4px; }
+        .table-responsive { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; font-size:0.95rem; }
+        th { background:var(--bg-body); color:var(--text-secondary); font-weight:700; padding:14px 12px; text-align:right; border-bottom:2px solid var(--border-color); white-space:nowrap; }
+        td { padding:14px 12px; border-bottom:1px solid var(--border-color); vertical-align:middle; max-width:300px; }
+        td .question-text { word-wrap:break-word; line-height:1.6; }
+        td .question-text .short-text { display:inline; }
+        td .question-text .full-text { display:none; }
+        td .question-text .full-text.show { display:inline; }
+        td .question-text .toggle-btn { color:var(--color-gold); font-weight:600; cursor:pointer; font-size:0.85rem; background:none; border:none; padding:0 4px; }
+        td .question-text .toggle-btn:hover { text-decoration:underline; }
+        .actions { display:flex; gap:6px; flex-wrap:wrap; }
+        .actions button { padding:4px 14px; border-radius:50px; font-size:0.8rem; font-weight:600; transition:all 0.2s; }
+        .actions .btn-answer { background:var(--color-primary); color:#fff; }
+        .actions .btn-publish { background:var(--color-gold); color:#fff; }
+        .actions .btn-delete { background:#c0392b; color:#fff; }
+        .actions .btn-edit { background:#f39c12; color:#fff; }
+        .actions .btn-prayer-reply { background:#8e44ad; color:#fff; }
+        .search-filter { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:1.5rem; }
+        .search-filter input, .search-filter select { width:auto; flex:1; min-width:160px; }
+        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+        .modal.show { display:flex; }
+        .modal-content { background:var(--bg-card); border-radius:var(--radius-lg); max-width:700px; width:90%; padding:30px; box-shadow:var(--shadow-lg); max-height:90vh; overflow-y:auto; }
+        .modal-content h3 { margin-bottom:16px; color:var(--color-primary); }
+        .modal-content .form-group { margin-bottom:16px; }
+        .modal-content textarea { min-height:200px; font-size:1rem; }
+        .modal-actions { display:flex; gap:12px; justify-content:flex-end; }
+        .admin-section { margin-bottom:3rem; }
+        .admin-section .section-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.2rem; }
+        .admin-section h3 { font-size:1.5rem; font-weight:700; color:var(--text-primary); margin:0; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:1.2rem; margin-bottom:2.5rem; }
+        .stat-card { background:var(--bg-card); padding:22px 18px; border-radius:var(--radius-md); text-align:center; border:1px solid var(--border-color); box-shadow:0 2px 8px rgba(0,0,0,0.04); transition:all var(--transition); }
+        .stat-card:hover { box-shadow:var(--shadow-md); transform:translateY(-4px); }
+        .stat-card .number { font-size:2.4rem; font-weight:900; color:var(--color-gold); }
+        .stat-card .label { font-size:0.9rem; color:var(--text-muted); margin-top:4px; }
+        .login-box { max-width:420px; margin:60px auto; padding:44px 40px; background:var(--bg-card); border-radius:var(--radius-lg); box-shadow:0 30px 80px rgba(0,0,0,0.12); border:1px solid var(--border-color); }
+        .login-box h2 { text-align:center; margin-bottom:28px; font-weight:800; }
+        .login-box .subtitle { text-align:center; color:var(--text-muted); margin-bottom:24px; font-size:0.95rem; }
+        .login-box .toggle-link { text-align:center; margin-top:16px; color:var(--color-gold); cursor:pointer; font-weight:600; }
+        .login-box .toggle-link:hover { text-decoration:underline; }
+        .toast { position:fixed; bottom:30px; left:30px; background:var(--bg-card); color:var(--text-primary); padding:18px 28px; border-radius:var(--radius-sm); box-shadow:0 8px 30px rgba(0,0,0,0.2); border-right:5px solid var(--color-gold); z-index:999; transform:translateY(100px); opacity:0; transition:all 0.4s ease; font-weight:600; max-width:90%; }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .notification-item { padding:12px 16px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; }
+        .notification-item:last-child { border-bottom:none; }
+        .notification-item .notif-time { font-size:0.8rem; color:var(--text-muted); }
+        .notification-item .notif-text { flex:1; margin-left:12px; font-size:1rem; line-height:1.6; }
+        .notification-item .notif-type { padding:2px 10px; border-radius:50px; font-size:0.7rem; font-weight:600; }
+        .notif-type.question { background:var(--color-primary); color:#fff; }
+        .notif-type.prayer { background:var(--color-gold); color:#fff; }
+        .notif-type.answer { background:#27ae60; color:#fff; }
+        .notif-type.verse { background:#3498db; color:#fff; }
+        .notif-type.announcement { background:#e67e22; color:#fff; }
+        .notif-list { max-height:400px; overflow-y:auto; }
+        .notif-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+        .social-links { display:flex; gap:20px; justify-content:center; font-size:2.2rem; margin:16px 0; }
+        .social-links a { transition:all var(--transition); color:var(--text-secondary); }
+        .social-links a:hover { color:var(--color-gold); transform:scale(1.15); }
+        footer { background:var(--bg-surface); border-top:1px solid var(--border-color); padding:28px 0; text-align:center; color:var(--text-muted); font-size:0.95rem; margin-top:40px; }
+        .about-text { white-space:pre-wrap; line-height:1.9; }
+        .whatsapp-btn { display:inline-flex; align-items:center; gap:12px; padding:14px 34px; border-radius:50px; font-weight:700; font-size:1rem; background:#25d366; color:#fff; border:2px solid #25d366; transition:all var(--transition); box-shadow:0 4px 16px rgba(37,211,102,0.3); text-decoration:none; }
+        .whatsapp-btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(37,211,102,0.4); color:#fff; }
+        .whatsapp-btn i { font-size:1.5rem; }
+        .user-auth-btn { background:var(--color-gold); color:#fff; border-radius:50px; padding:6px 18px; font-size:0.9rem; }
+        .user-auth-btn:hover { background:var(--color-primary); }
+        .admin-login-btn { background:var(--color-primary); color:#fff; border-radius:50px; padding:6px 18px; font-size:0.9rem; }
+        .admin-login-btn:hover { background:var(--color-gold); }
+        .refresh-container { display:flex; justify-content:center; gap:12px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+        .no-questions { text-align:center; color:var(--text-muted); padding:30px 0; }
+        .status-connected { color:#27ae60; }
+        .status-error { color:#c0392b; }
+        .status-loading { color:var(--text-muted); }
+        .pagination-controls { display:flex; justify-content:center; align-items:center; gap:12px; margin-top:16px; flex-wrap:wrap; }
+        .pagination-controls .page-info { font-weight:600; color:var(--text-secondary); padding:0 8px; }
+        .pagination-controls .btn { padding:6px 18px; font-size:0.85rem; min-width:70px; }
+        #notifBell { position:relative; display:none; padding:6px 12px; border-radius:50px; transition:all var(--transition); color:var(--text-secondary); }
+        #notifBell:hover { background:var(--color-gold-gradient); color:#fff; }
+        #notifBell .badge-count { position:absolute; top:-4px; right:-4px; background:#e74c3c; color:#fff; border-radius:50%; padding:2px 7px; font-size:0.65rem; font-weight:700; min-width:18px; text-align:center; animation:pulse 1.5s infinite; }
+        #userNotifModal .modal-content { max-width:650px; }
+        #userNotifModal .modal-actions .btn { padding:8px 18px; font-size:0.9rem; min-width:auto; border-radius:30px; }
+        #userNotifModal .modal-actions .btn-outline { border-color:var(--color-gold); color:var(--color-gold); background:transparent; }
+        #userNotifModal .modal-actions .btn-outline:hover { background:var(--color-gold); color:#fff; }
+        #userNotifModal .modal-actions .btn-danger { background:#c0392b; border-color:#c0392b; }
+        #userNotifModal .modal-actions .btn-primary { background:var(--color-primary); border-color:var(--color-primary); }
+        #userNotifModal .notification-item .notif-text { font-size:1.05rem; line-height:1.8; }
+        @media print { .no-print { display:none !important; } body { background:#fff !important; color:#000 !important; } .card { box-shadow:none !important; border:1px solid #ccc !important; } table { font-size:12px !important; } .actions { display:none !important; } .theme-toggle, nav a, header .logo-area h1 { color:#000 !important; } header { background:#fff !important; border-bottom:1px solid #ccc !important; } .container { max-width:100% !important; padding:0 10px !important; } .page { padding:20px 0 !important; } .btn { display:none !important; } .admin-section .section-header .btn { display:none !important; } .pagination-controls { display:none !important; } }
+        @media (max-width:992px) { .hero { height:420px; } .hero-content h2 { font-size:2.4rem; } .section-title { font-size:1.8rem; } }
+        @media (max-width:768px) { .hero { height:380px; } .hero-content h2 { font-size:2rem; } .hero-content p { font-size:1.1rem; } .logo-area h1 { font-size:1rem; } nav a { padding:6px 12px; font-size:0.85rem; } .stats-grid { grid-template-columns:1fr 1fr; } .login-box { padding:32px 24px; margin:30px 16px; } td { max-width:150px; } .announcement-item { flex-direction:column; align-items:stretch; } .pagination-controls .btn { padding:4px 12px; font-size:0.75rem; min-width:50px; } #userNotifModal .modal-actions .btn { padding:4px 10px; font-size:0.7rem; } #userNotifModal .modal-content { max-width:95%; padding:20px; } }
+        @media (max-width:480px) { .header-inner { flex-direction:column; align-items:stretch; } nav { justify-content:center; } .hero { height:300px; } .hero-content h2 { font-size:1.6rem; } .hero-content p { font-size:1rem; } .btn { padding:12px 24px; font-size:0.9rem; } .card { padding:18px; } .stats-grid { grid-template-columns:1fr 1fr; gap:0.8rem; } .stat-card .number { font-size:1.8rem; } .section-title { font-size:1.5rem; } td { max-width:100px; font-size:0.85rem; } td .question-text .toggle-btn { font-size:0.7rem; } #userNotifModal .modal-actions { flex-direction:column; gap:6px; } #userNotifModal .modal-actions .btn { width:100%; justify-content:center; } #userNotifModal .modal-content { max-width:98%; padding:16px; } }
+        /* أنماط إضافية لوضوح زر "سؤال آخر" */
+        .question-success-box .reset-btn-wrapper { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px; }
+        .question-success-box .btn { min-width:180px; }
+        #questionFormContainer .card { transition:all 0.3s; }
+        #questionSuccess { transition:all 0.3s; }
+        .form-group { margin-bottom:20px; }
     </style>
 </head>
 <body>
@@ -151,7 +250,7 @@
         </div>
     </header>
     <main class="container">
-        <!-- الصفحة الرئيسية -->
+        <!-- الصفحات -->
         <section id="page-home" class="page active">
             <div class="hero">
                 <div class="hero-content">
@@ -164,14 +263,13 @@
                 <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> آية اليوم</h3>
                 <div id="dailyVerseDisplay">جاري التحميل...</div>
                 <div id="dailyVerseRef" style="color:var(--text-muted); margin-top:6px;"></div>
-                <div id="verseUpdateInfo" class="verse-info"></div>
+                <div id="verseUpdateInfo" style="color:var(--text-muted); font-size:0.8rem; margin-top:4px;"></div>
             </div>
             <div class="text-center mt-4">
                 <button class="btn btn-primary" onclick="window.navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
             </div>
         </section>
 
-        <!-- صفحة تسجيل الدخول -->
         <section id="page-user-auth" class="page">
             <div class="login-box">
                 <h2 id="authTitle"><i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
@@ -187,7 +285,7 @@
             </div>
         </section>
 
-        <!-- صفحة طرح السؤال -->
+        <!-- صفحة الأسئلة (المعدلة) -->
         <section id="page-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
             <div id="questionFormContainer">
@@ -195,29 +293,28 @@
                     <form id="questionForm">
                         <div class="form-group"><label for="qDetails">تفاصيل السؤال</label><textarea id="qDetails" required placeholder="اكتب تفاصيل سؤالك هنا..."></textarea></div>
                         <div class="form-group"><label for="qType">تصنيف السؤال</label><select id="qType"><option value="biblical">أسئلة كتابية</option><option value="doctrinal">أسئلة عقائدية</option><option value="personal">مشاكل شخصية</option><option value="consultation">طلب استشارة</option><option value="suggestion">اقتراحات للكنيسة</option><option value="prayer">طلب صلاة</option></select></div>
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
                             <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
                             <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول (لن يظهر اسمك)</label>
                         </div>
                         <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
                     </form>
-                    <div id="questionSuccess" class="question-success-box">
-                        <i class="fas fa-check-circle"></i>
-                        <p>تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
+                    <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
+                        <i class="fas fa-check-circle" style="font-size:3rem;"></i>
+                        <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
                         <div class="reset-btn-wrapper">
                             <button class="btn btn-primary" onclick="window.resetQuestionForm()"><i class="fas fa-plus"></i> اسأل سؤال آخر</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="authRequiredMessage" class="auth-required">
-                <i class="fas fa-lock"></i>
-                <p>يجب تسجيل الدخول لطرح سؤال</p>
+            <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
+                <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
+                <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
                 <button class="btn btn-primary mt-2" onclick="window.navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
             </div>
         </section>
 
-        <!-- أسئلتي -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
             <div class="refresh-container">
@@ -227,21 +324,20 @@
             <div id="myItemsList"></div>
         </section>
 
-        <!-- طلبات الصلاة -->
         <section id="page-prayer" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">طلبات الصلاة</h2>
             <div class="card" style="max-width:600px; margin:0 auto;">
                 <form id="prayerForm">
                     <div class="form-group"><label for="prayerText">طلب الصلاة</label><textarea id="prayerText" required placeholder="اكتب طلب صلاتك..."></textarea></div>
-                    <div class="checkbox-group">
+                    <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
                         <input type="checkbox" id="prayerAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
                         <label for="prayerAnonymous" style="margin:0; font-weight:400;">إرسال مجهول</label>
                     </div>
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال طلب الصلاة</button>
                 </form>
-                <div id="prayerSuccess" class="question-success-box">
-                    <i class="fas fa-check-circle"></i>
-                    <p>تم استلام طلب صلاتك، باركك الرب.</p>
+                <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
+                    <i class="fas fa-check-circle" style="font-size:3rem;"></i>
+                    <p style="font-size:1.2rem; margin-top:10px;">تم استلام طلب صلاتك، باركك الرب.</p>
                     <div class="reset-btn-wrapper">
                         <button class="btn btn-primary" onclick="window.resetPrayerForm()"><i class="fas fa-plus"></i> طلب صلاة آخر</button>
                     </div>
@@ -249,20 +345,17 @@
             </div>
         </section>
 
-        <!-- أجوبة عامة -->
         <section id="page-answered" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
             <div class="search-filter"><input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" /></div>
             <div id="answeredList"></div>
         </section>
 
-        <!-- إعلانات -->
         <section id="page-announcements" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">الإعلانات والأنشطة</h2>
             <div id="announcementsList"></div>
         </section>
 
-        <!-- من نحن -->
         <section id="page-about" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">من نحن</h2>
             <div class="card">
@@ -273,7 +366,6 @@
             </div>
         </section>
 
-        <!-- تواصل -->
         <section id="page-contact" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">تواصل معنا</h2>
             <div class="text-center card" style="max-width:600px; margin:0 auto;">
@@ -284,7 +376,6 @@
             </div>
         </section>
 
-        <!-- تسجيل دخول الأدمن -->
         <section id="page-admin-login" class="page">
             <div class="login-box">
                 <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
@@ -301,10 +392,8 @@
             </div>
         </section>
 
-        <!-- لوحة التحكم -->
         <section id="page-admin" class="page">
             <div id="adminDashboard" style="display:none;">
-                <!-- محتوى لوحة التحكم (مختصر) -->
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem;">
                     <h2 class="section-title" style="margin-bottom:0;">لوحة التحكم</h2>
                     <div style="display:flex; align-items:center; gap:12px;">
@@ -312,48 +401,119 @@
                         <button id="adminLogoutBtn" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> خروج</button>
                     </div>
                 </div>
-                <!-- الإشعارات -->
                 <div class="admin-section">
-                    <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount"></span></h3>
-                    <div class="card"><div id="notificationsList" class="notif-list"></div>
-                        <div class="notif-actions"><button class="btn btn-sm btn-outline" onclick="window.markAllNotificationsRead()">تحديد الكل كمقروء</button><button class="btn btn-sm btn-danger" onclick="window.deleteAllNotifications()">حذف الكل</button></div>
+                    <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
+                    <div class="card">
+                        <div id="notificationsList" class="notif-list"><p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p></div>
+                        <div class="notif-actions">
+                            <button class="btn btn-sm btn-outline" onclick="window.markAllNotificationsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
+                            <button class="btn btn-sm btn-danger" onclick="window.deleteAllNotifications()"><i class="fas fa-trash"></i> حذف الكل</button>
+                        </div>
                     </div>
                 </div>
-                <!-- الإحصائيات -->
-                <div class="stats-grid"><div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">إجمالي الأسئلة</div></div><div class="stat-card"><div class="number" id="statMonth">0</div><div class="label">هذا الشهر</div></div><div class="stat-card"><div class="number" id="statPrayers">0</div><div class="label">طلبات الصلاة</div></div><div class="stat-card"><div class="number" id="statTopType">-</div><div class="label">أكثر نوع</div></div></div>
-                <!-- وسائل التواصل -->
-                <div class="admin-section"><h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> روابط التواصل</h3><div class="card"><div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"><input type="url" id="socialFacebookInput" placeholder="فيسبوك" /><input type="url" id="socialInstagramInput" placeholder="إنستغرام" /><input type="text" id="whatsappInput" placeholder="واتساب (رقم)" /></div><button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ</button></div></div>
-                <!-- نبذة -->
-                <div class="admin-section"><h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3><div class="card"><textarea id="aboutEditor" rows="6"></textarea><button class="btn btn-success btn-sm" onclick="window.saveAbout()"><i class="fas fa-save"></i> حفظ</button></div></div>
-                <!-- الأسئلة -->
-                <div class="admin-section">
-                    <div class="section-header"><h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة <span id="questionsCount"></span></h3><div><button class="btn btn-outline btn-sm no-print" onclick="window.printQuestions()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="window.clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button></div></div>
-                    <div class="search-filter"><input type="text" id="adminSearch" placeholder="بحث..." oninput="window.loadQuestions()" /><select id="adminFilterType" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select><select id="adminFilterAnswered" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="answered">مجاب</option><option value="unanswered">غير مجاب</option></select></div>
-                    <div class="table-responsive"><table><thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="adminQuestionsTable"></tbody></table></div>
-                    <div class="pagination-controls"><button class="btn btn-sm btn-outline" id="prevPageBtn" onclick="window.changePage(-1)">السابق</button><span class="page-info" id="pageInfo">صفحة 1</span><button class="btn btn-sm btn-outline" id="nextPageBtn" onclick="window.changePage(1)">التالي</button></div>
+                <div class="stats-grid" id="statsContainer">
+                    <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">إجمالي الأسئلة</div></div>
+                    <div class="stat-card"><div class="number" id="statMonth">0</div><div class="label">هذا الشهر</div></div>
+                    <div class="stat-card"><div class="number" id="statPrayers">0</div><div class="label">طلبات الصلاة</div></div>
+                    <div class="stat-card"><div class="number" id="statTopType">-</div><div class="label">أكثر نوع شيوعًا</div></div>
                 </div>
-                <!-- طلبات الصلاة -->
                 <div class="admin-section">
-                    <div class="section-header"><h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة <span id="prayersCount"></span></h3><div><button class="btn btn-refresh btn-sm" onclick="window.refreshPrayers()"><i class="fas fa-sync-alt"></i> تحديث</button><button class="btn btn-outline btn-sm no-print" onclick="window.printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="window.clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div></div>
+                    <h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> إدارة وسائل التواصل</h3>
+                    <div class="card">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div class="form-group"><label for="socialFacebookInput">رابط فيسبوك</label><input type="url" id="socialFacebookInput" placeholder="https://facebook.com/..." /></div>
+                            <div class="form-group"><label for="socialInstagramInput">رابط إنستغرام</label><input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." /></div>
+                            <div class="form-group" style="grid-column: 1 / -1;"><label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label><input type="text" id="whatsappInput" placeholder="مثال: 201234567890" /><small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small></div>
+                        </div>
+                        <button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
+                    <div class="card">
+                        <div class="form-group"><label for="aboutEditor">نص النبذة (يمكنك استخدام HTML بسيط)</label><textarea id="aboutEditor" rows="8" placeholder="اكتب نبذة عن الكنيسة..."></textarea></div>
+                        <button class="btn btn-success btn-sm" onclick="window.saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة <span id="questionsCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-outline btn-sm no-print" onclick="window.printQuestions()"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllQuestions()"><i class="fas fa-trash"></i> مسح الكل</button>
+                        </div>
+                    </div>
+                    <div class="search-filter">
+                        <input type="text" id="adminSearch" placeholder="بحث..." oninput="window.loadQuestions()" />
+                        <select id="adminFilterType" onchange="window.loadQuestions()"><option value="all">جميع التصنيفات</option><option value="biblical">كتابية</option><option value="doctrinal">عقائدية</option><option value="personal">شخصية</option><option value="consultation">استشارة</option><option value="suggestion">اقتراح</option><option value="prayer">صلاة</option></select>
+                        <select id="adminFilterAnswered" onchange="window.loadQuestions()"><option value="all">الكل</option><option value="answered">تمت الإجابة</option><option value="unanswered">غير مجاب</option></select>
+                    </div>
+                    <div class="table-responsive">
+                        <table><thead><tr><th>التفاصيل</th><th>المستخدم</th><th>النوع</th><th>التاريخ</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="adminQuestionsTable"></tbody></table>
+                    </div>
+                    <div class="pagination-controls" id="paginationControls">
+                        <button class="btn btn-sm btn-outline" id="prevPageBtn" onclick="window.changePage(-1)"><i class="fas fa-chevron-right"></i> السابق</button>
+                        <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
+                        <button class="btn btn-sm btn-outline" id="nextPageBtn" onclick="window.changePage(1)">التالي <i class="fas fa-chevron-left"></i></button>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة <span id="prayersCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-refresh btn-sm" onclick="window.refreshPrayers()"><i class="fas fa-sync-alt"></i> تحديث</button>
+                            <button class="btn btn-outline btn-sm no-print" onclick="window.printPrayers()"><i class="fas fa-print"></i> طباعة</button>
+                            <button class="btn btn-danger btn-sm no-print" onclick="window.clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button>
+                        </div>
+                    </div>
                     <div id="adminPrayersList"></div>
                 </div>
-                <!-- إدارة الإعلانات -->
-                <div class="admin-section"><h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3><div class="card"><div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="announceTitle" placeholder="العنوان" style="flex:2;" /><input type="text" id="announceContent" placeholder="المحتوى" style="flex:3;" /></div><button class="btn btn-success" onclick="window.addAnnouncement()"><i class="fas fa-plus"></i> إضافة</button></div><div id="adminAnnouncementsList"></div></div>
-                <!-- آية اليوم -->
-                <div class="admin-section"><h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3><div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع" style="flex:2;" /><button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div></div>
+                <div class="admin-section">
+                    <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
+                    <div class="card mb-4">
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:12px;"><input type="text" id="announceTitle" placeholder="عنوان الإعلان" style="flex:2;" /><input type="text" id="announceContent" placeholder="محتوى الإعلان" style="flex:3;" /></div>
+                        <button class="btn btn-success" onclick="window.addAnnouncement()" style="flex:1;"><i class="fas fa-plus"></i> إضافة</button>
+                    </div>
+                    <div id="adminAnnouncementsList"></div>
+                </div>
+                <div class="admin-section">
+                    <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" />
+                        <input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" />
+                        <button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
-    <!-- النوافذ المنبثقة -->
     <div id="userNotifModal" class="modal">
-        <div class="modal-content"><h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3><div id="userNotifList" class="notif-list"></div><div class="modal-actions"><button class="btn btn-sm btn-outline" onclick="window.markAllUserNotifsRead()">تحديد الكل كمقروء</button><button class="btn btn-sm btn-danger" onclick="window.clearAllUserNotifs()">حذف الكل</button><button class="btn btn-sm btn-primary" id="closeUserNotifModal">إغلاق</button></div></div>
+        <div class="modal-content" style="max-width:650px;">
+            <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
+            <div id="userNotifList" class="notif-list"><p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p></div>
+            <div class="modal-actions" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start; margin-top:12px;">
+                <button class="btn btn-sm btn-outline" onclick="window.markAllUserNotifsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
+                <button class="btn btn-sm btn-danger" onclick="window.clearAllUserNotifs()"><i class="fas fa-trash"></i> حذف الكل</button>
+                <button class="btn btn-sm btn-primary" id="closeUserNotifModal"><i class="fas fa-times"></i> إغلاق</button>
+            </div>
+        </div>
     </div>
+
     <div id="answerModal" class="modal">
-        <div class="modal-content"><h3 id="modalTitle">كتابة الإجابة</h3><textarea id="modalAnswer" rows="8"></textarea><div class="modal-actions"><button class="btn btn-outline" id="modalCancelBtn">إلغاء</button><button class="btn btn-success" id="modalSaveBtn">حفظ</button></div></div>
+        <div class="modal-content">
+            <h3 id="modalTitle">كتابة الإجابة</h3>
+            <div class="form-group"><label for="modalAnswer">الإجابة</label><textarea id="modalAnswer" rows="8" placeholder="اكتب الإجابة هنا..."></textarea></div>
+            <div class="modal-actions"><button class="btn btn-outline" id="modalCancelBtn">إلغاء</button><button class="btn btn-success" id="modalSaveBtn">حفظ</button></div>
+        </div>
     </div>
+
     <div id="prayerReplyModal" class="modal">
-        <div class="modal-content"><h3 id="prayerModalTitle">الرد على طلب الصلاة</h3><textarea id="prayerReplyAnswer" rows="6"></textarea><div class="modal-actions"><button class="btn btn-outline" id="prayerReplyCancelBtn">إلغاء</button><button class="btn btn-success" id="prayerReplySaveBtn">حفظ</button></div></div>
+        <div class="modal-content">
+            <h3 id="prayerModalTitle">الرد على طلب الصلاة</h3>
+            <div class="form-group"><label for="prayerReplyAnswer">الرد</label><textarea id="prayerReplyAnswer" rows="6" placeholder="اكتب ردك على طلب الصلاة..."></textarea></div>
+            <div class="modal-actions"><button class="btn btn-outline" id="prayerReplyCancelBtn">إلغاء</button><button class="btn btn-success" id="prayerReplySaveBtn">حفظ الرد</button></div>
+        </div>
     </div>
 
     <footer><div class="container">Designed &amp; Developed by John Osama &copy; <span id="year"></span></div></footer>
@@ -407,6 +567,8 @@
         let currentPage = 1;
         const itemsPerPage = 20;
         let allQuestionsItems = [];
+
+        console.log('✅ Firebase initialized (Realtime Database)');
 
         const toastEl = document.getElementById('toast');
         let toastTimeout = null;
@@ -474,13 +636,13 @@
             if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); navigateTo('home'); return; }
         }
 
-        // ====== دوال إعادة تعيين النماذج (محسّنة) ======
+        // ====== دوال إعادة تعيين النماذج (المحسّنة) ======
         function resetQuestionForm() {
             const form = document.getElementById('questionForm');
             form.reset();
+            // إعادة تعيين الحقول الأخرى إذا لزم الأمر
             document.getElementById('questionSuccess').style.display = 'none';
             document.getElementById('questionFormContainer').style.display = 'block';
-            // إعادة تعيين أي حالة إضافية
             showToast('تم إعادة تعيين النموذج، يمكنك طرح سؤال جديد');
         }
 
@@ -1082,7 +1244,7 @@
             } catch (err) { errorDiv.textContent = err.message; showToast(err.message, true); }
         });
 
-        // نموذج الأسئلة
+        // نموذج الأسئلة (مع زر "سؤال آخر" نشط)
         document.getElementById('questionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!currentUser) { showToast('يجب تسجيل الدخول', true); return; }
@@ -1102,6 +1264,7 @@
                 });
                 addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0,30)}..."`);
                 addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
+                // إخفاء النموذج وإظهار رسالة النجاح
                 document.getElementById('questionFormContainer').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم الإرسال');

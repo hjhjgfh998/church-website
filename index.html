@@ -21,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط (كما هي سابقاً مع تحسينات بسيطة) ====== */
+        /* ====== جميع الأنماط ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1492,7 +1492,7 @@
     </footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت مع التعديلات النهائية ====== -->
+    <!-- ====== جافاسكريبت النهائي ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -1628,8 +1628,6 @@
             if (pageId === 'announcements') loadAnnouncements();
             if (pageId === 'my-questions' && currentUser) {
                 startMyQuestionsListener();
-                // تأكد من بدء مستمع الإشعارات أيضاً
-                star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
             }
             if (pageId === 'questions') {
                 if (!currentUser) {
@@ -1735,7 +1733,7 @@
             }
         }
 
-        // ====== إدارة المستخدمين ======
+        // ====== إدارة المستخدمين (مع بدء مستمع الإشعارات فوراً) ======
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
@@ -1768,7 +1766,8 @@
                         window.navigateTo('admin');
                     }
                 } else {
-                    // مستخدم عادي
+                    // مستخدم عادي - نبدأ المستمع فوراً بغض النظر عن الصفحة
+                    console.log('👤 مستخدم عادي: بدء مستمع الإشعارات فوراً');
                     userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
                     userAuthBtn.style.display = 'inline-block';
                     adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
@@ -1777,9 +1776,10 @@
                     myQuestionsLink.style.display = 'inline-block';
                     notifBell.style.display = 'inline-block';
 
-                    // === بدء مستمعي الإشعارات للمستخدم فوراً ===
+                    // ====== أهم تعديل: بدء مستمع الإشعارات فوراً ======
                     star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
-                    // بدء مستمع أسئلة المستخدم فقط إذا كانت الصفحة نشطة (أو يمكن بدئه دائماً)
+
+                    // بدء مستمع أسئلة المستخدم فقط إذا كانت الصفحة نشطة
                     if (document.getElementById('page-my-questions').classList.contains('active')) {
                         startMyQuestionsListener();
                     }
@@ -1793,6 +1793,7 @@
                 }
             } else {
                 // لا يوجد مستخدم
+                console.log('🚫 لا يوجد مستخدم - إيقاف المستمعات');
                 currentUserId = null;
                 isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
@@ -2037,6 +2038,7 @@
             }
 
             if (!currentUser || isAdmin) {
+                console.log('🛑 إيقاف مستمع الإشعارات (لا يوجد مستخدم أو أدمن)');
                 userNotifications = [];
                 updateUserNotifUI();
                 return;
@@ -2092,6 +2094,8 @@
             const bell = document.getElementById('notifBell');
             const list = document.getElementById('userNotifList');
             const unread = userNotifications.filter(n => !n.read).length;
+
+            console.log(`🔄 تحديث واجهة الإشعارات: ${userNotifications.length} إشعار، ${unread} غير مقروء`);
 
             if (currentUser && !isAdmin) {
                 bell.style.display = 'inline-block';
@@ -2223,14 +2227,6 @@
                 return;
             }
             list.innerHTML = notifications.map(n => {
-                // تعديل الرسالة لإخفاء الاسم إذا كان مجهولاً
-                let displayMessage = n.message;
-                if (n.type === 'answer' && n.message.includes('للمستخدم')) {
-                    // إذا كانت رسالة إجابة وتحتوي على اسم، نستبدل الاسم بـ "مجهول" إذا كان السؤال مجهولاً
-                    // لكننا لا نعرف هنا إذا كان السؤال مجهولاً، لذا نعتمد على ما تم إرساله في الرسالة.
-                    // يمكن تحسين ذلك بإرسال معلومات إضافية في الإشعار، لكننا سنفترض أن الرسالة تحتوي على الاسم ونقوم بإخفائه.
-                    // الحل الأسهل: عند إنشاء الإشعار، إذا كان السؤال مجهولاً، نضع "مستخدم مجهول" بدلاً من الاسم.
-                }
                 return `
                     <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
                         <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
@@ -2284,7 +2280,7 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إضافة إشعار للمستخدم عند الإجابة (مع إخفاء الاسم المجهول) ======
+        // ====== إضافة إشعار للمستخدم عند الإجابة ======
         async function addUserNotification(userId, message, questionId) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
@@ -2368,7 +2364,6 @@
                     published: false,
                     createdAt: serverTimestamp()
                 });
-                // إشعار للأدمن مع إخفاء الاسم إذا كان مجهولاً
                 const displayName = anonymous ? 'مستخدم مجهول' : (currentUser.displayName || currentUser.email);
                 await addNotification(`📩 سؤال جديد من ${displayName}: ${details.substring(0, 50)}...`, 'question');
                 document.getElementById('questionForm').reset();
@@ -2595,7 +2590,7 @@
             } catch (e) { console.error('Stats error:', e); }
         }
 
-        // ====== تحميل الأسئلة مع ترقيم الصفحات وإخفاء الاسم المجهول للأدمن ======
+        // ====== تحميل الأسئلة ======
         window.loadQuestions = async function() {
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
             const typeFilter = document.getElementById('adminFilterType').value;
@@ -2719,7 +2714,7 @@
             renderQuestionsPage();
         };
 
-        // ====== نافذة الإجابة مع إرسال إشعار للمستخدم وإخفاء الاسم المجهول للأدمن ======
+        // ====== نافذة الإجابة ======
         const modal = document.getElementById('answerModal');
         const modalAnswer = document.getElementById('modalAnswer');
         const modalTitle = document.getElementById('modalTitle');
@@ -2772,7 +2767,6 @@
                         `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
                         editingQuestionId
                     );
-                    // إشعار للأدمن مع إخفاء الاسم إذا كان مجهولاً
                     const displayName = questionData.anonymous ? 'مستخدم مجهول' : (questionData.userName || 'مستخدم');
                     await addNotification(`✅ تمت الإجابة على سؤال لـ ${displayName}`, 'answer');
                     showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
@@ -3012,7 +3006,6 @@
         setTimeout(() => {
             if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
                 startMyQuestionsListener();
-                star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
             }
             if (document.getElementById('page-questions').classList.contains('active')) {
                 if (!currentUser) {
@@ -3032,6 +3025,7 @@
         console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة نهائياً');
         console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');
         console.log('🕵️ إظهار اسم المستخدم للأدمن يظهر فقط إذا لم يكن السؤال مجهولاً، والإشعارات أيضاً تظهر "مستخدم مجهول"');
+        console.log('🔔 مستمع الإشعارات يبدأ فور تسجيل الدخول بغض النظر عن الصفحة المفتوحة');
     </script>
 
 </body>

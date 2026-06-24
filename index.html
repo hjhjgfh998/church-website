@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -19,7 +18,7 @@
         }
     </script>
     <style>
-        /* جميع الأنماط كاملة (محافظة على الألوان الأصلية) */
+        /* ===== جميع الأنماط كما في السابق، مع تحسينات للوضوح ===== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -401,6 +400,7 @@
             </div>
         </section>
 
+        <!-- لوحة التحكم (للأدمن) -->
         <section id="page-admin" class="page">
             <div id="adminDashboard" style="display:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem;">
@@ -941,6 +941,7 @@
                         <td>${hasAnswer ? (isPublished ? '✅ منشور' : '⏳ غير منشور') : '⏳ غير مجاب'}</td>
                         <td class="actions">
                             ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')"><i class="fas fa-reply"></i> إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
+                            <!-- زر النشر يظهر دائماً -->
                             <button class="btn-publish" onclick="window.publishQuestion('${q.id}')"><i class="fas fa-globe"></i> ${isPublished ? 'إخفاء' : 'نشر'}</button>
                             <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')"><i class="fas fa-trash"></i> حذف</button>
                         </td>
@@ -1429,4 +1430,3 @@
     </script>
 </body>
 </html>
-```

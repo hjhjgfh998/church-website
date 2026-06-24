@@ -1492,7 +1492,7 @@
     </footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت النهائي ====== -->
+    <!-- ====== جافاسكريبت النهائي (مع إصلاح إشعارات المستخدم) ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -1733,7 +1733,7 @@
             }
         }
 
-        // ====== إدارة المستخدمين (مع بدء مستمع الإشعارات فوراً) ======
+        // ====== إدارة المستخدمين ======
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
@@ -1749,7 +1749,6 @@
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
-                    // إلغاء مستمعي المستخدم إن وجدا
                     if (myQuestionsUnsubscribe) {
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
@@ -1766,8 +1765,6 @@
                         window.navigateTo('admin');
                     }
                 } else {
-                    // مستخدم عادي - نبدأ المستمع فوراً بغض النظر عن الصفحة
-                    console.log('👤 مستخدم عادي: بدء مستمع الإشعارات فوراً');
                     userAuthBtn.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <i class="fas fa-sign-out-alt"></i>`;
                     userAuthBtn.style.display = 'inline-block';
                     adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> أدمن';
@@ -1776,10 +1773,9 @@
                     myQuestionsLink.style.display = 'inline-block';
                     notifBell.style.display = 'inline-block';
 
-                    // ====== أهم تعديل: بدء مستمع الإشعارات فوراً ======
+                    // ====== بدء مستمع الإشعارات فوراً ======
                     star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
 
-                    // بدء مستمع أسئلة المستخدم فقط إذا كانت الصفحة نشطة
                     if (document.getElementById('page-my-questions').classList.contains('active')) {
                         startMyQuestionsListener();
                     }
@@ -1792,8 +1788,6 @@
                     }
                 }
             } else {
-                // لا يوجد مستخدم
-                console.log('🚫 لا يوجد مستخدم - إيقاف المستمعات');
                 currentUserId = null;
                 isAdmin = false;
                 userAuthBtn.innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
@@ -1826,7 +1820,6 @@
                         .id === 'page-admin-login')) {
                     window.navigateTo('home');
                 }
-                // إعادة ضبط نموذج تسجيل الدخول
                 isLoginMode = true;
                 updateAuthUI();
             }
@@ -1888,10 +1881,9 @@
             }
         });
 
-        // استدعاء تحديث الواجهة بعد تحميل الصفحة
         updateAuthUI();
 
-        // ====== تسجيل دخول الأدمن (بدون بيانات مسبقة) ======
+        // ====== تسجيل دخول الأدمن ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminLoginEmail').value.trim();
@@ -2029,9 +2021,8 @@
             }
         }
 
-        // ====== مستمع إشعارات المستخدم (محسّن مع إعادة محاولة) ======
+        // ====== مستمع إشعارات المستخدم (محسّن - بدون orderBy) ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
-            // إلغاء الاشتراك السابق
             if (userNotifUnsubscribe) {
                 userNotifUnsubscribe();
                 userNotifUnsubscribe = null;
@@ -2047,10 +2038,10 @@
             console.log('🔔 بدء مستمع إشعارات المستخدم لـ:', currentUser.uid);
 
             try {
+                // إزالة orderBy لتجنب أخطاء الفهارس
                 const q = query(
                     collection(db, 'userNotifications'),
-                    where('userId', '==', currentUser.uid),
-                    orderBy('createdAt', 'desc')
+                    where('userId', '==', currentUser.uid)
                 );
 
                 userNotifUnsubscribe = onSnapshot(q, (snapshot) => {
@@ -2060,9 +2051,14 @@
                         const data = doc.data();
                         userNotifications.push({ id: doc.id, ...data });
                     });
+                    // ترتيب يدوي تنازلي حسب createdAt (إذا كان موجوداً)
+                    userNotifications.sort((a, b) => {
+                        const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                        const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                        return db - da;
+                    });
                     updateUserNotifUI();
 
-                    // عرض إشعار منبثق للجديد
                     snapshot.docChanges().forEach(change => {
                         if (change.type === 'added') {
                             const data = change.doc.data();
@@ -2074,7 +2070,6 @@
                     });
                 }, (error) => {
                     console.warn('❌ خطأ في مستمع إشعارات المستخدم:', error);
-                    // محاولة إعادة الاتصال بعد 5 ثواني
                     setTimeout(() => {
                         if (userNotifUnsubscribe) {
                             userNotifUnsubscribe();
@@ -2193,7 +2188,7 @@
             }, 300);
         };
 
-        // ====== الإشعارات (للأدمن) مع إخفاء الاسم المجهول ======
+        // ====== الإشعارات (للأدمن) ======
         function listenToNotifications() {
             if (!isAdmin) return;
             onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), (snapshot) => {
@@ -2226,16 +2221,14 @@
                 list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
                 return;
             }
-            list.innerHTML = notifications.map(n => {
-                return `
-                    <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                        <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
-                        <span class="notif-text">${n.message}</span>
-                        <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
-                        ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
-                    </div>
-                `;
-            }).join('');
+            list.innerHTML = notifications.map(n => `
+                <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
+                    <span class="notif-text">${n.message}</span>
+                    <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                </div>
+            `).join('');
         }
 
         window.markNotifRead = async function(id) {
@@ -2280,7 +2273,7 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إضافة إشعار للمستخدم عند الإجابة ======
+        // ====== إضافة إشعار للمستخدم ======
         async function addUserNotification(userId, message, questionId) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
@@ -2300,7 +2293,7 @@
             }
         }
 
-        // ====== آية اليوم (تتغير تلقائياً) ======
+        // ====== آية اليوم ======
         async function loadDailyVerse() {
             const display = document.getElementById('dailyVerseDisplay');
             const refDisplay = document.getElementById('dailyVerseRef');
@@ -2760,7 +2753,6 @@
                     answer: answer
                 });
 
-                // إرسال إشعار للمستخدم
                 if (questionData && questionData.userId) {
                     await addUserNotification(
                         questionData.userId,

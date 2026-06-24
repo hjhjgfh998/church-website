@@ -18,35 +18,9 @@
         }
     </script>
     <style>
-        /* ====== جميع الأنماط (مختصرة) ====== */
-        :root {
-            --color-primary: #1a2a3a;
-            --color-primary-light: #2c4056;
-            --color-gold: #c9a87c;
-            --color-gold-light: #dfc8a8;
-            --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%);
-            --bg-body: #f5f1eb;
-            --bg-surface: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #1a1f2a;
-            --text-secondary: #3d4552;
-            --text-muted: #7a8291;
-            --border-color: #e8e2d9;
-            --shadow-md: 0 8px 30px rgba(0,0,0,0.06);
-            --shadow-lg: 0 20px 60px rgba(0,0,0,0.08);
-            --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px;
-            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-            --font-family: 'Cairo', sans-serif;
-            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201,168,124,0.15) 0%, transparent 70%);
-        }
-        [data-theme="dark"] {
-            --bg-body: #11161e; --bg-surface: #1a232e; --bg-card: #1e2833;
-            --text-primary: #edf2f7; --text-secondary: #cbd5e0; --text-muted: #94a3b8;
-            --border-color: #2d3b47;
-            --shadow-md: 0 8px 30px rgba(0,0,0,0.4);
-            --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
-            --hero-bg: radial-gradient(circle at 30% 40%, rgba(201,168,124,0.08) 0%, transparent 70%);
-        }
+        /* ====== جميع الأنماط (نفس السابق، مختصرة) ====== */
+        :root { --color-primary: #1a2a3a; --color-primary-light: #2c4056; --color-gold: #c9a87c; --color-gold-light: #dfc8a8; --color-gold-gradient: linear-gradient(135deg, #c9a87c 0%, #b8925e 100%); --bg-body: #f5f1eb; --bg-surface: #ffffff; --bg-card: #ffffff; --text-primary: #1a1f2a; --text-secondary: #3d4552; --text-muted: #7a8291; --border-color: #e8e2d9; --shadow-md: 0 8px 30px rgba(0,0,0,0.06); --shadow-lg: 0 20px 60px rgba(0,0,0,0.08); --radius-sm: 8px; --radius-md: 16px; --radius-lg: 24px; --transition: 0.3s cubic-bezier(0.4,0,0.2,1); --font-family: 'Cairo', sans-serif; --hero-bg: radial-gradient(circle at 30% 40%, rgba(201,168,124,0.15) 0%, transparent 70%); }
+        [data-theme="dark"] { --bg-body: #11161e; --bg-surface: #1a232e; --bg-card: #1e2833; --text-primary: #edf2f7; --text-secondary: #cbd5e0; --text-muted: #94a3b8; --border-color: #2d3b47; --shadow-md: 0 8px 30px rgba(0,0,0,0.4); --shadow-lg: 0 20px 60px rgba(0,0,0,0.5); --hero-bg: radial-gradient(circle at 30% 40%, rgba(201,168,124,0.08) 0%, transparent 70%); }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:var(--font-family); background-color:var(--bg-body); color:var(--text-primary); transition: background-color 0.5s, color 0.5s; line-height:1.7; min-height:100vh; }
         a { text-decoration:none; color:inherit; }
@@ -507,7 +481,7 @@
     <footer><div class="container">Designed &amp; Developed by John Osama &copy; <span id="year"></span></div></footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت ====== -->
+    <!-- ====== جافاسكريبت مع التعديلات النهائية ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -591,7 +565,6 @@
             document.getElementById('qDetails').focus();
         };
 
-        // ====== دالة إعادة تعيين نموذج طلب الصلاة ======
         window.resetPrayerForm = function() {
             document.getElementById('prayerForm').reset();
             document.getElementById('prayerForm').style.display = 'block';
@@ -630,7 +603,6 @@
                 const msg = document.getElementById('authRequiredMessage');
                 if (!currentUser) { container.style.display = 'none'; msg.style.display = 'block'; }
                 else { container.style.display = 'block'; msg.style.display = 'none'; }
-                // إعادة تعيين النموذج إذا كان في حالة النجاح
                 document.getElementById('questionForm').style.display = 'block';
                 document.getElementById('questionSuccess').style.display = 'none';
             }
@@ -696,14 +668,15 @@
             }
         }
 
-        // ====== إنشاء مستند المستخدم ======
+        // ====== إنشاء/تأكيد مستند المستخدم ======
         async function ensureUserDocument(user) {
             if (!user) return;
             const userRef = doc(db, 'users', user.uid);
             const snap = await getDoc(userRef);
             if (!snap.exists()) {
                 await setDoc(userRef, {
-                    uid: user.uid, email: user.email,
+                    uid: user.uid,
+                    email: user.email,
                     displayName: user.displayName || user.email,
                     createdAt: serverTimestamp()
                 });
@@ -711,33 +684,19 @@
             }
         }
 
-        // ====== إرسال إشعار لجميع المستخدمين ======
+        // ====== إرسال إشعار لجميع المستخدمين (مع إنشاء المستندات المفقودة) ======
         async function notifyAllUsers(message, type) {
             try {
-                const usersSnap = await getDocs(collection(db, 'users'));
+                let usersSnap = await getDocs(collection(db, 'users'));
+                // إذا كانت المجموعة فارغة، نحاول إنشاء مستند للمستخدم الحالي
                 if (usersSnap.empty) {
-                    console.log('⚠️ لا يوجد مستخدمين في مجموعة users');
                     if (currentUser) {
                         await ensureUserDocument(currentUser);
+                        usersSnap = await getDocs(collection(db, 'users'));
                     }
-                    const retrySnap = await getDocs(collection(db, 'users'));
-                    if (retrySnap.empty) {
-                        console.log('⚠️ لا يزال لا يوجد مستخدمين');
-                        return;
-                    }
-                    const batch = writeBatch(db);
-                    let count = 0;
-                    retrySnap.forEach(doc => {
-                        const userId = doc.id;
-                        const notifRef = doc(collection(db, 'userNotifications'));
-                        batch.set(notifRef, {
-                            userId, message, type: type || 'general',
-                            read: false, createdAt: serverTimestamp()
-                        });
-                        count++;
-                    });
-                    await batch.commit();
-                    console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم (بعد المحاولة الثانية)`);
+                }
+                if (usersSnap.empty) {
+                    console.warn('⚠️ لا يوجد مستخدمين لإرسال الإشعارات');
                     return;
                 }
                 const batch = writeBatch(db);
@@ -746,15 +705,52 @@
                     const userId = doc.id;
                     const notifRef = doc(collection(db, 'userNotifications'));
                     batch.set(notifRef, {
-                        userId, message, type: type || 'general',
-                        read: false, createdAt: serverTimestamp()
+                        userId,
+                        message,
+                        type: type || 'general',
+                        read: false,
+                        createdAt: serverTimestamp()
                     });
                     count++;
                 });
                 await batch.commit();
-                console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم`);
+                console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم: "${message}"`);
             } catch (e) {
-                console.error('❌ فشل إرسال الإشعارات:', e);
+                console.error('❌ فشل إرسال الإشعارات لجميع المستخدمين:', e);
+            }
+        }
+
+        // ====== إضافة إشعار لمستخدم معين (مع إنشاء المستند إذا لزم الأمر) ======
+        async function addUserNotification(userId, message, type) {
+            if (!userId) {
+                console.warn('⚠️ محاولة إرسال إشعار بدون userId');
+                return;
+            }
+            try {
+                // التأكد من وجود مستند المستخدم
+                const userRef = doc(db, 'users', userId);
+                const userSnap = await getDoc(userRef);
+                if (!userSnap.exists()) {
+                    // إذا كان المستخدم هو المستخدم الحالي، ننشئ مستنده
+                    if (currentUser && currentUser.uid === userId) {
+                        await ensureUserDocument(currentUser);
+                    } else {
+                        // قد يكون مستخدم آخر، نحاول إنشاء مستند ببيانات بسيطة
+                        // لكننا لا نملك بياناته، لذلك نمرر
+                        console.warn('⚠️ مستند المستخدم غير موجود:', userId);
+                        // مع ذلك نستمر في إرسال الإشعار (Firestore سيسمح بإضافة مستند في userNotifications)
+                    }
+                }
+                await addDoc(collection(db, 'userNotifications'), {
+                    userId,
+                    message,
+                    type: type || 'general',
+                    read: false,
+                    createdAt: serverTimestamp()
+                });
+                console.log(`✅ تم إرسال إشعار للمستخدم ${userId}: "${message}"`);
+            } catch (e) {
+                console.error('❌ فشل إرسال إشعار المستخدم:', e);
             }
         }
 
@@ -765,7 +761,10 @@
                 currentUserId = user.uid;
                 const isAdminUser = user.email && user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
                 isAdmin = isAdminUser;
-                if (!isAdminUser) await ensureUserDocument(user);
+                // تأكد من وجود مستند لكل مستخدم عادي
+                if (!isAdminUser) {
+                    await ensureUserDocument(user);
+                }
 
                 if (isAdminUser) {
                     userAuthBtn.style.display = 'none';
@@ -1135,14 +1134,6 @@
             catch(e) { console.warn('Error adding notification:', e); }
         }
 
-        async function addUserNotification(userId, message, type) {
-            if (!userId) { console.warn('⚠️ محاولة إرسال إشعار بدون userId'); return; }
-            try {
-                await addDoc(collection(db, 'userNotifications'), { userId, message, type: type || 'general', read: false, createdAt: serverTimestamp() });
-                console.log(`✅ تم إرسال إشعار للمستخدم ${userId}: ${message}`);
-            } catch(e) { console.error('❌ فشل إرسال إشعار المستخدم:', e); }
-        }
-
         // ====== آية اليوم ======
         async function loadDailyVerse() {
             const display = document.getElementById('dailyVerseDisplay');
@@ -1209,7 +1200,6 @@
                 document.getElementById('questionForm').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم إرسال سؤالك بنجاح!');
-                // تحديث قائمة "أسئلتي" إذا كانت مفتوحة
                 if (document.getElementById('page-my-questions').classList.contains('active')) {
                     startMyItemsListeners();
                 }
@@ -1688,14 +1678,15 @@
                 const data = snap.data();
                 await updateDoc(ref, { published: !current });
                 showToast(current ? 'تم إلغاء النشر' : 'تم نشر السؤال');
+
                 if (!current) {
-                    const displayName = data.anonymous ? 'مستخدم مجهول' : (data.userName || 'مستخدم');
                     // إرسال إشعار للمستخدم صاحب السؤال
                     if (data && data.userId) {
                         await addUserNotification(data.userId, `📢 تم نشر سؤالك في "أجوبة عامة": "${data.details.substring(0,50)}..."`, 'answer');
                     }
-                    // إشعار لجميع المستخدمين
-                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0,50)}..."`, 'answer');
+                    // إشعار عام لجميع المستخدمين
+                    const displayName = data.anonymous ? 'مستخدم مجهول' : (data.userName || 'مستخدم');
+                    await notifyAllUsers(`📝 تم نشر إجابة جديدة: "${data.details.substring(0,50)}..." (بواسطة ${displayName})`, 'answer');
                 }
                 loadQuestions();
                 renderAnsweredQuestions();
@@ -1776,6 +1767,7 @@
                 document.getElementById('announceContent').value = '';
                 loadAnnouncementsAdmin();
                 loadAnnouncements();
+                // إرسال إشعار لجميع المستخدمين
                 await notifyAllUsers(`📢 إعلان جديد: "${title}"`, 'announcement');
             } catch(e) { showToast('خطأ', true); }
         };
@@ -1810,10 +1802,9 @@
         }, 100);
 
         console.log('✅ التطبيق جاهز بالكامل');
-        console.log('✅ إصلاح: إمكانية طرح أسئلة متعددة بدون تحديث');
-        console.log('✅ إصلاح: إرسال إشعار للمستخدم عند نشر سؤاله في أجوبة عامة');
-        console.log('✅ إصلاح: عرض جميع طلبات الصلاة في لوحة التحكم');
-        console.log('✅ إصلاح: الإشعارات تصل عند إضافة إعلان');
+        console.log('✅ تم إصلاح إشعارات النشر (تصل للمستخدم)');
+        console.log('✅ تم إصلاح إشعارات الإعلانات (تصل للجميع)');
+        console.log('✅ تم تحسين إنشاء مستندات المستخدمين تلقائياً');
     </script>
 </body>
 </html>

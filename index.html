@@ -18,7 +18,6 @@
         }
     </script>
     <style>
-        /* ====== جميع الأنماط (نفس السابق، مختصرة لتوفير المساحة) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1129,7 +1128,6 @@
         </div>
     </header>
     <main class="container">
-        <!-- ====== الرئيسية ====== -->
         <section id="page-home" class="page active">
             <div class="hero">
                 <div class="hero-content">
@@ -1147,7 +1145,6 @@
                 <button class="btn btn-primary" onclick="window.navigateTo('questions')"><i class="fas fa-pen"></i> اسأل سؤالك الآن</button>
             </div>
         </section>
-        <!-- ====== تسجيل الدخول/إنشاء حساب ====== -->
         <section id="page-user-auth" class="page">
             <div class="login-box">
                 <h2 id="authTitle"><i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
@@ -1162,7 +1159,6 @@
                 </form>
             </div>
         </section>
-        <!-- ====== الأسئلة ====== -->
         <section id="page-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
             <div id="questionFormContainer">
@@ -1174,14 +1170,12 @@
                             <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
                             <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول (لن يظهر اسمك)</label>
                         </div>
-                        <button type="submit" class="btn" style="width:100%;" id="submitQuestionBtn"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
+                        <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
                     </form>
                     <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                         <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                         <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
-                        <button class="btn btn-primary mt-4" id="askAnotherBtn" onclick="window.resetQuestionForm()">
-                            <i class="fas fa-plus"></i> اسأل سؤال آخر
-                        </button>
+                        <button class="btn btn-primary mt-4" onclick="window.resetQuestionForm()"><i class="fas fa-plus"></i> اسأل سؤال آخر</button>
                     </div>
                 </div>
             </div>
@@ -1191,7 +1185,6 @@
                 <button class="btn btn-primary mt-2" onclick="window.navigateTo('user-auth')">تسجيل الدخول / إنشاء حساب</button>
             </div>
         </section>
-        <!-- ====== أسئلتي وطلباتي ====== -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
             <div class="refresh-container">
@@ -1200,7 +1193,6 @@
             </div>
             <div id="myItemsList"></div>
         </section>
-        <!-- ====== طلبات الصلاة ====== -->
         <section id="page-prayer" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">طلبات الصلاة</h2>
             <div class="card" style="max-width:600px; margin:0 auto;">
@@ -1219,18 +1211,15 @@
                 </div>
             </div>
         </section>
-        <!-- ====== أجوبة عامة ====== -->
         <section id="page-answered" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
             <div class="search-filter"><input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" /></div>
             <div id="answeredList"></div>
         </section>
-        <!-- ====== الإعلانات ====== -->
         <section id="page-announcements" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">الإعلانات والأنشطة</h2>
             <div id="announcementsList"></div>
         </section>
-        <!-- ====== من نحن ====== -->
         <section id="page-about" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">من نحن</h2>
             <div class="card">
@@ -1240,7 +1229,6 @@
                 <ul style="padding-right:20px;"><li>اجتماعات العبادة الأسبوعية</li><li>اجتماعات الشباب والطلائع</li><li>خدمة التعليم المسيحي</li><li>الخدمة الاجتماعية والزيارات</li></ul>
             </div>
         </section>
-        <!-- ====== التواصل ====== -->
         <section id="page-contact" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">تواصل معنا</h2>
             <div class="text-center card" style="max-width:600px; margin:0 auto;">
@@ -1250,7 +1238,6 @@
                 <div class="social-links"><a href="#" id="socialFacebook" target="_blank"><i class="fab fa-facebook"></i></a><a href="#" id="socialInstagram" target="_blank"><i class="fab fa-instagram"></i></a></div>
             </div>
         </section>
-        <!-- ====== تسجيل دخول الأدمن ====== -->
         <section id="page-admin-login" class="page">
             <div class="login-box">
                 <h2><i class="fas fa-lock" style="color:var(--color-gold);"></i> تسجيل دخول الأدمن</h2>
@@ -1266,7 +1253,6 @@
                 </div>
             </div>
         </section>
-        <!-- ====== لوحة التحكم ====== -->
         <section id="page-admin" class="page">
             <div id="adminDashboard" style="display:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:1.5rem;">
@@ -1276,7 +1262,6 @@
                         <button id="adminLogoutBtn" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt"></i> خروج</button>
                     </div>
                 </div>
-                <!-- الإشعارات -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> الإشعارات <span id="notifCount" style="color:var(--color-gold); font-weight:700;"></span></h3>
                     <div class="card">
@@ -1287,14 +1272,12 @@
                         </div>
                     </div>
                 </div>
-                <!-- الإحصائيات -->
                 <div class="stats-grid" id="statsContainer">
                     <div class="stat-card"><div class="number" id="statTotal">0</div><div class="label">إجمالي الأسئلة</div></div>
                     <div class="stat-card"><div class="number" id="statMonth">0</div><div class="label">هذا الشهر</div></div>
                     <div class="stat-card"><div class="number" id="statPrayers">0</div><div class="label">طلبات الصلاة</div></div>
                     <div class="stat-card"><div class="number" id="statTopType">-</div><div class="label">أكثر نوع شيوعًا</div></div>
                 </div>
-                <!-- وسائل التواصل -->
                 <div class="admin-section">
                     <h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> إدارة وسائل التواصل</h3>
                     <div class="card">
@@ -1306,7 +1289,6 @@
                         <button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
                     </div>
                 </div>
-                <!-- تعديل نبذة "من نحن" -->
                 <div class="admin-section">
                     <h3><i class="fas fa-info-circle" style="color:var(--color-gold);"></i> تعديل نبذة "من نحن"</h3>
                     <div class="card">
@@ -1314,7 +1296,6 @@
                         <button class="btn btn-success btn-sm" onclick="window.saveAbout()"><i class="fas fa-save"></i> حفظ النبذة</button>
                     </div>
                 </div>
-                <!-- الأسئلة الواردة -->
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-question-circle" style="color:var(--color-gold);"></i> الأسئلة الواردة <span id="questionsCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
@@ -1337,7 +1318,6 @@
                         <button class="btn btn-sm btn-outline" id="nextPageBtn" onclick="window.changePage(1)">التالي <i class="fas fa-chevron-left"></i></button>
                     </div>
                 </div>
-                <!-- طلبات الصلاة -->
                 <div class="admin-section">
                     <div class="section-header">
                         <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة <span id="prayersCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
@@ -1349,7 +1329,6 @@
                     </div>
                     <div id="adminPrayersList"></div>
                 </div>
-                <!-- إدارة الإعلانات -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bullhorn" style="color:var(--color-gold);"></i> إدارة الإعلانات</h3>
                     <div class="card mb-4">
@@ -1358,7 +1337,6 @@
                     </div>
                     <div id="adminAnnouncementsList"></div>
                 </div>
-                <!-- تعديل آية اليوم -->
                 <div class="admin-section">
                     <h3><i class="fas fa-bible" style="color:var(--color-gold);"></i> تعديل آية اليوم</h3>
                     <div style="display:flex; gap:12px; flex-wrap:wrap;"><input type="text" id="verseText" placeholder="نص الآية" style="flex:3;" /><input type="text" id="verseRef" placeholder="المرجع (مثال: يوحنا 14:6)" style="flex:2;" /><button class="btn btn-primary" onclick="window.updateDailyVerse()"><i class="fas fa-save"></i> تحديث</button></div>
@@ -1367,7 +1345,6 @@
         </section>
     </main>
 
-    <!-- ====== نافذة إشعارات المستخدم ====== -->
     <div id="userNotifModal" class="modal">
         <div class="modal-content" style="max-width:650px;">
             <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
@@ -1380,7 +1357,6 @@
         </div>
     </div>
 
-    <!-- ====== نافذة الإجابة على سؤال ====== -->
     <div id="answerModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle">كتابة الإجابة</h3>
@@ -1389,7 +1365,6 @@
         </div>
     </div>
 
-    <!-- ====== نافذة الرد على طلب صلاة ====== -->
     <div id="prayerReplyModal" class="modal">
         <div class="modal-content">
             <h3 id="prayerModalTitle">الرد على طلب الصلاة</h3>
@@ -1400,9 +1375,6 @@
 
     <footer><div class="container">Designed &amp; Developed by John Osama &copy; <span id="year"></span></div></footer>
 
-    <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت - استخدام Realtime Database ====== -->
-    <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
         import { getDatabase, ref, set, push, get, update, remove, onValue, query, orderByChild, equalTo } from "firebase/database";
@@ -1426,15 +1398,19 @@
             .then(() => console.log('✅ تم ضبط استمرار المصادقة محلياً'))
             .catch(err => console.warn('⚠️ خطأ في ضبط استمرار المصادقة:', err));
 
-        // ====== ثوابت ======
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
 
-        // ====== متغيرات ======
-        let currentUser = null, currentUserId = null, isAdmin = false;
-        let notifications = [], userNotifications = [];
-        let editingQuestionId = null, editingPrayerId = null;
-        let myQuestionsUnsubscribe = null, myPrayersUnsubscribe = null;
-        let userNotifUnsubscribe = null, prayersUnsubscribe = null;
+        let currentUser = null,
+            currentUserId = null,
+            isAdmin = false;
+        let notifications = [],
+            userNotifications = [];
+        let editingQuestionId = null,
+            editingPrayerId = null;
+        let myQuestionsUnsubscribe = null,
+            myPrayersUnsubscribe = null;
+        let userNotifUnsubscribe = null,
+            prayersUnsubscribe = null;
         let currentPage = 1;
         const itemsPerPage = 20;
         let allQuestionsItems = [];
@@ -1444,6 +1420,7 @@
 
         const toastEl = document.getElementById('toast');
         let toastTimeout = null;
+
         function showToast(msg, isError = false) {
             toastEl.textContent = msg;
             toastEl.style.borderRightColor = isError ? '#c0392b' : 'var(--color-gold)';
@@ -1452,7 +1429,6 @@
             toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4000);
         }
 
-        // ====== دوال إعادة تعيين النماذج ======
         window.resetQuestionForm = function() {
             document.getElementById('questionForm').reset();
             document.getElementById('questionForm').style.display = 'block';
@@ -1469,7 +1445,6 @@
             document.getElementById('prayerText').focus();
         };
 
-        // ====== الوضع الليلي ======
         const themeToggle = document.getElementById('themeToggle');
         const currentTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', currentTheme);
@@ -1482,7 +1457,6 @@
             themeToggle.innerHTML = next === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         });
 
-        // ====== التنقل ======
         window.navigateTo = function(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             const target = document.getElementById('page-' + pageId);
@@ -1497,8 +1471,9 @@
             if (pageId === 'questions') {
                 const container = document.getElementById('questionFormContainer');
                 const msg = document.getElementById('authRequiredMessage');
-                if (!currentUser) { container.style.display = 'none'; msg.style.display = 'block'; }
-                else { container.style.display = 'block'; msg.style.display = 'none'; }
+                if (!currentUser) { container.style.display = 'none';
+                    msg.style.display = 'block'; } else { container.style.display = 'block';
+                    msg.style.display = 'none'; }
                 document.getElementById('questionForm').style.display = 'block';
                 document.getElementById('questionSuccess').style.display = 'none';
             }
@@ -1525,10 +1500,14 @@
             if (currentUser && !isAdmin) {
                 signOut(auth).then(() => {
                     showToast('تم تسجيل الخروج');
-                    if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
-                    if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
-                    if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
-                    if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
+                    if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe();
+                        myQuestionsUnsubscribe = null; }
+                    if (myPrayersUnsubscribe) { myPrayersUnsubscribe();
+                        myPrayersUnsubscribe = null; }
+                    if (userNotifUnsubscribe) { userNotifUnsubscribe();
+                        userNotifUnsubscribe = null; }
+                    if (prayersUnsubscribe) { prayersUnsubscribe();
+                        prayersUnsubscribe = null; }
                     userNotifications = [];
                     updateUserNotifUI();
                     document.getElementById('myItemsList').innerHTML = '<p class="no-questions">تم تسجيل الخروج</p>';
@@ -1543,8 +1522,8 @@
             else window.navigateTo('admin-login');
         });
 
-        // ====== واجهة تسجيل الدخول ======
         let isLoginMode = true;
+
         function updateAuthUI() {
             const title = document.getElementById('authTitle');
             const subtitle = document.getElementById('authSubtitle');
@@ -1566,7 +1545,6 @@
             }
         }
 
-        // ====== إنشاء مستند المستخدم (في Realtime Database) ======
         async function ensureUserDocument(user) {
             if (!user) return;
             const userRef = ref(db, `users/${user.uid}`);
@@ -1582,7 +1560,6 @@
             }
         }
 
-        // ====== التحقق من صلاحية الأدمن ======
         async function checkAdmin(uid) {
             if (!uid) return false;
             try {
@@ -1594,7 +1571,6 @@
             }
         }
 
-        // ====== إرسال إشعار لجميع المستخدمين (في Realtime Database) ======
         async function notifyAllUsers(message, type) {
             try {
                 const usersRef = ref(db, 'users');
@@ -1622,7 +1598,6 @@
             }
         }
 
-        // ====== إرسال إشعار لمستخدم معين ======
         async function addUserNotification(userId, message, type) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
@@ -1648,14 +1623,12 @@
             }
         }
 
-        // ====== إدارة المستخدمين ======
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
                 currentUserId = user.uid;
                 const adminStatus = await checkAdmin(user.uid);
                 isAdmin = adminStatus;
-                // إذا لم يكن أدمن، ننشئ مستنده
                 if (!isAdmin) {
                     await ensureUserDocument(user);
                 }
@@ -1668,11 +1641,14 @@
                     document.getElementById('adminDashboard').style.display = 'block';
                     document.getElementById('adminUserEmail').textContent = `👤 ${user.email}`;
                     myQuestionsLink.style.display = 'none';
-                    // إلغاء المستمعات السابقة
-                    if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
-                    if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
-                    if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
-                    if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
+                    if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe();
+                        myQuestionsUnsubscribe = null; }
+                    if (myPrayersUnsubscribe) { myPrayersUnsubscribe();
+                        myPrayersUnsubscribe = null; }
+                    if (userNotifUnsubscribe) { userNotifUnsubscribe();
+                        userNotifUnsubscribe = null; }
+                    if (prayersUnsubscribe) { prayersUnsubscribe();
+                        prayersUnsubscribe = null; }
                     userNotifications = [];
                     updateUserNotifUI();
                     loadAdminData();
@@ -1706,10 +1682,14 @@
                 userNotifications = [];
                 updateNotificationUI();
                 updateUserNotifUI();
-                if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
-                if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
-                if (userNotifUnsubscribe) { userNotifUnsubscribe(); userNotifUnsubscribe = null; }
-                if (prayersUnsubscribe) { prayersUnsubscribe(); prayersUnsubscribe = null; }
+                if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe();
+                    myQuestionsUnsubscribe = null; }
+                if (myPrayersUnsubscribe) { myPrayersUnsubscribe();
+                    myPrayersUnsubscribe = null; }
+                if (userNotifUnsubscribe) { userNotifUnsubscribe();
+                    userNotifUnsubscribe = null; }
+                if (prayersUnsubscribe) { prayersUnsubscribe();
+                    prayersUnsubscribe = null; }
                 const myItemsPage = document.getElementById('page-my-questions');
                 if (myItemsPage.classList.contains('active')) {
                     document.getElementById('myItemsList').innerHTML = '<p class="no-questions">يرجى تسجيل الدخول</p>';
@@ -1724,11 +1704,11 @@
             }
         });
 
-        // ====== تسجيل الدخول/إنشاء حساب للمستخدم العادي ======
         const authForm = document.getElementById('userAuthForm');
         const authToggleLink = document.getElementById('authToggleLink');
         const authError = document.getElementById('authError');
-        authToggleLink.addEventListener('click', () => { isLoginMode = !isLoginMode; updateAuthUI(); });
+        authToggleLink.addEventListener('click', () => { isLoginMode = !isLoginMode;
+            updateAuthUI(); });
         authForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('authEmail').value.trim();
@@ -1760,7 +1740,6 @@
         });
         updateAuthUI();
 
-        // ====== تسجيل دخول الأدمن ======
         document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('adminLoginEmail').value.trim();
@@ -1798,10 +1777,11 @@
             window.navigateTo('home');
         });
 
-        // ====== مستمع أسئلة وطلبات المستخدم ======
         function startMyItemsListeners() {
-            if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe(); myQuestionsUnsubscribe = null; }
-            if (myPrayersUnsubscribe) { myPrayersUnsubscribe(); myPrayersUnsubscribe = null; }
+            if (myQuestionsUnsubscribe) { myQuestionsUnsubscribe();
+                myQuestionsUnsubscribe = null; }
+            if (myPrayersUnsubscribe) { myPrayersUnsubscribe();
+                myPrayersUnsubscribe = null; }
             const container = document.getElementById('myItemsList');
             const statusEl = document.getElementById('myItemsStatus');
             if (!currentUser) {
@@ -1814,16 +1794,12 @@
             statusEl.textContent = '⏳ جاري التحميل...';
             statusEl.className = 'status-loading';
 
-            let questionsData = [];
-            let prayersData = [];
+            let questionsData = [],
+                prayersData = [];
 
             function renderCombined() {
                 const allItems = [...questionsData, ...prayersData];
-                allItems.sort((a, b) => {
-                    const da = a.createdAt || 0;
-                    const db = b.createdAt || 0;
-                    return db - da;
-                });
+                allItems.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 if (allItems.length === 0) {
                     container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات</p>';
                     statusEl.textContent = '✅ محدث';
@@ -1857,7 +1833,6 @@
                 statusEl.className = 'status-connected';
             }
 
-            // استعلام الأسئلة
             const questionsRef = ref(db, 'questions');
             const questionsQuery = query(questionsRef, orderByChild('userId'), equalTo(currentUser.uid));
             myQuestionsUnsubscribe = onValue(questionsQuery, (snapshot) => {
@@ -1868,7 +1843,6 @@
                 statusEl.textContent = '❌ خطأ في الأسئلة';
                 statusEl.className = 'status-error'; });
 
-            // استعلام طلبات الصلاة
             const prayersRef = ref(db, 'prayers');
             const prayersQuery = query(prayersRef, orderByChild('userId'), equalTo(currentUser.uid));
             myPrayersUnsubscribe = onValue(prayersQuery, (snapshot) => {
@@ -1892,7 +1866,6 @@
                 showToast('✅ تم التحديث'); }, 300);
         };
 
-        // ====== مستمع إشعارات المستخدم ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
             if (userNotifUnsubscribe) { userNotifUnsubscribe();
                 userNotifUnsubscribe = null; }
@@ -1904,13 +1877,9 @@
                 const data = snapshot.val();
                 console.log(`📬 تم استلام ${data ? Object.keys(data).length : 0} إشعار`);
                 userNotifications = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })) : [];
-                userNotifications.sort((a, b) => {
-                    const da = a.createdAt || 0;
-                    const db = b.createdAt || 0;
-                    return db - da;
-                });
+                userNotifications.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 updateUserNotifUI();
-                // عرض إشعارات جديدة (غير مقروءة)
+                // عرض أحدث إشعار غير مقروء
                 const newNotifs = userNotifications.filter(n => !n.read);
                 if (newNotifs.length > 0) {
                     const latest = newNotifs[0];
@@ -1981,6 +1950,7 @@
                 console.log('✅ تم تحديث الإشعار كمقروء');
             } catch (e) { console.error(e); }
         };
+
         window.markAllUserNotifsRead = async function() {
             if (!userNotifications.length) { showToast('لا توجد إشعارات', true); return; }
             try {
@@ -1992,6 +1962,7 @@
                 showToast('✅ تم تحديد الكل كمقروء');
             } catch (e) { showToast('❌ خطأ', true); }
         };
+
         window.clearAllUserNotifs = async function() {
             if (!userNotifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
             if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
@@ -2020,7 +1991,6 @@
             if (e.target === e.currentTarget) e.currentTarget.classList.remove('show');
         });
 
-        // ====== الإشعارات للأدمن ======
         function listenToNotifications() {
             if (!isAdmin) return;
             const notifRef = ref(db, 'notifications');
@@ -2059,6 +2029,7 @@
                 await update(ref(db, `notifications/${id}`), { read: true });
             } catch (e) { console.error(e); }
         };
+
         window.markAllNotificationsRead = async function() {
             if (!notifications.length) { showToast('لا توجد إشعارات', true); return; }
             try {
@@ -2070,6 +2041,7 @@
                 showToast('✅ تم تحديد الكل كمقروء');
             } catch (e) { showToast('❌ خطأ', true); }
         };
+
         window.deleteAllNotifications = async function() {
             if (!notifications.length) { showToast('لا توجد إشعارات للحذف', true); return; }
             if (!confirm('هل أنت متأكد من حذف جميع الإشعارات نهائياً؟')) return;
@@ -2092,7 +2064,6 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== آية اليوم ======
         const dailyVerses = [
             { verse: 'لأَنَّهُ هكَذَا أَحَبَّ اللهُ الْعَالَمَ، حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
             { verse: 'لاَ تَقْلَقُوا لأَنِّي أَنَا مَعَكُمْ، لاَ تَرْتَعِبُوا لأَنِّي إِلَهُكُمْ. أُشَدِّدُكُمْ وَأُعِينُكُمْ وَأُؤَيِّدُكُمْ بِيَمِينِ بِرِّي.', reference: 'إشعياء 41:10' },
@@ -2157,7 +2128,6 @@
             } catch (e) { showToast('خطأ', true); }
         };
 
-        // ====== إرسال الأسئلة ======
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser) { showToast('يجب تسجيل الدخول لطرح سؤال', true); return; }
@@ -2191,7 +2161,6 @@
                 showToast('حدث خطأ أثناء الإرسال.', true); }
         });
 
-        // ====== طلبات الصلاة ======
         document.getElementById('prayerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const text = document.getElementById('prayerText').value.trim();
@@ -2218,7 +2187,6 @@
                 showToast('حدث خطأ أثناء الإرسال.', true); }
         });
 
-        // ====== الأسئلة المجاب عنها ======
         window.renderAnsweredQuestions = async function() {
             const search = document.getElementById('answeredSearch').value.trim().toLowerCase();
             const container = document.getElementById('answeredList');
@@ -2242,7 +2210,6 @@
                 container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الأسئلة.</p>'; }
         };
 
-        // ====== الإعلانات ======
         async function loadAnnouncements() {
             const container = document.getElementById('announcementsList');
             container.innerHTML = '<div class="text-center">جاري التحميل...</div>';
@@ -2270,7 +2237,6 @@
                 container.innerHTML = '<p style="color:#c0392b;">فشل تحميل الإعلانات.</p>'; }
         }
 
-        // ====== وسائل التواصل ======
         async function loadSocialLinks() {
             try {
                 const snap = await get(ref(db, 'settings/socialLinks'));
@@ -2310,7 +2276,6 @@
             } catch (e) { showToast('❌ فشل الحفظ', true); }
         };
 
-        // ====== نبذة "من نحن" ======
         async function loadAbout() {
             try {
                 const snap = await get(ref(db, 'settings/aboutText'));
@@ -2336,14 +2301,12 @@
             } catch (e) { showToast('❌ فشل الحفظ', true); }
         };
 
-        // ====== ترجمة الأنواع ======
         function translateType(type) {
             const map = { biblical: 'كتابية', doctrinal: 'عقائدية', personal: 'شخصية', consultation: 'استشارة', suggestion: 'اقتراح',
                 prayer: 'صلاة' };
             return map[type] || type;
         }
 
-        // ====== لوحة التحكم ======
         async function loadAdminData() {
             if (!isAdmin) return;
             await Promise.all([loadStats(), loadQuestions(), loadPrayersOnce(), loadAnnouncementsAdmin(), loadSocialLinks(),
@@ -2383,7 +2346,6 @@
             } catch (e) { console.error('Stats error:', e); }
         }
 
-        // ====== تحميل الأسئلة ======
         window.loadQuestions = async function() {
             const search = document.getElementById('adminSearch').value.trim().toLowerCase();
             const typeFilter = document.getElementById('adminFilterType').value;
@@ -2483,7 +2445,6 @@
             renderQuestionsPage();
         };
 
-        // ====== طلبات الصلاة في لوحة التحكم ======
         function startPrayersListener() {
             if (prayersUnsubscribe) { prayersUnsubscribe();
                 prayersUnsubscribe = null; }
@@ -2591,7 +2552,6 @@
             printWindow.document.close();
         };
 
-        // ====== نافذة الإجابة على سؤال ======
         const answerModal = document.getElementById('answerModal');
         const answerModalAnswer = document.getElementById('modalAnswer');
         const answerModalTitle = document.getElementById('modalTitle');
@@ -2645,7 +2605,6 @@
         answerModal.addEventListener('click', (e) => { if (e.target === answerModal) { answerModal.classList.remove('show');
                 editingQuestionId = null; } });
 
-        // ====== نافذة الرد على طلب صلاة ======
         const prayerReplyModal = document.getElementById('prayerReplyModal');
         const prayerReplyAnswer = document.getElementById('prayerReplyAnswer');
         const prayerReplyTitle = document.getElementById('prayerModalTitle');
@@ -2698,7 +2657,6 @@
                     'show');
                 editingPrayerId = null; } });
 
-        // ====== دوال إدارة الأسئلة ======
         window.togglePublish = async function(id) {
             try {
                 const snap = await get(ref(db, `questions/${id}`));
@@ -2761,7 +2719,6 @@
             printWindow.document.close();
         };
 
-        // ====== إدارة الإعلانات ======
         async function loadAnnouncementsAdmin() {
             const container = document.getElementById('adminAnnouncementsList');
             container.innerHTML = 'جاري التحميل...';
@@ -2810,7 +2767,6 @@
             } catch (e) { showToast('خطأ', true); }
         };
 
-        // ====== التهيئة ======
         loadAnnouncements();
         document.getElementById('year').textContent = new Date().getFullYear();
         renderAnsweredQuestions();
@@ -2833,10 +2789,11 @@
             }
         }, 100);
 
-        console.log('✅ التطبيق جاهز بالكامل (Realtime Database)');
-        console.log('✅ تم إزالة كلمة المرور من الكود واستخدام Authentication');
-        console.log('✅ التحقق من صلاحية الأدمن عبر مسار /admins');
-        console.log('✅ جميع الإشعارات تعمل عبر مسار /userNotifications');
+        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('🔒 تم إزالة كلمة المرور من الكود');
+        console.log('📢 الإشعارات تعمل: عند الإجابة، النشر، الإعلانات، تحديث الآية');
+        console.log('🔄 زر "اسأل سؤال آخر" يعيد تعيين النموذج');
+        console.log('📊 جميع طلبات الصلاة تظهر في لوحة التحكم');
     </script>
 </body>
 </html>

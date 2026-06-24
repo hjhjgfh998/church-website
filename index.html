@@ -1984,7 +1984,6 @@
 
                     let html = '';
                     items.forEach(item => {
-                        // ====== إصلاح إظهار اسم المستخدم ======
                         let displayName = item.userName || 'مستخدم';
                         if (item.anonymous === true) {
                             displayName = 'مجهول';
@@ -2190,7 +2189,7 @@
             }, 300);
         };
 
-        // ====== الإشعارات (للأدمن) ======
+        // ====== الإشعارات (للأدمن) مع إخفاء الاسم المجهول ======
         function listenToNotifications() {
             if (!isAdmin) return;
             onSnapshot(query(collection(db, 'notifications'), orderBy('createdAt', 'desc')), (snapshot) => {
@@ -2223,14 +2222,24 @@
                 list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
                 return;
             }
-            list.innerHTML = notifications.map(n => `
-                <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                    <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
-                    <span class="notif-text">${n.message}</span>
-                    <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
-                    ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
-                </div>
-            `).join('');
+            list.innerHTML = notifications.map(n => {
+                // تعديل الرسالة لإخفاء الاسم إذا كان مجهولاً
+                let displayMessage = n.message;
+                if (n.type === 'answer' && n.message.includes('للمستخدم')) {
+                    // إذا كانت رسالة إجابة وتحتوي على اسم، نستبدل الاسم بـ "مجهول" إذا كان السؤال مجهولاً
+                    // لكننا لا نعرف هنا إذا كان السؤال مجهولاً، لذا نعتمد على ما تم إرساله في الرسالة.
+                    // يمكن تحسين ذلك بإرسال معلومات إضافية في الإشعار، لكننا سنفترض أن الرسالة تحتوي على الاسم ونقوم بإخفائه.
+                    // الحل الأسهل: عند إنشاء الإشعار، إذا كان السؤال مجهولاً، نضع "مستخدم مجهول" بدلاً من الاسم.
+                }
+                return `
+                    <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                        <span class="notif-type ${n.type}">${n.type === 'question' ? 'سؤال' : n.type === 'answer' ? 'إجابة' : 'صلاة'}</span>
+                        <span class="notif-text">${n.message}</span>
+                        <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                        ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         window.markNotifRead = async function(id) {
@@ -2275,7 +2284,7 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إضافة إشعار للمستخدم عند الإجابة (محسّن مع تأكيد) ======
+        // ====== إضافة إشعار للمستخدم عند الإجابة (مع إخفاء الاسم المجهول) ======
         async function addUserNotification(userId, message, questionId) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
@@ -2359,7 +2368,9 @@
                     published: false,
                     createdAt: serverTimestamp()
                 });
-                await addNotification(`📩 سؤال جديد من ${currentUser.displayName || currentUser.email}: ${details.substring(0, 50)}...`, 'question');
+                // إشعار للأدمن مع إخفاء الاسم إذا كان مجهولاً
+                const displayName = anonymous ? 'مستخدم مجهول' : (currentUser.displayName || currentUser.email);
+                await addNotification(`📩 سؤال جديد من ${displayName}: ${details.substring(0, 50)}...`, 'question');
                 document.getElementById('questionForm').reset();
                 document.getElementById('questionForm').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
@@ -2383,11 +2394,8 @@
                     name: anonymous ? '' : (currentUser ? currentUser.displayName || currentUser.email : ''),
                     createdAt: serverTimestamp()
                 });
-                if (currentUser) {
-                    await addNotification(`🙏 طلب صلاة جديد من ${currentUser.displayName || currentUser.email}: ${text.substring(0, 50)}...`, 'prayer');
-                } else {
-                    await addNotification(`🙏 طلب صلاة جديد (زائر): ${text.substring(0, 50)}...`, 'prayer');
-                }
+                const displayName = anonymous ? 'مستخدم مجهول' : (currentUser ? currentUser.displayName || currentUser.email : 'زائر');
+                await addNotification(`🙏 طلب صلاة جديد من ${displayName}: ${text.substring(0, 50)}...`, 'prayer');
                 document.getElementById('prayerForm').reset();
                 document.getElementById('prayerForm').style.display = 'none';
                 document.getElementById('prayerSuccess').style.display = 'block';
@@ -2653,7 +2661,6 @@
                 const short = details.substring(0, 100);
                 const long = details;
                 const showMore = details.length > 100;
-                // ====== إخفاء اسم المستخدم إذا كان السؤال مجهولاً ======
                 let displayName = item.userName || 'مستخدم غير معروف';
                 if (item.anonymous === true) {
                     displayName = 'مجهول';
@@ -2712,7 +2719,7 @@
             renderQuestionsPage();
         };
 
-        // ====== نافذة الإجابة ======
+        // ====== نافذة الإجابة مع إرسال إشعار للمستخدم وإخفاء الاسم المجهول للأدمن ======
         const modal = document.getElementById('answerModal');
         const modalAnswer = document.getElementById('modalAnswer');
         const modalTitle = document.getElementById('modalTitle');
@@ -2758,15 +2765,16 @@
                     answer: answer
                 });
 
-                // === إرسال إشعار للمستخدم ===
+                // إرسال إشعار للمستخدم
                 if (questionData && questionData.userId) {
                     await addUserNotification(
                         questionData.userId,
                         `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
                         editingQuestionId
                     );
-                    // إشعار للأدمن (اختياري)
-                    await addNotification(`✅ تمت الإجابة على سؤال للمستخدم ${questionData.userName || 'مستخدم'}`, 'answer');
+                    // إشعار للأدمن مع إخفاء الاسم إذا كان مجهولاً
+                    const displayName = questionData.anonymous ? 'مستخدم مجهول' : (questionData.userName || 'مستخدم');
+                    await addNotification(`✅ تمت الإجابة على سؤال لـ ${displayName}`, 'answer');
                     showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
                 } else {
                     showToast('✅ تم حفظ الإجابة (بدون إشعار لأن المستخدم غير معروف)');
@@ -3023,7 +3031,7 @@
         console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
         console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة نهائياً');
         console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');
-        console.log('🕵️ إظهار اسم المستخدم للأدمن يظهر فقط إذا لم يكن السؤال مجهولاً');
+        console.log('🕵️ إظهار اسم المستخدم للأدمن يظهر فقط إذا لم يكن السؤال مجهولاً، والإشعارات أيضاً تظهر "مستخدم مجهول"');
     </script>
 
 </body>

@@ -21,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط (كما هي سابقاً) ====== */
+        /* ====== جميع الأنماط كما هي، مع تعديل بسيط لأزرار الإشعارات ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -941,6 +941,31 @@
             animation: pulse 1.5s infinite;
         }
 
+        /* نافذة الإشعارات - أزرار أصغر */
+        #userNotifModal .modal-actions .btn {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            min-width: auto;
+            border-radius: 30px;
+        }
+        #userNotifModal .modal-actions .btn-outline {
+            border-color: var(--color-gold);
+            color: var(--color-gold);
+            background: transparent;
+        }
+        #userNotifModal .modal-actions .btn-outline:hover {
+            background: var(--color-gold);
+            color: #fff;
+        }
+        #userNotifModal .modal-actions .btn-danger {
+            background: #c0392b;
+            border-color: #c0392b;
+        }
+        #userNotifModal .modal-actions .btn-primary {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
         @media print {
             .no-print {
                 display: none !important;
@@ -1033,6 +1058,10 @@
                 font-size: 0.75rem;
                 min-width: 50px;
             }
+            #userNotifModal .modal-actions .btn {
+                padding: 4px 10px;
+                font-size: 0.7rem;
+            }
         }
         @media (max-width: 480px) {
             .header-inner {
@@ -1074,6 +1103,14 @@
             }
             td .question-text .toggle-btn {
                 font-size: 0.7rem;
+            }
+            #userNotifModal .modal-actions {
+                flex-direction: column;
+                gap: 6px;
+            }
+            #userNotifModal .modal-actions .btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -1417,17 +1454,17 @@
 
     </main>
 
-    <!-- ====== نافذة إشعارات المستخدم ====== -->
+    <!-- ====== نافذة إشعارات المستخدم (مع أزرار أصغر) ====== -->
     <div id="userNotifModal" class="modal">
         <div class="modal-content" style="max-width:500px;">
             <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
             <div id="userNotifList" class="notif-list">
                 <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>
             </div>
-            <div class="modal-actions">
-                <button class="btn btn-sm btn-outline" onclick="window.markAllUserNotifsRead()">تحديد الكل كمقروء</button>
-                <button class="btn btn-sm btn-danger" onclick="window.clearAllUserNotifs()">حذف الكل</button>
-                <button class="btn btn-sm btn-primary" id="closeUserNotifModal">إغلاق</button>
+            <div class="modal-actions" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-start; margin-top:12px;">
+                <button class="btn btn-sm btn-outline" onclick="window.markAllUserNotifsRead()"><i class="fas fa-check-double"></i> تحديد الكل كمقروء</button>
+                <button class="btn btn-sm btn-danger" onclick="window.clearAllUserNotifs()"><i class="fas fa-trash"></i> حذف الكل</button>
+                <button class="btn btn-sm btn-primary" id="closeUserNotifModal"><i class="fas fa-times"></i> إغلاق</button>
             </div>
         </div>
     </div>
@@ -1947,6 +1984,12 @@
 
                     let html = '';
                     items.forEach(item => {
+                        // ====== إصلاح إظهار اسم المستخدم ======
+                        let displayName = item.userName || 'مستخدم';
+                        if (item.anonymous === true) {
+                            displayName = 'مجهول';
+                        }
+
                         const answerHtml = item.answered ?
                             `<div class="q-answer"><strong>الإجابة:</strong> ${item.answer || 'لم تكتب إجابة بعد'}</div>` :
                             '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
@@ -1960,7 +2003,7 @@
                         html += `
                             <div class="my-question-card">
                                 <div class="q-details"><strong>السؤال:</strong> ${item.details}</div>
-                                <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''} ${published}</div>
+                                <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''} - بواسطة: ${displayName} ${published}</div>
                                 ${answerHtml}
                                 <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${dateStr}</div>
                                 <div class="q-notification ${notifClass}">
@@ -2030,6 +2073,14 @@
                     });
                 }, (error) => {
                     console.warn('❌ خطأ في مستمع إشعارات المستخدم:', error);
+                    // محاولة إعادة الاتصال بعد 5 ثواني
+                    setTimeout(() => {
+                        if (userNotifUnsubscribe) {
+                            userNotifUnsubscribe();
+                            userNotifUnsubscribe = null;
+                            star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
+                        }
+                    }, 5000);
                 });
             } catch (error) {
                 console.warn('❌ فشل إعداد مستمع الإشعارات:', error);
@@ -2968,6 +3019,7 @@
         console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
         console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة نهائياً');
         console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');
+        console.log('🕵️ إظهار اسم المستخدم يظهر فقط إذا لم يكن السؤال مجهولاً');
     </script>
 
 </body>

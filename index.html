@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
-    <!-- تم تحديث رابط Font Awesome إلى الإصدار 6.5.2 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script type="importmap">
         {
@@ -19,7 +18,7 @@
         }
     </script>
     <style>
-        /* ===== جميع الأنماط كما في السابق، مع تحسينات للوضوح ===== */
+        /* === جميع الأنماط كما هي (تم اختصارها هنا لتوفير المساحة، ولكنها موجودة بالكامل في الكود الأصلي) === */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -223,9 +222,11 @@
         .auth-required { display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:16px; margin-top:30px; }
         .auth-required i { font-size:3rem; color:var(--color-gold); }
         .auth-required p { font-size:1.3rem; margin-top:16px; }
-        /* لجعل الزر بارزاً أكثر */
         .reset-btn-wrapper .btn-primary { background:var(--color-primary); border-color:var(--color-primary); color:#fff; }
         .reset-btn-wrapper .btn-primary:hover { background:var(--color-primary-light); }
+        /* زر سؤال جديد الدائم */
+        .form-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
+        .form-actions .btn { flex:1; min-width:140px; }
     </style>
 </head>
 <body>
@@ -293,7 +294,7 @@
             </div>
         </section>
 
-        <!-- صفحة الأسئلة (مع زر "اسأل سؤال آخر" الواضح) -->
+        <!-- ===== صفحة الأسئلة (تم تعديلها بإضافة زر "سؤال جديد" الدائم) ===== -->
         <section id="page-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
             <div id="questionFormContainer">
@@ -305,7 +306,12 @@
                             <input type="checkbox" id="qAnonymous" checked style="width:20px; height:20px; accent-color:var(--color-gold);" />
                             <label for="qAnonymous" style="margin:0; font-weight:400;">إرسال مجهول (لن يظهر اسمك)</label>
                         </div>
-                        <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
+                        
+                        <!-- ✅ تم إضافة زر "سؤال جديد" الدائم هنا بجانب زر الإرسال -->
+                        <div class="form-actions">
+                            <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
+                            <button type="button" class="btn btn-outline" onclick="window.resetQuestionForm()"><i class="fas fa-plus"></i> سؤال جديد</button>
+                        </div>
                     </form>
                     <div id="questionSuccess" class="question-success-box" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                         <i class="fas fa-check-circle" style="font-size:3rem;"></i>
@@ -645,15 +651,15 @@
             if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); navigateTo('home'); return; }
         }
 
-        // ====== دوال إعادة تعيين النماذج (مع زر "سؤال آخر" واضح) ======
+        // ====== دوال إعادة تعيين النماذج (تم تحسينها) ======
         function resetQuestionForm() {
             const form = document.getElementById('questionForm');
-            form.reset();
+            form.reset(); // مسح جميع الحقول
             document.getElementById('questionSuccess').style.display = 'none';
             document.getElementById('questionFormContainer').style.display = 'block';
-            // تمرير الصفحة إلى أعلى النموذج
+            // إعادة تعيين أي أخطاء أو حالات أخرى
+            showToast('تم مسح النموذج، يمكنك طرح سؤال جديد');
             document.getElementById('page-questions').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            showToast('تم إعادة تعيين النموذج، يمكنك طرح سؤال جديد');
         }
 
         function resetPrayerForm() {
@@ -942,7 +948,6 @@
                         <td>${hasAnswer ? (isPublished ? '✅ منشور' : '⏳ غير منشور') : '⏳ غير مجاب'}</td>
                         <td class="actions">
                             ${!hasAnswer ? `<button class="btn-answer" onclick="window.openAnswerModal('${q.id}')"><i class="fas fa-reply"></i> إجابة</button>` : `<button class="btn-edit" onclick="window.openEditAnswerModal('${q.id}')"><i class="fas fa-edit"></i> تعديل</button>`}
-                            <!-- زر النشر يظهر دائماً -->
                             <button class="btn-publish" onclick="window.publishQuestion('${q.id}')"><i class="fas fa-globe"></i> ${isPublished ? 'إخفاء' : 'نشر'}</button>
                             <button class="btn-delete" onclick="window.deleteQuestion('${q.id}')"><i class="fas fa-trash"></i> حذف</button>
                         </td>
@@ -1256,7 +1261,7 @@
             } catch (err) { errorDiv.textContent = err.message; showToast(err.message, true); }
         });
 
-        // نموذج الأسئلة (مع زر "سؤال آخر" يعمل)
+        // نموذج الأسئلة
         document.getElementById('questionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!currentUser) { showToast('يجب تسجيل الدخول', true); return; }
@@ -1276,7 +1281,7 @@
                 });
                 addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0,30)}..."`);
                 addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
-                // إخفاء النموذج وإظهار رسالة النجاح مع زر "سؤال آخر"
+                // إخفاء النموذج وإظهار رسالة النجاح
                 document.getElementById('questionFormContainer').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم الإرسال');
@@ -1315,7 +1320,6 @@
                 document.getElementById('userAuthBtn').innerHTML = `<i class="fas fa-user"></i> ${user.displayName || 'مستخدم'}`;
                 document.getElementById('userAuthBtn').onclick = (e) => { e.preventDefault(); if (confirm('تسجيل الخروج؟')) signOut(auth); };
                 document.getElementById('myQuestionsLink').style.display = 'inline-block';
-                // إخفاء رسالة "يجب تسجيل الدخول" في صفحة الأسئلة
                 document.getElementById('authRequiredMessage').style.display = 'none';
                 document.getElementById('questionFormContainer').style.display = 'block';
                 await ensureUserDocument(user.uid, user.displayName);
@@ -1331,7 +1335,6 @@
                 document.getElementById('adminLink').style.display = 'none';
                 document.getElementById('adminDashboard').style.display = 'none';
                 document.getElementById('notifBell').style.display = 'none';
-                // إظهار رسالة "يجب تسجيل الدخول" في صفحة الأسئلة
                 document.getElementById('authRequiredMessage').style.display = 'block';
                 document.getElementById('questionFormContainer').style.display = 'none';
                 if (userNotifUnsubscribe) userNotifUnsubscribe();
@@ -1430,7 +1433,7 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ التطبيق جاهز بالكامل مع زر "اسأل سؤال آخر"');
+        console.log('✅ التطبيق جاهز بالكامل مع زر "سؤال جديد" الدائم');
         console.log('📖 سيتم تحديث آية اليوم تلقائياً كل 24 ساعة');
         console.log('📢 سيتم إرسال إشعارات للمستخدمين عند نشر إعلانات أو نشر أسئلة في أجوبة عامة');
         console.log(`📧 البريد الإلكتروني للأدمن: ${ADMIN_EMAIL}`);

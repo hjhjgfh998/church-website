@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* جميع الأنماط كما في الكود السابق مع الحفاظ على الألوان */
+        /* جميع الأنماط (محافظة على الألوان الأصلية) */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -213,12 +213,16 @@
         @media (max-width:992px) { .hero { height:420px; } .hero-content h2 { font-size:2.4rem; } .section-title { font-size:1.8rem; } }
         @media (max-width:768px) { .hero { height:380px; } .hero-content h2 { font-size:2rem; } .hero-content p { font-size:1.1rem; } .logo-area h1 { font-size:1rem; } nav a { padding:6px 12px; font-size:0.85rem; } .stats-grid { grid-template-columns:1fr 1fr; } .login-box { padding:32px 24px; margin:30px 16px; } td { max-width:150px; } .announcement-item { flex-direction:column; align-items:stretch; } .pagination-controls .btn { padding:4px 12px; font-size:0.75rem; min-width:50px; } #userNotifModal .modal-actions .btn { padding:4px 10px; font-size:0.7rem; } #userNotifModal .modal-content { max-width:95%; padding:20px; } }
         @media (max-width:480px) { .header-inner { flex-direction:column; align-items:stretch; } nav { justify-content:center; } .hero { height:300px; } .hero-content h2 { font-size:1.6rem; } .hero-content p { font-size:1rem; } .btn { padding:12px 24px; font-size:0.9rem; } .card { padding:18px; } .stats-grid { grid-template-columns:1fr 1fr; gap:0.8rem; } .stat-card .number { font-size:1.8rem; } .section-title { font-size:1.5rem; } td { max-width:100px; font-size:0.85rem; } td .question-text .toggle-btn { font-size:0.7rem; } #userNotifModal .modal-actions { flex-direction:column; gap:6px; } #userNotifModal .modal-actions .btn { width:100%; justify-content:center; } #userNotifModal .modal-content { max-width:98%; padding:16px; } }
-        /* أنماط إضافية لوضوح زر "سؤال آخر" */
+        /* أنماط إضافية */
         .question-success-box .reset-btn-wrapper { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:20px; }
         .question-success-box .btn { min-width:180px; }
         #questionFormContainer .card { transition:all 0.3s; }
         #questionSuccess { transition:all 0.3s; }
         .form-group { margin-bottom:20px; }
+        .reset-btn-wrapper .btn { min-width:160px; }
+        .auth-required { display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:16px; margin-top:30px; }
+        .auth-required i { font-size:3rem; color:var(--color-gold); }
+        .auth-required p { font-size:1.3rem; margin-top:16px; }
     </style>
 </head>
 <body>
@@ -250,7 +254,7 @@
         </div>
     </header>
     <main class="container">
-        <!-- الصفحات -->
+        <!-- الصفحة الرئيسية -->
         <section id="page-home" class="page active">
             <div class="hero">
                 <div class="hero-content">
@@ -270,6 +274,7 @@
             </div>
         </section>
 
+        <!-- صفحة تسجيل الدخول -->
         <section id="page-user-auth" class="page">
             <div class="login-box">
                 <h2 id="authTitle"><i class="fas fa-sign-in-alt" style="color:var(--color-gold);"></i> تسجيل الدخول</h2>
@@ -285,7 +290,7 @@
             </div>
         </section>
 
-        <!-- صفحة الأسئلة (المعدلة) -->
+        <!-- صفحة الأسئلة (مع زر "اسأل سؤال آخر" الواضح) -->
         <section id="page-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
             <div id="questionFormContainer">
@@ -299,6 +304,7 @@
                         </div>
                         <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال السؤال</button>
                     </form>
+                    <!-- قسم النجاح مع زر "اسأل سؤال آخر" -->
                     <div id="questionSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                         <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                         <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
@@ -308,6 +314,7 @@
                     </div>
                 </div>
             </div>
+            <!-- رسالة في حال عدم تسجيل الدخول -->
             <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
                 <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
                 <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
@@ -315,6 +322,7 @@
             </div>
         </section>
 
+        <!-- باقي الصفحات (my-questions, prayer, answered, announcements, about, contact, admin-login, admin) -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
             <div class="refresh-container">
@@ -488,6 +496,7 @@
         </section>
     </main>
 
+    <!-- النوافذ المنبثقة -->
     <div id="userNotifModal" class="modal">
         <div class="modal-content" style="max-width:650px;">
             <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
@@ -543,7 +552,6 @@
 
         const ADMIN_EMAIL = 'abshadat.church@gmail.com';
 
-        // قائمة الآيات الافتراضية
         const VERSES = [
             { text: 'لأَنَّهُ هَكَذَا أَحَبَّ اللهُ الْعَالَمَ حَتَّى بَذَلَ ابْنَهُ الْوَحِيدَ، لِكَيْ لاَ يَهْلِكَ كُلُّ مَنْ يُؤْمِنُ بِهِ، بَلْ تَكُونُ لَهُ الْحَيَاةُ الأَبَدِيَّةُ.', reference: 'يوحنا 3:16' },
             { text: 'لاَ تَهْتَمُّوا بِشَيْءٍ، بَلْ فِي كُلِّ شَيْءٍ بِالصَّلاَةِ وَالدُّعَاءِ مَعَ الشُّكْرِ، لِتُعْلَمْ طِلْبَاتُكُمْ لَدَى اللهِ.', reference: 'فيلبي 4:6' },
@@ -567,8 +575,6 @@
         let currentPage = 1;
         const itemsPerPage = 20;
         let allQuestionsItems = [];
-
-        console.log('✅ Firebase initialized (Realtime Database)');
 
         const toastEl = document.getElementById('toast');
         let toastTimeout = null;
@@ -636,13 +642,15 @@
             if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); navigateTo('home'); return; }
         }
 
-        // ====== دوال إعادة تعيين النماذج (المحسّنة) ======
+        // ====== دوال إعادة تعيين النماذج (مع زر "سؤال آخر" واضح) ======
         function resetQuestionForm() {
             const form = document.getElementById('questionForm');
             form.reset();
-            // إعادة تعيين الحقول الأخرى إذا لزم الأمر
+            // إعادة تعيين الحقول الأخرى
             document.getElementById('questionSuccess').style.display = 'none';
             document.getElementById('questionFormContainer').style.display = 'block';
+            // تمرير الصفحة إلى أعلى النموذج
+            document.getElementById('page-questions').scrollIntoView({ behavior: 'smooth', block: 'start' });
             showToast('تم إعادة تعيين النموذج، يمكنك طرح سؤال جديد');
         }
 
@@ -650,6 +658,7 @@
             document.getElementById('prayerForm').reset();
             document.getElementById('prayerSuccess').style.display = 'none';
             document.querySelector('#page-prayer .card').style.display = 'block';
+            document.getElementById('page-prayer').scrollIntoView({ behavior: 'smooth', block: 'start' });
             showToast('تم إعادة تعيين النموذج، يمكنك طلب صلاة جديدة');
         }
 
@@ -1244,7 +1253,7 @@
             } catch (err) { errorDiv.textContent = err.message; showToast(err.message, true); }
         });
 
-        // نموذج الأسئلة (مع زر "سؤال آخر" نشط)
+        // نموذج الأسئلة (مع زر "سؤال آخر" يعمل)
         document.getElementById('questionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!currentUser) { showToast('يجب تسجيل الدخول', true); return; }
@@ -1264,7 +1273,7 @@
                 });
                 addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0,30)}..."`);
                 addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
-                // إخفاء النموذج وإظهار رسالة النجاح
+                // إخفاء النموذج وإظهار رسالة النجاح مع زر "سؤال آخر"
                 document.getElementById('questionFormContainer').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم الإرسال');
@@ -1412,7 +1421,7 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ التطبيق جاهز بالكامل مع زر "سؤال آخر"');
+        console.log('✅ التطبيق جاهز بالكامل مع زر "اسأل سؤال آخر"');
         console.log('📖 سيتم تحديث آية اليوم تلقائياً كل 24 ساعة');
         console.log('📢 سيتم إرسال إشعارات للمستخدمين عند نشر إعلانات أو نشر أسئلة في أجوبة عامة');
         console.log(`📧 البريد الإلكتروني للأدمن: ${ADMIN_EMAIL}`);

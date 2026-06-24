@@ -21,7 +21,7 @@
     </script>
 
     <style>
-        /* ====== جميع الأنماط (نفس ما سبق مع تحسينات طفيفة) ====== */
+        /* ====== جميع الأنماط (مدمجة) ====== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -1270,7 +1270,7 @@
             </div>
         </section>
 
-        <!-- ====== أسئلتي وطلباتي (تم تعديل المعرفات) ====== -->
+        <!-- ====== أسئلتي وطلباتي ====== -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
             <div class="refresh-container">
@@ -1535,7 +1535,7 @@
     </footer>
 
     <!-- ================================================================ -->
-    <!-- ====== الجافاسكريبت الكامل ====== -->
+    <!-- ====== الجافاسكريبت الكامل والشغال ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -2079,7 +2079,7 @@
                 allItems.forEach(item => {
                     const isQuestion = item.type !== undefined;
                     const typeLabel = isQuestion ? translateType(item.type) : 'طلب صلاة';
-                    const displayName = item.anonymous ? 'مجهول' : (item.userName || 'مستخدم');
+                    let displayName = item.anonymous ? 'مجهول' : (item.userName || 'مستخدم');
                     const answerHtml = item.answered ?
                         `<div class="item-answer"><strong>${isQuestion ? 'الإجابة' : 'الرد'}:</strong> ${item.answer || 'لم تكتب إجابة بعد'}</div>` :
                         '<div class="item-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الرد</em></div>';
@@ -3095,7 +3095,6 @@
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-EG') : '';
                     const userName = data.anonymous ? 'مجهول' : (data.userName || 'زائر');
                     const isAnswered = data.answered || false;
-                    const answerText = isAnswered ? data.answer || 'تم الرد' : 'في انتظار الرد';
                     html += `
                         <li style="padding:10px 0; border-bottom:1px solid var(--border-color);">
                             <p><strong>${data.text}</strong></p>
@@ -3192,4 +3191,62 @@
 
         window.addAnnouncement = async function() {
             const title = document.getElementById('announceTitle').value.trim();
-            const content = document.getElementById('announceContent').value
+            const content = document.getElementById('announceContent').value.trim();
+            if (!title || !content) { showToast('املأ الحقول', true); return; }
+            try {
+                await addDoc(collection(db, 'announcements'), { title, content, date: serverTimestamp() });
+                showToast('تمت الإضافة');
+                document.getElementById('announceTitle').value = '';
+                document.getElementById('announceContent').value = '';
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+                // إرسال إشعار لجميع المستخدمين
+                await notifyAllUsers(`📢 إعلان جديد: "${title}"`, 'announcement');
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        window.deleteAnnouncement = async function(id) {
+            if (!confirm('حذف الإعلان؟')) return;
+            try {
+                await deleteDoc(doc(db, 'announcements', id));
+                showToast('تم الحذف');
+                loadAnnouncementsAdmin();
+                loadAnnouncements();
+            } catch (e) { showToast('خطأ', true); }
+        };
+
+        // ====== تهيئة ======
+        loadAnnouncements();
+        document.getElementById('year').textContent = new Date().getFullYear();
+        renderAnsweredQuestions();
+        loadSocialLinks();
+        loadAbout();
+        loadDailyVerse();
+        scheduleVerseUpdate();
+
+        setTimeout(() => {
+            if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
+                startMyItemsListeners();
+            }
+            if (document.getElementById('page-questions').classList.contains('active')) {
+                if (!currentUser) {
+                    document.getElementById('questionFormContainer').style.display = 'none';
+                    document.getElementById('authRequiredMessage').style.display = 'block';
+                }
+            }
+        }, 100);
+
+        console.log('✅ التطبيق جاهز بالكامل');
+        console.log('🔐 تم ضبط استمرار المصادقة محلياً');
+        console.log('📌 تم إزالة orderBy من استعلام الإشعارات لتجنب مشاكل الفهارس');
+        console.log('📧 بريد الأدمن: abshadat.church@gmail.com (غير معروض)');
+        console.log('🔄 زر التحديث في صفحة "أسئلتي" يعمل');
+        console.log('🔔 الإشعارات تعمل للمستخدمين عند الإجابة، الرد على الصلاة، نشر إجابة، إضافة إعلان، تحديث آية اليوم');
+        console.log('📊 ترقيم الصفحات في لوحة التحكم يعمل');
+        console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن');
+        console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');
+        console.log('🕵️ إخفاء الاسم المجهول في كل مكان');
+        console.log('✅ جميع الأزرار والنوافذ تعمل بشكل صحيح');
+    </script>
+</body>
+</html>

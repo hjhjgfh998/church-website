@@ -442,7 +442,7 @@
             margin-top: 6px;
         }
 
-        .my-question-card {
+        .my-item-card {
             border-right: 4px solid var(--color-gold);
             padding: 18px 22px;
             margin-bottom: 16px;
@@ -451,15 +451,15 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all var(--transition);
         }
-        .my-question-card:hover {
+        .my-item-card:hover {
             box-shadow: var(--shadow-md);
             transform: translateX(-4px);
         }
-        .my-question-card .q-details {
+        .my-item-card .item-details {
             font-size: 1.05rem;
             margin-bottom: 6px;
         }
-        .my-question-card .q-answer {
+        .my-item-card .item-answer {
             margin-top: 10px;
             padding: 12px 16px;
             background: var(--bg-body);
@@ -467,12 +467,12 @@
             color: var(--text-secondary);
             border-right: 3px solid var(--color-gold-light);
         }
-        .my-question-card .q-meta {
+        .my-item-card .item-meta {
             font-size: 0.85rem;
             color: var(--text-muted);
             margin-top: 6px;
         }
-        .my-question-card .q-notification {
+        .my-item-card .item-notification {
             margin-top: 8px;
             padding: 8px 14px;
             background: #d4edda;
@@ -482,7 +482,7 @@
             border-right: 3px solid #28a745;
             display: none;
         }
-        .my-question-card .q-notification.show {
+        .my-item-card .item-notification.show {
             display: block;
         }
 
@@ -585,6 +585,10 @@
         }
         .actions .btn-edit {
             background: #f39c12;
+            color: #fff;
+        }
+        .actions .btn-prayer-reply {
+            background: #8e44ad;
             color: #fff;
         }
 
@@ -761,6 +765,8 @@
         .notification-item .notif-text {
             flex: 1;
             margin-left: 12px;
+            font-size: 1rem;
+            line-height: 1.6;
         }
         .notification-item .notif-type {
             padding: 2px 10px;
@@ -780,8 +786,16 @@
             background: #27ae60;
             color: #fff;
         }
+        .notif-type.verse {
+            background: #3498db;
+            color: #fff;
+        }
+        .notif-type.announcement {
+            background: #e67e22;
+            color: #fff;
+        }
         .notif-list {
-            max-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
         }
         .notif-actions {
@@ -941,10 +955,13 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* نافذة الإشعارات - أزرار أصغر */
+        /* نافذة الإشعارات - أكبر وأوضح */
+        #userNotifModal .modal-content {
+            max-width: 650px;
+        }
         #userNotifModal .modal-actions .btn {
-            padding: 6px 14px;
-            font-size: 0.8rem;
+            padding: 8px 18px;
+            font-size: 0.9rem;
             min-width: auto;
             border-radius: 30px;
         }
@@ -964,6 +981,10 @@
         #userNotifModal .modal-actions .btn-primary {
             background: var(--color-primary);
             border-color: var(--color-primary);
+        }
+        #userNotifModal .notification-item .notif-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
         }
 
         @media print {
@@ -1062,6 +1083,10 @@
                 padding: 4px 10px;
                 font-size: 0.7rem;
             }
+            #userNotifModal .modal-content {
+                max-width: 95%;
+                padding: 20px;
+            }
         }
         @media (max-width: 480px) {
             .header-inner {
@@ -1111,6 +1136,10 @@
             #userNotifModal .modal-actions .btn {
                 width: 100%;
                 justify-content: center;
+            }
+            #userNotifModal .modal-content {
+                max-width: 98%;
+                padding: 16px;
             }
         }
     </style>
@@ -1243,14 +1272,14 @@
 
         <!-- ====== أسئلتي (مع مستمع حي وزر تحديث) ====== -->
         <section id="page-my-questions" class="page">
-            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي</h2>
+            <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
             <div class="refresh-container">
-                <button class="btn btn-refresh btn-sm" onclick="window.refreshMyQuestions()">
+                <button class="btn btn-refresh btn-sm" onclick="window.refreshMyItems()">
                     <i class="fas fa-sync-alt"></i> تحديث
                 </button>
-                <span id="myQuestionsStatus" style="color:var(--text-muted); font-size:0.85rem;"></span>
+                <span id="myItemsStatus" style="color:var(--text-muted); font-size:0.85rem;"></span>
             </div>
-            <div id="myQuestionsList"></div>
+            <div id="myItemsList"></div>
         </section>
 
         <!-- ====== طلبات الصلاة ====== -->
@@ -1427,7 +1456,7 @@
                 <!-- طلبات الصلاة -->
                 <div class="admin-section">
                     <div class="section-header">
-                        <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة</h3>
+                        <h3><i class="fas fa-hands-praying" style="color:var(--color-gold);"></i> طلبات الصلاة <span id="prayersCount" style="font-size:0.9rem; color:var(--text-muted); font-weight:400;"></span></h3>
                         <div style="display:flex; gap:8px; flex-wrap:wrap;"><button class="btn btn-outline btn-sm no-print" onclick="window.printPrayers()"><i class="fas fa-print"></i> طباعة</button><button class="btn btn-danger btn-sm no-print" onclick="window.clearAllPrayers()"><i class="fas fa-trash"></i> مسح الكل</button></div>
                     </div>
                     <div id="adminPrayersList"></div>
@@ -1454,9 +1483,9 @@
 
     </main>
 
-    <!-- ====== نافذة إشعارات المستخدم (مع أزرار أصغر) ====== -->
+    <!-- ====== نافذة إشعارات المستخدم ====== -->
     <div id="userNotifModal" class="modal">
-        <div class="modal-content" style="max-width:500px;">
+        <div class="modal-content" style="max-width:650px;">
             <h3><i class="fas fa-bell" style="color:var(--color-gold);"></i> إشعاراتي</h3>
             <div id="userNotifList" class="notif-list">
                 <p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>
@@ -1469,7 +1498,7 @@
         </div>
     </div>
 
-    <!-- ====== نافذة منبثقة للإجابة ====== -->
+    <!-- ====== نافذة منبثقة للإجابة على سؤال ====== -->
     <div id="answerModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle">كتابة الإجابة</h3>
@@ -1484,6 +1513,21 @@
         </div>
     </div>
 
+    <!-- ====== نافذة منبثقة للرد على طلب صلاة ====== -->
+    <div id="prayerReplyModal" class="modal">
+        <div class="modal-content">
+            <h3 id="prayerModalTitle">الرد على طلب الصلاة</h3>
+            <div class="form-group">
+                <label for="prayerReplyAnswer">الرد</label>
+                <textarea id="prayerReplyAnswer" rows="6" placeholder="اكتب ردك على طلب الصلاة..."></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="prayerReplyCancelBtn">إلغاء</button>
+                <button class="btn btn-success" id="prayerReplySaveBtn">حفظ الرد</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ====== التذييل ====== -->
     <footer>
         <div class="container">
@@ -1492,7 +1536,7 @@
     </footer>
 
     <!-- ================================================================ -->
-    <!-- ====== جافاسكريبت النهائي (مع إصلاح إشعارات المستخدم) ====== -->
+    <!-- ====== جافاسكريبت النهائي مع جميع الميزات ====== -->
     <!-- ================================================================ -->
     <script type="module">
         import { initializeApp } from "firebase/app";
@@ -1571,7 +1615,9 @@
         let isAdmin = false;
         let notifications = [];
         let editingQuestionId = null;
+        let editingPrayerId = null;
         let myQuestionsUnsubscribe = null;
+        let myPrayersUnsubscribe = null;
         let userNotifUnsubscribe = null;
         let userNotifications = [];
 
@@ -1627,7 +1673,7 @@
             if (pageId === 'answered') renderAnsweredQuestions();
             if (pageId === 'announcements') loadAnnouncements();
             if (pageId === 'my-questions' && currentUser) {
-                startMyQuestionsListener();
+                startMyItemsListeners();
             }
             if (pageId === 'questions') {
                 if (!currentUser) {
@@ -1678,15 +1724,19 @@
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
                     }
+                    if (myPrayersUnsubscribe) {
+                        myPrayersUnsubscribe();
+                        myPrayersUnsubscribe = null;
+                    }
                     if (userNotifUnsubscribe) {
                         userNotifUnsubscribe();
                         userNotifUnsubscribe = null;
                     }
                     userNotifications = [];
                     updateUserNotifUI();
-                    document.getElementById('myQuestionsList').innerHTML =
+                    document.getElementById('myItemsList').innerHTML =
                         '<p class="no-questions">تم تسجيل الخروج</p>';
-                    document.getElementById('myQuestionsStatus').textContent = '';
+                    document.getElementById('myItemsStatus').textContent = '';
                 }).catch((err) => {
                     showToast('خطأ في تسجيل الخروج: ' + err.message, true);
                 });
@@ -1733,13 +1783,59 @@
             }
         }
 
+        // ====== إنشاء مستند المستخدم عند التسجيل ======
+        async function ensureUserDocument(user) {
+            if (!user) return;
+            const userRef = doc(db, 'users', user.uid);
+            const snap = await getDoc(userRef);
+            if (!snap.exists()) {
+                await setDoc(userRef, {
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName || user.email,
+                    createdAt: serverTimestamp()
+                });
+                console.log('✅ تم إنشاء مستند المستخدم:', user.uid);
+            }
+        }
+
+        // ====== إرسال إشعار لجميع المستخدمين ======
+        async function notifyAllUsers(message, type) {
+            try {
+                const usersSnap = await getDocs(collection(db, 'users'));
+                const batch = writeBatch(db);
+                let count = 0;
+                usersSnap.forEach(doc => {
+                    const userId = doc.id;
+                    const notifRef = doc(collection(db, 'userNotifications'));
+                    batch.set(notifRef, {
+                        userId: userId,
+                        message: message,
+                        type: type || 'general',
+                        read: false,
+                        createdAt: serverTimestamp()
+                    });
+                    count++;
+                });
+                await batch.commit();
+                console.log(`✅ تم إرسال إشعار لـ ${count} مستخدم`);
+            } catch (e) {
+                console.error('❌ فشل إرسال الإشعارات لجميع المستخدمين:', e);
+            }
+        }
+
         // ====== إدارة المستخدمين ======
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
                 currentUserId = user.uid;
                 const isAdminUser = user.email && user.email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase().trim();
                 isAdmin = isAdminUser;
+
+                // إنشاء مستند المستخدم إذا لم يكن موجوداً (لغير الأدمن)
+                if (!isAdminUser) {
+                    await ensureUserDocument(user);
+                }
 
                 if (isAdminUser) {
                     userAuthBtn.style.display = 'none';
@@ -1752,6 +1848,10 @@
                     if (myQuestionsUnsubscribe) {
                         myQuestionsUnsubscribe();
                         myQuestionsUnsubscribe = null;
+                    }
+                    if (myPrayersUnsubscribe) {
+                        myPrayersUnsubscribe();
+                        myPrayersUnsubscribe = null;
                     }
                     if (userNotifUnsubscribe) {
                         userNotifUnsubscribe();
@@ -1773,11 +1873,10 @@
                     myQuestionsLink.style.display = 'inline-block';
                     notifBell.style.display = 'inline-block';
 
-                    // ====== بدء مستمع الإشعارات فوراً ======
                     star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8();
 
                     if (document.getElementById('page-my-questions').classList.contains('active')) {
-                        startMyQuestionsListener();
+                        startMyItemsListeners();
                     }
 
                     if (document.getElementById('page-admin').classList.contains('active')) {
@@ -1805,15 +1904,19 @@
                     myQuestionsUnsubscribe();
                     myQuestionsUnsubscribe = null;
                 }
+                if (myPrayersUnsubscribe) {
+                    myPrayersUnsubscribe();
+                    myPrayersUnsubscribe = null;
+                }
                 if (userNotifUnsubscribe) {
                     userNotifUnsubscribe();
                     userNotifUnsubscribe = null;
                 }
-                const myQuestionsPage = document.getElementById('page-my-questions');
-                if (myQuestionsPage.classList.contains('active')) {
-                    document.getElementById('myQuestionsList').innerHTML =
-                        '<p class="no-questions">يرجى تسجيل الدخول لعرض أسئلتك</p>';
-                    document.getElementById('myQuestionsStatus').textContent = '';
+                const myItemsPage = document.getElementById('page-my-questions');
+                if (myItemsPage.classList.contains('active')) {
+                    document.getElementById('myItemsList').innerHTML =
+                        '<p class="no-questions">يرجى تسجيل الدخول لعرض أسئلتك وطلباتك</p>';
+                    document.getElementById('myItemsStatus').textContent = '';
                 }
                 const activePage = document.querySelector('.page.active');
                 if (activePage && (activePage.id === 'page-my-questions' || activePage.id === 'page-admin' || activePage
@@ -1861,6 +1964,7 @@
                     if (name) {
                         await updateProfile(cred.user, { displayName: name });
                     }
+                    // سيتم إنشاء المستند في onAuthStateChanged
                     showToast('تم إنشاء الحساب بنجاح');
                     window.navigateTo('home');
                 }
@@ -1927,18 +2031,23 @@
             window.navigateTo('home');
         });
 
-        // ====== مستمع أسئلة المستخدم ======
-        function startMyQuestionsListener() {
+        // ====== مستمع أسئلة وطلبات المستخدم ======
+        function startMyItemsListeners() {
+            // إلغاء الاشتراكات السابقة
             if (myQuestionsUnsubscribe) {
                 myQuestionsUnsubscribe();
                 myQuestionsUnsubscribe = null;
             }
+            if (myPrayersUnsubscribe) {
+                myPrayersUnsubscribe();
+                myPrayersUnsubscribe = null;
+            }
 
-            const container = document.getElementById('myQuestionsList');
-            const statusEl = document.getElementById('myQuestionsStatus');
+            const container = document.getElementById('myItemsList');
+            const statusEl = document.getElementById('myItemsStatus');
 
             if (!currentUser) {
-                container.innerHTML = '<p class="no-questions">يجب تسجيل الدخول لعرض أسئلتك</p>';
+                container.innerHTML = '<p class="no-questions">يجب تسجيل الدخول لعرض أسئلتك وطلباتك</p>';
                 statusEl.textContent = '';
                 statusEl.className = '';
                 return;
@@ -1948,80 +2057,114 @@
             statusEl.textContent = '⏳ جاري التحميل...';
             statusEl.className = 'status-loading';
 
-            try {
-                const q = query(
-                    collection(db, 'questions'),
-                    where('userId', '==', currentUser.uid)
-                );
+            let questionsData = [];
+            let prayersData = [];
 
-                myQuestionsUnsubscribe = onSnapshot(q, (snapshot) => {
+            // دالة لتحديث العرض عند تغير أي من البيانات
+            function renderCombined() {
+                const allItems = [...questionsData, ...prayersData];
+                allItems.sort((a, b) => {
+                    const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
+                    const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
+                    return db - da;
+                });
+
+                if (allItems.length === 0) {
+                    container.innerHTML = '<p class="no-questions">لا توجد أسئلة أو طلبات حالياً</p>';
                     statusEl.textContent = '✅ محدث لحظياً';
                     statusEl.className = 'status-connected';
+                    return;
+                }
 
-                    if (snapshot.empty) {
-                        container.innerHTML = '<p class="no-questions">لا توجد أسئلة حالياً</p>';
-                        return;
-                    }
+                let html = '';
+                allItems.forEach(item => {
+                    const isQuestion = item.type !== undefined; // prayers don't have type
+                    const typeLabel = isQuestion ? translateType(item.type) : 'طلب صلاة';
+                    const displayName = item.anonymous ? 'مجهول' : (item.userName || 'مستخدم');
+                    const answerHtml = item.answered ?
+                        `<div class="item-answer"><strong>${isQuestion ? 'الإجابة' : 'الرد'}:</strong> ${item.answer || 'لم تكتب إجابة بعد'}</div>` :
+                        '<div class="item-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الرد</em></div>';
+                    const published = isQuestion && item.published ? ' (منشور عام)' : '';
+                    const dateStr = item.createdAt ? item.createdAt.toDate().toLocaleString('ar-EG') : '';
+                    const isAnswered = item.answered;
+                    const notifClass = isAnswered ? 'show' : '';
+                    const notifMessage = isAnswered ? `✅ تم ${isQuestion ? 'الإجابة على سؤالك' : 'الرد على طلب صلاتك'}!` : '';
 
-                    let items = [];
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        items.push({ id: doc.id, ...data });
-                    });
-
-                    items.sort((a, b) => {
-                        const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                        const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                        return db - da;
-                    });
-
-                    let html = '';
-                    items.forEach(item => {
-                        let displayName = item.userName || 'مستخدم';
-                        if (item.anonymous === true) {
-                            displayName = 'مجهول';
-                        }
-
-                        const answerHtml = item.answered ?
-                            `<div class="q-answer"><strong>الإجابة:</strong> ${item.answer || 'لم تكتب إجابة بعد'}</div>` :
-                            '<div class="q-answer" style="background:var(--bg-surface); border-right-color:var(--border-color);"><em>في انتظار الإجابة</em></div>';
-                        const published = item.published ? ' (منشور عام)' : ' (خاص)';
-                        const dateStr = item.createdAt ? item.createdAt.toDate().toLocaleString('ar-EG') : '';
-
-                        const isAnswered = item.answered;
-                        const notifClass = isAnswered ? 'show' : '';
-                        const notifMessage = isAnswered ? '✅ تمت الإجابة على سؤالك!' : '';
-
-                        html += `
-                            <div class="my-question-card">
-                                <div class="q-details"><strong>السؤال:</strong> ${item.details}</div>
-                                <div class="q-meta">النوع: ${translateType(item.type)} ${item.anonymous ? '(مجهول)' : ''} - بواسطة: ${displayName} ${published}</div>
-                                ${answerHtml}
-                                <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${dateStr}</div>
-                                <div class="q-notification ${notifClass}">
-                                    <i class="fas fa-check-circle"></i> ${notifMessage}
-                                </div>
+                    html += `
+                        <div class="my-item-card">
+                            <div class="item-details"><strong>${isQuestion ? 'السؤال' : 'طلب الصلاة'}:</strong> ${item.details || item.text}</div>
+                            <div class="item-meta">النوع: ${typeLabel} ${item.anonymous ? '(مجهول)' : ''} - بواسطة: ${displayName} ${published}</div>
+                            ${answerHtml}
+                            <div style="margin-top:8px; font-size:0.8rem; color:var(--text-muted);">${dateStr}</div>
+                            <div class="item-notification ${notifClass}">
+                                <i class="fas fa-check-circle"></i> ${notifMessage}
                             </div>
-                        `;
-                    });
-                    container.innerHTML = html;
-                }, (error) => {
-                    console.error('Error in my questions listener:', error);
-                    statusEl.textContent = '❌ خطأ في الاتصال: ' + error.message;
-                    statusEl.className = 'status-error';
-                    container.innerHTML =
-                        `<p style="color:#c0392b;">حدث خطأ في تحميل أسئلتك: ${error.message}<br>حاول تحديث الصفحة أو الضغط على زر التحديث.</p>`;
+                        </div>
+                    `;
                 });
-            } catch (error) {
-                console.error('Error setting up listener:', error);
-                statusEl.textContent = '❌ خطأ: ' + error.message;
-                statusEl.className = 'status-error';
-                container.innerHTML =
-                    `<p style="color:#c0392b;">حدث خطأ في إعداد المستمع: ${error.message}</p>`;
+                container.innerHTML = html;
+                statusEl.textContent = '✅ محدث لحظياً';
+                statusEl.className = 'status-connected';
             }
+
+            // استعلام الأسئلة
+            const qQuestions = query(
+                collection(db, 'questions'),
+                where('userId', '==', currentUser.uid)
+            );
+            myQuestionsUnsubscribe = onSnapshot(qQuestions, (snapshot) => {
+                questionsData = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    questionsData.push({ id: doc.id, ...data, _type: 'question' });
+                });
+                renderCombined();
+            }, (error) => {
+                console.error('Error in questions listener:', error);
+                statusEl.textContent = '❌ خطأ في الأسئلة';
+                statusEl.className = 'status-error';
+            });
+
+            // استعلام طلبات الصلاة
+            const qPrayers = query(
+                collection(db, 'prayers'),
+                where('userId', '==', currentUser.uid)
+            );
+            myPrayersUnsubscribe = onSnapshot(qPrayers, (snapshot) => {
+                prayersData = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    prayersData.push({ id: doc.id, ...data, _type: 'prayer' });
+                });
+                renderCombined();
+            }, (error) => {
+                console.error('Error in prayers listener:', error);
+                statusEl.textContent = '❌ خطأ في طلبات الصلاة';
+                statusEl.className = 'status-error';
+            });
         }
 
-        // ====== مستمع إشعارات المستخدم (محسّن - بدون orderBy) ======
+        // ====== تحديث يدوي لأسئلة وطلبات المستخدم ======
+        window.refreshMyItems = function() {
+            const statusEl = document.getElementById('myItemsStatus');
+            statusEl.textContent = '⏳ جاري التحديث...';
+            statusEl.className = 'status-loading';
+
+            if (myQuestionsUnsubscribe) {
+                myQuestionsUnsubscribe();
+                myQuestionsUnsubscribe = null;
+            }
+            if (myPrayersUnsubscribe) {
+                myPrayersUnsubscribe();
+                myPrayersUnsubscribe = null;
+            }
+            setTimeout(() => {
+                startMyItemsListeners();
+                showToast('✅ تم تحديث القائمة');
+            }, 300);
+        };
+
+        // ====== مستمع إشعارات المستخدم ======
         function star9yMnTm4NSzvG9rrwjM2ec8xZgh1cafXH8() {
             if (userNotifUnsubscribe) {
                 userNotifUnsubscribe();
@@ -2029,7 +2172,6 @@
             }
 
             if (!currentUser || isAdmin) {
-                console.log('🛑 إيقاف مستمع الإشعارات (لا يوجد مستخدم أو أدمن)');
                 userNotifications = [];
                 updateUserNotifUI();
                 return;
@@ -2038,7 +2180,6 @@
             console.log('🔔 بدء مستمع إشعارات المستخدم لـ:', currentUser.uid);
 
             try {
-                // إزالة orderBy لتجنب أخطاء الفهارس
                 const q = query(
                     collection(db, 'userNotifications'),
                     where('userId', '==', currentUser.uid)
@@ -2051,7 +2192,6 @@
                         const data = doc.data();
                         userNotifications.push({ id: doc.id, ...data });
                     });
-                    // ترتيب يدوي تنازلي حسب createdAt (إذا كان موجوداً)
                     userNotifications.sort((a, b) => {
                         const da = a.createdAt ? a.createdAt.toDate() : new Date(0);
                         const db = b.createdAt ? b.createdAt.toDate() : new Date(0);
@@ -2109,13 +2249,36 @@
                 if (userNotifications.length === 0) {
                     list.innerHTML = '<p style="color:var(--text-muted); text-align:center;">لا توجد إشعارات</p>';
                 } else {
-                    list.innerHTML = userNotifications.map(n => `
-                        <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
-                            <span class="notif-text">${n.message}</span>
-                            <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
-                            ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markUserNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
-                        </div>
-                    `).join('');
+                    list.innerHTML = userNotifications.map(n => {
+                        let typeLabel = '';
+                        switch (n.type) {
+                            case 'question':
+                                typeLabel = 'سؤال';
+                                break;
+                            case 'prayer':
+                                typeLabel = 'صلاة';
+                                break;
+                            case 'answer':
+                                typeLabel = 'إجابة';
+                                break;
+                            case 'verse':
+                                typeLabel = 'آية';
+                                break;
+                            case 'announcement':
+                                typeLabel = 'إعلان';
+                                break;
+                            default:
+                                typeLabel = 'عام';
+                        }
+                        return `
+                            <div class="notification-item" style="${n.read ? 'opacity:0.6;' : ''}">
+                                <span class="notif-type ${n.type || 'general'}">${typeLabel}</span>
+                                <span class="notif-text">${n.message}</span>
+                                <span class="notif-time">${n.createdAt ? n.createdAt.toDate().toLocaleString('ar-EG') : ''}</span>
+                                ${!n.read ? `<button class="btn btn-sm btn-outline" onclick="window.markUserNotifRead('${n.id}')" style="padding:2px 10px; font-size:0.7rem;">تحديد كمقروء</button>` : ''}
+                            </div>
+                        `;
+                    }).join('');
                 }
             }
         }
@@ -2171,22 +2334,6 @@
                 e.currentTarget.classList.remove('show');
             }
         });
-
-        // ====== تحديث يدوي لأسئلة المستخدم ======
-        window.refreshMyQuestions = function() {
-            const statusEl = document.getElementById('myQuestionsStatus');
-            statusEl.textContent = '⏳ جاري التحديث...';
-            statusEl.className = 'status-loading';
-
-            if (myQuestionsUnsubscribe) {
-                myQuestionsUnsubscribe();
-                myQuestionsUnsubscribe = null;
-            }
-            setTimeout(() => {
-                startMyQuestionsListener();
-                showToast('✅ تم تحديث الأسئلة');
-            }, 300);
-        };
 
         // ====== الإشعارات (للأدمن) ======
         function listenToNotifications() {
@@ -2273,21 +2420,21 @@
             } catch (e) { console.warn('Error adding notification:', e); }
         }
 
-        // ====== إضافة إشعار للمستخدم ======
-        async function addUserNotification(userId, message, questionId) {
+        // ====== إضافة إشعار لمستخدم واحد ======
+        async function addUserNotification(userId, message, type) {
             if (!userId) {
                 console.warn('⚠️ محاولة إرسال إشعار بدون userId');
                 return;
             }
             try {
-                const docRef = await addDoc(collection(db, 'userNotifications'), {
+                await addDoc(collection(db, 'userNotifications'), {
                     userId: userId,
                     message: message,
-                    questionId: questionId || '',
+                    type: type || 'general',
                     read: false,
                     createdAt: serverTimestamp()
                 });
-                console.log(`✅ تم إرسال إشعار للمستخدم ${userId} بالمعرف ${docRef.id}: ${message}`);
+                console.log(`✅ تم إرسال إشعار للمستخدم ${userId}: ${message}`);
             } catch (e) {
                 console.error('❌ فشل إرسال إشعار المستخدم:', e);
             }
@@ -2318,6 +2465,12 @@
                         reference: selected.reference,
                         lastUpdate: todayStr
                     });
+                    // إرسال إشعار لجميع المستخدمين بتحديث الآية (عند التغيير التلقائي)
+                    // لكن لا نريد إرسال إشعار كل يوم (قد يكون مزعجاً). نرسل فقط إذا تغيرت الآية عن السابقة.
+                    // سنقارن مع القيمة السابقة
+                    if (snap.exists() && snap.data().verse !== selected.verse) {
+                        await notifyAllUsers(`📖 تم تحديث آية اليوم: "${selected.verse}" (${selected.reference})`, 'verse');
+                    }
                 }
             } catch (e) {
                 console.warn('Could not save verse to Firestore:', e);
@@ -2333,6 +2486,25 @@
                 scheduleVerseUpdate();
             }, msToMidnight);
         }
+
+        // ====== تحديث آية اليوم يدوياً من الأدمن ======
+        window.updateDailyVerse = async function() {
+            const verse = document.getElementById('verseText').value.trim();
+            const ref = document.getElementById('verseRef').value.trim();
+            if (!verse || !ref) { showToast('املأ الحقول', true); return; }
+            try {
+                await setDoc(doc(db, 'settings', 'dailyVerse'), {
+                    verse,
+                    reference: ref,
+                    lastUpdate: new Date().toDateString()
+                });
+                showToast('تم تحديث آية اليوم');
+                document.getElementById('dailyVerseDisplay').textContent = verse;
+                document.getElementById('dailyVerseRef').textContent = ref;
+                // إرسال إشعار لجميع المستخدمين
+                await notifyAllUsers(`📖 تم تحديث آية اليوم: "${verse}" (${ref})`, 'verse');
+            } catch (e) { showToast('خطأ', true); }
+        };
 
         // ====== إرسال الأسئلة ======
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
@@ -2379,7 +2551,10 @@
                 await addDoc(collection(db, 'prayers'), {
                     text,
                     anonymous,
-                    name: anonymous ? '' : (currentUser ? currentUser.displayName || currentUser.email : ''),
+                    userId: currentUser ? currentUser.uid : null,
+                    userName: currentUser ? (currentUser.displayName || currentUser.email) : 'زائر',
+                    answered: false,
+                    answer: '',
                     createdAt: serverTimestamp()
                 });
                 const displayName = anonymous ? 'مستخدم مجهول' : (currentUser ? currentUser.displayName || currentUser.email : 'زائر');
@@ -2707,18 +2882,18 @@
             renderQuestionsPage();
         };
 
-        // ====== نافذة الإجابة ======
-        const modal = document.getElementById('answerModal');
-        const modalAnswer = document.getElementById('modalAnswer');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalSaveBtn = document.getElementById('modalSaveBtn');
-        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        // ====== نافذة الإجابة على سؤال ======
+        const answerModal = document.getElementById('answerModal');
+        const answerModalAnswer = document.getElementById('modalAnswer');
+        const answerModalTitle = document.getElementById('modalTitle');
+        const answerModalSaveBtn = document.getElementById('modalSaveBtn');
+        const answerModalCancelBtn = document.getElementById('modalCancelBtn');
 
         window.openAnswerModal = function(questionId) {
             editingQuestionId = questionId;
-            modalTitle.textContent = 'كتابة الإجابة';
-            modalAnswer.value = '';
-            modal.classList.add('show');
+            answerModalTitle.textContent = 'كتابة الإجابة';
+            answerModalAnswer.value = '';
+            answerModal.classList.add('show');
         };
 
         window.openEditAnswerModal = function(questionId) {
@@ -2727,20 +2902,20 @@
                 if (snap.exists()) {
                     const data = snap.data();
                     editingQuestionId = questionId;
-                    modalTitle.textContent = 'تعديل الإجابة';
-                    modalAnswer.value = data.answer || '';
-                    modal.classList.add('show');
+                    answerModalTitle.textContent = 'تعديل الإجابة';
+                    answerModalAnswer.value = data.answer || '';
+                    answerModal.classList.add('show');
                 }
             }).catch(e => console.error(e));
         };
 
-        modalCancelBtn.addEventListener('click', () => {
-            modal.classList.remove('show');
+        answerModalCancelBtn.addEventListener('click', () => {
+            answerModal.classList.remove('show');
             editingQuestionId = null;
         });
 
-        modalSaveBtn.addEventListener('click', async () => {
-            const answer = modalAnswer.value.trim();
+        answerModalSaveBtn.addEventListener('click', async () => {
+            const answer = answerModalAnswer.value.trim();
             if (!answer) { showToast('الرجاء كتابة الإجابة', true); return; }
             if (!editingQuestionId) { showToast('خطأ: لم يتم تحديد السؤال', true); return; }
             try {
@@ -2753,25 +2928,24 @@
                     answer: answer
                 });
 
+                // إرسال إشعار للمستخدم صاحب السؤال
                 if (questionData && questionData.userId) {
                     await addUserNotification(
                         questionData.userId,
                         `📩 تمت الإجابة على سؤالك: "${questionData.details.substring(0, 50)}..."`,
-                        editingQuestionId
+                        'answer'
                     );
-                    const displayName = questionData.anonymous ? 'مستخدم مجهول' : (questionData.userName || 'مستخدم');
-                    await addNotification(`✅ تمت الإجابة على سؤال لـ ${displayName}`, 'answer');
-                    showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
-                } else {
-                    showToast('✅ تم حفظ الإجابة (بدون إشعار لأن المستخدم غير معروف)');
                 }
+                const displayName = questionData.anonymous ? 'مستخدم مجهول' : (questionData.userName || 'مستخدم');
+                await addNotification(`✅ تمت الإجابة على سؤال لـ ${displayName}`, 'answer');
+                showToast('✅ تم حفظ الإجابة وإرسال إشعار للمستخدم');
 
-                modal.classList.remove('show');
+                answerModal.classList.remove('show');
                 editingQuestionId = null;
                 loadQuestions();
                 renderAnsweredQuestions();
                 if (document.getElementById('page-my-questions').classList.contains('active')) {
-                    startMyQuestionsListener();
+                    startMyItemsListeners();
                 }
             } catch (e) {
                 showToast('❌ خطأ في حفظ الإجابة', true);
@@ -2779,10 +2953,87 @@
             }
         });
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('show');
+        answerModal.addEventListener('click', (e) => {
+            if (e.target === answerModal) {
+                answerModal.classList.remove('show');
                 editingQuestionId = null;
+            }
+        });
+
+        // ====== نافذة الرد على طلب صلاة ======
+        const prayerReplyModal = document.getElementById('prayerReplyModal');
+        const prayerReplyAnswer = document.getElementById('prayerReplyAnswer');
+        const prayerReplyTitle = document.getElementById('prayerModalTitle');
+        const prayerReplySaveBtn = document.getElementById('prayerReplySaveBtn');
+        const prayerReplyCancelBtn = document.getElementById('prayerReplyCancelBtn');
+
+        window.openPrayerReplyModal = function(prayerId) {
+            editingPrayerId = prayerId;
+            prayerReplyTitle.textContent = 'الرد على طلب الصلاة';
+            prayerReplyAnswer.value = '';
+            prayerReplyModal.classList.add('show');
+        };
+
+        window.openEditPrayerReplyModal = function(prayerId) {
+            const prayerRef = doc(db, 'prayers', prayerId);
+            getDoc(prayerRef).then((snap) => {
+                if (snap.exists()) {
+                    const data = snap.data();
+                    editingPrayerId = prayerId;
+                    prayerReplyTitle.textContent = 'تعديل الرد على طلب الصلاة';
+                    prayerReplyAnswer.value = data.answer || '';
+                    prayerReplyModal.classList.add('show');
+                }
+            }).catch(e => console.error(e));
+        };
+
+        prayerReplyCancelBtn.addEventListener('click', () => {
+            prayerReplyModal.classList.remove('show');
+            editingPrayerId = null;
+        });
+
+        prayerReplySaveBtn.addEventListener('click', async () => {
+            const answer = prayerReplyAnswer.value.trim();
+            if (!answer) { showToast('الرجاء كتابة الرد', true); return; }
+            if (!editingPrayerId) { showToast('خطأ: لم يتم تحديد طلب الصلاة', true); return; }
+            try {
+                const prayerRef = doc(db, 'prayers', editingPrayerId);
+                const snap = await getDoc(prayerRef);
+                const prayerData = snap.data();
+
+                await updateDoc(prayerRef, {
+                    answered: true,
+                    answer: answer
+                });
+
+                // إرسال إشعار للمستخدم صاحب الطلب
+                if (prayerData && prayerData.userId) {
+                    await addUserNotification(
+                        prayerData.userId,
+                        `🙏 تم الرد على طلب صلاتك: "${prayerData.text.substring(0, 50)}..."`,
+                        'prayer'
+                    );
+                }
+                const displayName = prayerData.anonymous ? 'مستخدم مجهول' : (prayerData.userName || 'مستخدم');
+                await addNotification(`✅ تم الرد على طلب صلاة لـ ${displayName}`, 'prayer');
+                showToast('✅ تم حفظ الرد وإرسال إشعار للمستخدم');
+
+                prayerReplyModal.classList.remove('show');
+                editingPrayerId = null;
+                loadPrayers();
+                if (document.getElementById('page-my-questions').classList.contains('active')) {
+                    startMyItemsListeners();
+                }
+            } catch (e) {
+                showToast('❌ خطأ في حفظ الرد', true);
+                console.error(e);
+            }
+        });
+
+        prayerReplyModal.addEventListener('click', (e) => {
+            if (e.target === prayerReplyModal) {
+                prayerReplyModal.classList.remove('show');
+                editingPrayerId = null;
             }
         });
 
@@ -2794,6 +3045,11 @@
                 const current = snap.data()?.published || false;
                 await updateDoc(ref, { published: !current });
                 showToast(current ? 'تم إلغاء النشر' : 'تم نشر السؤال');
+                // إرسال إشعار لجميع المستخدمين عند النشر
+                if (!current) {
+                    const data = snap.data();
+                    await notifyAllUsers(`📝 تم نشر إجابة جديدة على سؤال: "${data.details.substring(0, 50)}..."`, 'answer');
+                }
                 loadQuestions();
                 renderAnsweredQuestions();
             } catch (e) { showToast('خطأ', true); }
@@ -2852,173 +3108,29 @@
             printWindow.document.close();
         };
 
-        // ====== طلبات الصلاة ======
+        // ====== طلبات الصلاة في لوحة التحكم ======
         async function loadPrayers() {
             const container = document.getElementById('adminPrayersList');
+            const countEl = document.getElementById('prayersCount');
             container.innerHTML = 'جاري التحميل...';
             try {
                 const q = query(collection(db, 'prayers'), orderBy('createdAt', 'desc'));
                 const snap = await getDocs(q);
-                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد طلبات صلاة.</p>'; return; }
+                if (snap.empty) { 
+                    container.innerHTML = '<p style="color:var(--text-muted);">لا توجد طلبات صلاة.</p>';
+                    countEl.textContent = '(0)';
+                    return; 
+                }
                 let html = '<ul style="list-style:none; padding:0;">';
                 snap.forEach(doc => {
                     const data = doc.data();
                     const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('ar-EG') : '';
+                    const userName = data.anonymous ? 'مجهول' : (data.userName || 'زائر');
+                    const isAnswered = data.answered || false;
+                    const answerText = isAnswered ? data.answer || 'تم الرد' : 'في انتظار الرد';
                     html += `
                         <li style="padding:10px 0; border-bottom:1px solid var(--border-color);">
                             <p><strong>${data.text}</strong></p>
-                            <small style="color:var(--text-muted);">${data.anonymous ? 'مجهول' : data.name || ''} - ${date}</small>
-                            <button class="btn btn-danger btn-sm" onclick="window.deletePrayer('${doc.id}')" style="float:left; padding:2px 12px; font-size:0.75rem;">حذف</button>
-                        </li>
-                    `;
-                });
-                html += '</ul>';
-                container.innerHTML = html;
-            } catch (e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
-        }
-
-        window.deletePrayer = async function(id) {
-            if (!confirm('حذف طلب الصلاة؟')) return;
-            try {
-                await deleteDoc(doc(db, 'prayers', id));
-                showToast('تم الحذف');
-                loadPrayers();
-                loadStats();
-            } catch (e) { showToast('خطأ', true); }
-        };
-
-        window.clearAllPrayers = async function() {
-            if (!confirm('هل أنت متأكد من حذف جميع طلبات الصلاة؟')) return;
-            try {
-                const snap = await getDocs(collection(db, 'prayers'));
-                const batch = writeBatch(db);
-                snap.forEach(doc => batch.delete(doc.ref));
-                await batch.commit();
-                showToast('تم حذف جميع طلبات الصلاة');
-                loadPrayers();
-                loadStats();
-            } catch (e) { showToast('خطأ', true); }
-        };
-
-        window.printPrayers = function() {
-            const printWindow = window.open('', '_blank', 'width=800,height=600');
-            if (!printWindow) { showToast('الرجاء السماح للنوافذ المنبثقة', true); return; }
-            const container = document.getElementById('adminPrayersList');
-            let content = container.innerHTML;
-            content = content.replace(/<button.*?<\/button>/g, '');
-            printWindow.document.write(`
-                <html dir="rtl">
-                <head><title>طباعة طلبات الصلاة</title>
-                <style>
-                    body { font-family: 'Cairo', sans-serif; padding:20px; }
-                    ul { list-style:none; padding:0; }
-                    li { padding:10px 0; border-bottom:1px solid #ccc; }
-                    .btn { display:none; }
-                </style>
-                </head>
-                <body>
-                    <h2 style="text-align:center;">قائمة طلبات الصلاة</h2>
-                    ${content}
-                    <p style="margin-top:20px; text-align:center;">تم الطباعة في: ${new Date().toLocaleString('ar-EG')}</p>
-                    <script>window.onload = function() { window.print(); }<\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
-        };
-
-        // ====== إدارة الإعلانات ======
-        async function loadAnnouncementsAdmin() {
-            const container = document.getElementById('adminAnnouncementsList');
-            container.innerHTML = 'جاري التحميل...';
-            try {
-                const q = query(collection(db, 'announcements'), orderBy('date', 'desc'));
-                const snap = await getDocs(q);
-                if (snap.empty) { container.innerHTML = '<p style="color:var(--text-muted);">لا توجد إعلانات.</p>'; return; }
-                let html = '';
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    html += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border-color);">
-                            <div><strong>${data.title}</strong> - ${data.content}</div>
-                            <button class="btn btn-danger btn-sm" onclick="window.deleteAnnouncement('${doc.id}')">حذف</button>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (e) { container.innerHTML = '<p style="color:#c0392b;">فشل التحميل</p>'; }
-        }
-
-        window.addAnnouncement = async function() {
-            const title = document.getElementById('announceTitle').value.trim();
-            const content = document.getElementById('announceContent').value.trim();
-            if (!title || !content) { showToast('املأ الحقول', true); return; }
-            try {
-                await addDoc(collection(db, 'announcements'), { title, content, date: serverTimestamp() });
-                showToast('تمت الإضافة');
-                document.getElementById('announceTitle').value = '';
-                document.getElementById('announceContent').value = '';
-                loadAnnouncementsAdmin();
-                loadAnnouncements();
-            } catch (e) { showToast('خطأ', true); }
-        };
-
-        window.deleteAnnouncement = async function(id) {
-            if (!confirm('حذف الإعلان؟')) return;
-            try {
-                await deleteDoc(doc(db, 'announcements', id));
-                showToast('تم الحذف');
-                loadAnnouncementsAdmin();
-                loadAnnouncements();
-            } catch (e) { showToast('خطأ', true); }
-        };
-
-        // ====== تحديث آية اليوم يدوياً ======
-        window.updateDailyVerse = async function() {
-            const verse = document.getElementById('verseText').value.trim();
-            const ref = document.getElementById('verseRef').value.trim();
-            if (!verse || !ref) { showToast('املأ الحقول', true); return; }
-            try {
-                await setDoc(doc(db, 'settings', 'dailyVerse'), { verse, reference: ref, lastUpdate: new Date().toDateString() });
-                showToast('تم تحديث آية اليوم');
-                document.getElementById('dailyVerseDisplay').textContent = verse;
-                document.getElementById('dailyVerseRef').textContent = ref;
-            } catch (e) { showToast('خطأ', true); }
-        };
-
-        // ====== تهيئة ======
-        loadAnnouncements();
-        document.getElementById('year').textContent = new Date().getFullYear();
-        renderAnsweredQuestions();
-        loadSocialLinks();
-        loadAbout();
-        loadDailyVerse();
-        scheduleVerseUpdate();
-
-        setTimeout(() => {
-            if (document.getElementById('page-my-questions').classList.contains('active') && currentUser) {
-                startMyQuestionsListener();
-            }
-            if (document.getElementById('page-questions').classList.contains('active')) {
-                if (!currentUser) {
-                    document.getElementById('questionFormContainer').style.display = 'none';
-                    document.getElementById('authRequiredMessage').style.display = 'block';
-                }
-            }
-        }, 100);
-
-        console.log('✅ التطبيق جاهز بالكامل');
-        console.log('🔐 تم ضبط استمرار المصادقة محلياً (browserLocalPersistence)');
-        console.log('📌 تم إزالة orderBy من استعلام أسئلة المستخدم لتجنب أخطاء الفهارس');
-        console.log('📧 بريد الأدمن: abshadat.church@gmail.com (غير معروض)');
-        console.log('🔄 زر التحديث في صفحة "أسئلتي" متاح لتحديث يدوي');
-        console.log('🔔 تم تفعيل الإشعارات للمستخدمين عند الإجابة على أسئلتهم (مع مستمع فوري وإعادة محاولة)');
-        console.log('📊 تم تفعيل ترقيم الصفحات في لوحة التحكم (20 سؤال في الصفحة)');
-        console.log('🔒 تم إخفاء بيانات تسجيل دخول الأدمن من الصفحة نهائياً');
-        console.log('📖 آية اليوم تتغير تلقائياً كل 24 ساعة');
-        console.log('🕵️ إظهار اسم المستخدم للأدمن يظهر فقط إذا لم يكن السؤال مجهولاً، والإشعارات أيضاً تظهر "مستخدم مجهول"');
-        console.log('🔔 مستمع الإشعارات يبدأ فور تسجيل الدخول بغض النظر عن الصفحة المفتوحة');
-    </script>
-
-</body>
-</html>
+                            <small style="color:var(--text-muted);">${userName} - ${date} | الحالة: ${isAnswered ? '✅ تم الرد' : '⏳ قيد الانتظار'}</small>
+                            <div style="margin-top:5px;">
+                                ${

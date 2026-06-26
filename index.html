@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* ===== جميع الأنماط (كاملة) ===== */
+        /* ===== جميع الأنماط (كما هي، مع إضافة نمط للزر الثابت) ===== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -336,10 +336,11 @@
             <div id="myItemsList"></div>
         </section>
 
-        <!-- ===== صفحة الصلاة ===== -->
+        <!-- ===== صفحة الصلاة (تم تعديلها بإضافة زر "صلاة جديدة" ثابت خارج النموذج) ===== -->
         <section id="page-prayer" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">طلبات الصلاة</h2>
             <div class="card" style="max-width:600px; margin:0 auto;">
+                <!-- النموذج -->
                 <form id="prayerForm">
                     <div class="form-group"><label for="prayerText">طلب الصلاة</label><textarea id="prayerText" required placeholder="اكتب طلب صلاتك..."></textarea></div>
                     <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
@@ -348,12 +349,18 @@
                     </div>
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال طلب الصلاة</button>
                 </form>
+
+                <!-- رسالة النجاح -->
                 <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                     <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                     <p style="font-size:1.2rem; margin-top:10px;">تم استلام طلب صلاتك، باركك الرب.</p>
-                    <div class="reset-btn-wrapper">
-                        <button class="btn btn-primary" onclick="window.resetPrayerForm()"><i class="fas fa-plus"></i> طلب صلاة آخر</button>
-                    </div>
+                </div>
+
+                <!-- ✅ زر "صلاة جديدة" الثابت والدائم (خارج النموذج) -->
+                <div class="fixed-reset-btn">
+                    <button class="btn btn-primary" style="width:100%;" onclick="window.resetPrayerForm()">
+                        <i class="fas fa-plus"></i> صلاة جديدة
+                    </button>
                 </div>
             </div>
         </section>
@@ -603,6 +610,18 @@
             if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); navigateTo('home'); return; }
         }
 
+        // ===== دالة إعادة تعيين نموذج الصلاة (تم تعديلها) =====
+        function resetPrayerForm() {
+            const form = document.getElementById('prayerForm');
+            if (form) form.reset();
+            // إظهار النموذج وإخفاء رسالة النجاح
+            const success = document.getElementById('prayerSuccess');
+            if (success) success.style.display = 'none';
+            if (form) form.style.display = 'block';
+            showToast('تم مسح النموذج، يمكنك طلب صلاة جديدة');
+            document.getElementById('page-prayer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         function resetQuestionForm() {
             const form = document.getElementById('questionForm');
             if (form) form.reset();
@@ -610,14 +629,6 @@
             document.getElementById('questionForm').style.display = 'block';
             showToast('تم مسح النموذج، يمكنك طرح سؤال جديد');
             document.getElementById('page-questions').scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        function resetPrayerForm() {
-            document.getElementById('prayerForm').reset();
-            document.getElementById('prayerSuccess').style.display = 'none';
-            document.querySelector('#page-prayer .card').style.display = 'block';
-            document.getElementById('page-prayer').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            showToast('تم إعادة تعيين النموذج، يمكنك طلب صلاة جديدة');
         }
 
         function getVerseOfDay() {
@@ -1227,6 +1238,7 @@
             console.warn('⚠️ عنصر questionForm غير موجود');
         }
 
+        // ===== معالج إرسال نموذج الصلاة (تم تعديله) =====
         const prayerForm = document.getElementById('prayerForm');
         if (prayerForm) {
             prayerForm.addEventListener('submit', async function(e) {
@@ -1246,7 +1258,8 @@
                     });
                     addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0,30)}..."`);
                     addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
-                    document.querySelector('#page-prayer .card').style.display = 'none';
+                    // إخفاء النموذج وإظهار رسالة النجاح (زر "صلاة جديدة" سيظهر تلقائياً)
+                    document.getElementById('prayerForm').style.display = 'none';
                     document.getElementById('prayerSuccess').style.display = 'block';
                     showToast('تم الإرسال');
                 } catch (err) { showToast('فشل الإرسال', true); }
@@ -1450,8 +1463,8 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ تم التحديث النهائي: إزالة واتساب، إصلاح الروابط، وعرض النص الكامل للأسئلة');
-        console.log('📢 جميع العناصر موجودة، ولا يوجد خطأ في addEventListener');
+        console.log('✅ تم التحديث: إضافة زر "صلاة جديدة" خارج النموذج');
+        console.log('📢 يمكنك الآن إرسال أكثر من طلب صلاة بسهولة.');
     </script>
 </body>
 </html>

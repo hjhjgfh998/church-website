@@ -396,8 +396,8 @@
             <div class="text-center card" style="max-width:600px; margin:0 auto;">
                 <p style="margin-bottom:12px;">تابعونا على وسائل التواصل الاجتماعي:</p>
                 <div class="social-links">
-                    <a href="#" id="socialFacebook" target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="#" id="socialInstagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" id="socialFacebook" target="_blank" rel="noopener"><i class="fab fa-facebook"></i></a>
+                    <a href="#" id="socialInstagram" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
                 </div>
             </div>
         </section>
@@ -866,7 +866,7 @@
             }
         }
 
-        // ====== وسائل التواصل (تم تعديلها لحذف واتساب وإضافة تحسينات) ======
+        // ====== وسائل التواصل (تم إصلاحها) ======
         function formatUrl(url) {
             url = url.trim();
             if (!url) return '';
@@ -881,17 +881,25 @@
             get(ref(db, 'socialLinks')).then(snap => {
                 const data = snap.val();
                 if (data) {
-                    document.getElementById('socialFacebook').href = formatUrl(data.facebook) || '#';
-                    document.getElementById('socialInstagram').href = formatUrl(data.instagram) || '#';
+                    const fb = formatUrl(data.facebook);
+                    const insta = formatUrl(data.instagram);
+                    
+                    // تحديث الروابط في الواجهة
+                    document.getElementById('socialFacebook').href = fb || '#';
+                    document.getElementById('socialInstagram').href = insta || '#';
+                    
+                    // تحديث حقول الإدخال في لوحة التحكم
                     document.getElementById('socialFacebookInput').value = data.facebook || '';
                     document.getElementById('socialInstagramInput').value = data.instagram || '';
+                    
+                    console.log('✅ تم تحميل روابط التواصل:', { fb, insta });
                 } else {
                     // إنشاء بيانات افتراضية إذا لم تكن موجودة
                     set(ref(db, 'socialLinks'), { facebook: '', instagram: '' }).catch(()=>{});
                     document.getElementById('socialFacebook').href = '#';
                     document.getElementById('socialInstagram').href = '#';
                 }
-            }).catch(()=>{});
+            }).catch(err => console.warn('⚠️ فشل تحميل روابط التواصل:', err));
         }
 
         function saveSocialLinks() {
@@ -1462,6 +1470,7 @@
         window.updateUserNotifUI = updateUserNotifUI;
 
         console.log('✅ تم التحديث: إزالة واتساب وإصلاح روابط التواصل الاجتماعي');
+        console.log('📢 تأكد من حفظ الروابط من لوحة التحكم لتفعيلها');
     </script>
 </body>
 </html>

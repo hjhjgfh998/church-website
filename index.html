@@ -336,11 +336,10 @@
             <div id="myItemsList"></div>
         </section>
 
-        <!-- ===== صفحة الصلاة (تم تعديلها بإضافة زر "صلاة جديدة" ثابت خارج النموذج) ===== -->
+        <!-- ===== صفحة الصلاة (مع زر "صلاة جديدة" ثابت) ===== -->
         <section id="page-prayer" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">طلبات الصلاة</h2>
             <div class="card" style="max-width:600px; margin:0 auto;">
-                <!-- النموذج -->
                 <form id="prayerForm">
                     <div class="form-group"><label for="prayerText">طلب الصلاة</label><textarea id="prayerText" required placeholder="اكتب طلب صلاتك..."></textarea></div>
                     <div class="checkbox-group" style="display:flex; align-items:center; gap:12px; margin:8px 0;">
@@ -349,14 +348,10 @@
                     </div>
                     <button type="submit" class="btn" style="width:100%;"><i class="fas fa-paper-plane"></i> إرسال طلب الصلاة</button>
                 </form>
-
-                <!-- رسالة النجاح -->
                 <div id="prayerSuccess" style="display:none; text-align:center; padding:20px; color:#27ae60;">
                     <i class="fas fa-check-circle" style="font-size:3rem;"></i>
                     <p style="font-size:1.2rem; margin-top:10px;">تم استلام طلب صلاتك، باركك الرب.</p>
                 </div>
-
-                <!-- ✅ زر "صلاة جديدة" الثابت والدائم (خارج النموذج) -->
                 <div class="fixed-reset-btn">
                     <button class="btn btn-primary" style="width:100%;" onclick="window.resetPrayerForm()">
                         <i class="fas fa-plus"></i> صلاة جديدة
@@ -365,10 +360,12 @@
             </div>
         </section>
 
-        <!-- ===== صفحة الأجوبة العامة ===== -->
+        <!-- ===== صفحة الأجوبة العامة (سيتم تحديثها تلقائياً) ===== -->
         <section id="page-answered" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلة مجاب عنها (عامة)</h2>
-            <div class="search-filter"><input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" /></div>
+            <div class="search-filter">
+                <input type="text" id="answeredSearch" placeholder="ابحث في الأسئلة..." oninput="window.renderAnsweredQuestions()" />
+            </div>
             <div id="answeredList"></div>
         </section>
 
@@ -590,6 +587,10 @@
         const itemsPerPage = 20;
         let allQuestionsItems = [];
 
+        // متغيرات لـ "أجوبة عامة"
+        let answeredUnsubscribe = null;
+        let cachedAnsweredItems = [];
+
         const toastEl = document.getElementById('toast');
         let toastTimeout = null;
         function showToast(msg, isError = false) {
@@ -610,11 +611,9 @@
             if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); navigateTo('home'); return; }
         }
 
-        // ===== دالة إعادة تعيين نموذج الصلاة (تم تعديلها) =====
         function resetPrayerForm() {
             const form = document.getElementById('prayerForm');
             if (form) form.reset();
-            // إظهار النموذج وإخفاء رسالة النجاح
             const success = document.getElementById('prayerSuccess');
             if (success) success.style.display = 'none';
             if (form) form.style.display = 'block';
@@ -780,23 +779,45 @@
         function markAllUserNotifsRead() { userNotifications.forEach(n => { if (!n.read) try { update(ref(db, `userNotifications/${currentUserId}/${n.id}`), { read: true }); } catch(e) {} }); showToast('تم تحديث الكل كمقروء'); }
         function clearAllUserNotifs() { if (confirm('هل أنت متأكد من حذف جميع إشعاراتك؟')) { userNotifications.forEach(n => { try { remove(ref(db, `userNotifications/${currentUserId}/${n.id}`)); } catch(e) {} }); showToast('تم الحذف'); } }
 
+        // ===== دالة عرض الأجوبة العامة (مع onValue) =====
         function renderAnsweredQuestions() {
-            const search = document.getElementById('answeredSearch').value.toLowerCase();
             const container = document.getElementById('answeredList');
-            get(ref(db, 'questions')).then(snap => {
-                const data = snap.val();
-                let items = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).filter(q => q.answer && q.answer.trim() && q.published !== false) : [];
-                if (search) items = items.filter(q => q.text && q.text.toLowerCase().includes(search));
-                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                if (!items.length) { container.innerHTML = '<p class="no-questions">لا توجد أسئلة مجاب عنها</p>'; return; }
-                container.innerHTML = items.map(q => `
-                    <div class="question-card">
-                        <div class="q-title">${q.text || 'سؤال'}</div>
-                        <div class="q-answer">${q.answer}</div>
-                        <div class="q-meta">${translateType(q.type)} - ${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</div>
-                    </div>
-                `).join('');
-            }).catch(() => container.innerHTML = '<p class="no-questions">حدث خطأ في تحميل البيانات</p>');
+            if (!container) return;
+            const searchInput = document.getElementById('answeredSearch');
+            const search = searchInput ? searchInput.value.toLowerCase() : '';
+
+            // إذا لم يكن هناك مستمع، نقوم بإنشائه
+            if (!answeredUnsubscribe) {
+                const questionsRef = ref(db, 'questions');
+                answeredUnsubscribe = onValue(questionsRef, (snapshot) => {
+                    const data = snapshot.val();
+                    cachedAnsweredItems = data ? Object.keys(data).map(key => ({ id: key, ...data[key] })).filter(q => q.answer && q.answer.trim() && q.published !== false) : [];
+                    // بعد تحديث البيانات، نقوم بعرضها حسب البحث الحالي
+                    displayAnsweredItems(search);
+                }, (error) => {
+                    console.warn('⚠️ فشل الاستماع لتحديثات الأسئلة:', error);
+                    container.innerHTML = '<p class="no-questions">حدث خطأ في تحميل البيانات</p>';
+                });
+            } else {
+                // إذا كان المستمع موجوداً، نقوم فقط بعرض البيانات حسب البحث الحالي
+                displayAnsweredItems(search);
+            }
+        }
+
+        function displayAnsweredItems(search) {
+            const container = document.getElementById('answeredList');
+            if (!container) return;
+            let items = cachedAnsweredItems;
+            if (search) items = items.filter(q => q.text && q.text.toLowerCase().includes(search));
+            items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            if (!items.length) { container.innerHTML = '<p class="no-questions">لا توجد أسئلة مجاب عنها</p>'; return; }
+            container.innerHTML = items.map(q => `
+                <div class="question-card">
+                    <div class="q-title">${q.text || 'سؤال'}</div>
+                    <div class="q-answer">${q.answer}</div>
+                    <div class="q-meta">${translateType(q.type)} - ${q.createdAt ? new Date(q.createdAt).toLocaleDateString('ar-EG') : ''}</div>
+                </div>
+            `).join('');
         }
 
         function translateType(type) {
@@ -989,7 +1010,7 @@
                 showToast('تم حفظ الإجابة');
                 document.getElementById('answerModal').classList.remove('show');
                 loadQuestions();
-                renderAnsweredQuestions();
+                // لا حاجة لاستدعاء renderAnsweredQuestions هنا لأن onValue سيتعامل مع التحديث
                 get(qRef).then(snap => {
                     const q = snap.val();
                     if (q && q.userId) addUserNotification(q.userId, 'answer', `تم الرد على سؤالك: "${q.text?.substring(0,30)}..."`);
@@ -1008,7 +1029,7 @@
                 update(qRef, { published: newPublished }).then(() => {
                     showToast(newPublished ? '✅ تم نشر السؤال في أجوبة عامة' : '❌ تم إخفاء السؤال من أجوبة عامة');
                     loadQuestions();
-                    renderAnsweredQuestions();
+                    // لا حاجة لاستدعاء renderAnsweredQuestions هنا لأن onValue سيتعامل مع التحديث
                     if (newPublished && q.userId) {
                         addUserNotification(q.userId, 'answer', `تم نشر سؤالك في أجوبة عامة: "${q.text?.substring(0,30)}..."`);
                     }
@@ -1018,7 +1039,7 @@
 
         function deleteQuestion(id) {
             if (confirm('حذف السؤال؟')) {
-                remove(ref(db, `questions/${id}`)).then(() => { showToast('تم الحذف'); loadQuestions(); renderAnsweredQuestions(); }).catch(() => showToast('فشل الحذف', true));
+                remove(ref(db, `questions/${id}`)).then(() => { showToast('تم الحذف'); loadQuestions(); }).catch(() => showToast('فشل الحذف', true));
             }
         }
 
@@ -1027,7 +1048,6 @@
                 allQuestionsItems.forEach(q => remove(ref(db, `questions/${q.id}`)));
                 showToast('تم الحذف');
                 loadQuestions();
-                renderAnsweredQuestions();
             }
         }
 
@@ -1207,7 +1227,7 @@
             }
         }
 
-        // ===== أحداث النماذج (مع تحقق من وجود العناصر) =====
+        // ===== أحداث النماذج =====
         const questionForm = document.getElementById('questionForm');
         if (questionForm) {
             questionForm.addEventListener('submit', async function(e) {
@@ -1238,7 +1258,6 @@
             console.warn('⚠️ عنصر questionForm غير موجود');
         }
 
-        // ===== معالج إرسال نموذج الصلاة (تم تعديله) =====
         const prayerForm = document.getElementById('prayerForm');
         if (prayerForm) {
             prayerForm.addEventListener('submit', async function(e) {
@@ -1258,7 +1277,6 @@
                     });
                     addUserNotification(currentUser.uid, 'prayer', `تم استلام طلب صلاتك: "${text.substring(0,30)}..."`);
                     addNotification('prayer', `طلب صلاة جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
-                    // إخفاء النموذج وإظهار رسالة النجاح (زر "صلاة جديدة" سيظهر تلقائياً)
                     document.getElementById('prayerForm').style.display = 'none';
                     document.getElementById('prayerSuccess').style.display = 'block';
                     showToast('تم الإرسال');
@@ -1359,6 +1377,11 @@
                 if (user.email.toLowerCase().trim() !== ADMIN_EMAIL.toLowerCase().trim()) updateUserNotifUI();
             } else {
                 currentUser = null; currentUserId = null; isAdmin = false;
+                // إلغاء الاستماع لـ "أجوبة عامة"
+                if (answeredUnsubscribe) {
+                    answeredUnsubscribe();
+                    answeredUnsubscribe = null;
+                }
                 document.getElementById('userAuthBtn').innerHTML = '<i class="fas fa-user"></i> تسجيل الدخول';
                 document.getElementById('userAuthBtn').onclick = (e) => { e.preventDefault(); navigateTo('user-auth'); };
                 document.getElementById('myQuestionsLink').style.display = 'none';
@@ -1429,6 +1452,8 @@
         loadDailyVerse();
         loadSocialLinks();
         loadAbout();
+        // بدء الاستماع للأجوبة العامة
+        renderAnsweredQuestions();
 
         // ===== جعل الدوال عامة =====
         window.navigateTo = navigateTo;
@@ -1463,8 +1488,8 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ تم التحديث: إضافة زر "صلاة جديدة" خارج النموذج');
-        console.log('📢 يمكنك الآن إرسال أكثر من طلب صلاة بسهولة.');
+        console.log('✅ تم التحديث: أجوبة عامة تُحدث تلقائياً عند النشر');
+        console.log('📢 أي سؤال يتم نشره سيظهر فوراً في قسم أجوبة عامة');
     </script>
 </body>
 </html>

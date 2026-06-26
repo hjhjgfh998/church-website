@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* ===== جميع الأنماط كما هي (تم اختصارها هنا لتوفير المساحة) ===== */
+        /* ===== جميع الأنماط كما هي (تم اختصارها) ===== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -390,7 +390,7 @@
             </div>
         </section>
 
-        <!-- ===== قسم "تواصل معنا" (تم حذف واتساب نهائياً) ===== -->
+        <!-- ===== قسم "تواصل معنا" (تم حذف واتساب نهائياً وإصلاح الروابط) ===== -->
         <section id="page-contact" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">تواصل معنا</h2>
             <div class="text-center card" style="max-width:600px; margin:0 auto;">
@@ -866,38 +866,55 @@
             }
         }
 
-        // ====== وسائل التواصل (تم إصلاحها) ======
+        // ====== وسائل التواصل (تم إصلاحها نهائياً) ======
         function formatUrl(url) {
-            url = url.trim();
             if (!url) return '';
-            // إذا لم يبدأ بـ http:// أو https:// نضيف https://
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = url.trim();
+            // إذا كان الرابط يبدأ بـ http:// أو https:// نتركه
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                return url;
+            }
+            // إذا كان الرابط يبدأ بـ www. نضيف https://
+            if (url.startsWith('www.')) {
                 return 'https://' + url;
             }
-            return url;
+            // وإلا نضيف https:// مباشرة
+            return 'https://' + url;
         }
 
         function loadSocialLinks() {
             get(ref(db, 'socialLinks')).then(snap => {
                 const data = snap.val();
+                console.log('📡 جاري تحميل روابط التواصل:', data);
+                
+                // العناصر في الواجهة
+                const fbLink = document.getElementById('socialFacebook');
+                const instaLink = document.getElementById('socialInstagram');
+                const fbInput = document.getElementById('socialFacebookInput');
+                const instaInput = document.getElementById('socialInstagramInput');
+                
                 if (data) {
+                    // تحديث الروابط في الواجهة (مع formatUrl)
                     const fb = formatUrl(data.facebook);
                     const insta = formatUrl(data.instagram);
                     
-                    // تحديث الروابط في الواجهة
-                    document.getElementById('socialFacebook').href = fb || '#';
-                    document.getElementById('socialInstagram').href = insta || '#';
+                    fbLink.href = fb || '#';
+                    instaLink.href = insta || '#';
                     
                     // تحديث حقول الإدخال في لوحة التحكم
-                    document.getElementById('socialFacebookInput').value = data.facebook || '';
-                    document.getElementById('socialInstagramInput').value = data.instagram || '';
+                    fbInput.value = data.facebook || '';
+                    instaInput.value = data.instagram || '';
                     
-                    console.log('✅ تم تحميل روابط التواصل:', { fb, insta });
+                    console.log('✅ تم تحديث الروابط:', { fb, insta });
                 } else {
-                    // إنشاء بيانات افتراضية إذا لم تكن موجودة
+                    // إذا لم توجد بيانات، نضع الروابط افتراضياً إلى #
+                    fbLink.href = '#';
+                    instaLink.href = '#';
+                    fbInput.value = '';
+                    instaInput.value = '';
+                    
+                    // إنشاء بيانات افتراضية في Firebase
                     set(ref(db, 'socialLinks'), { facebook: '', instagram: '' }).catch(()=>{});
-                    document.getElementById('socialFacebook').href = '#';
-                    document.getElementById('socialInstagram').href = '#';
                 }
             }).catch(err => console.warn('⚠️ فشل تحميل روابط التواصل:', err));
         }
@@ -906,14 +923,15 @@
             const fb = document.getElementById('socialFacebookInput').value.trim();
             const insta = document.getElementById('socialInstagramInput').value.trim();
             
-            // تحقق بسيط من صحة الرابط
-            if (fb && !fb.includes('.')) { showToast('رابط فيسبوك غير صحيح (يجب أن يحتوي على نقطة)', true); return; }
-            if (insta && !insta.includes('.')) { showToast('رابط إنستغرام غير صحيح (يجب أن يحتوي على نقطة)', true); return; }
+            // تحقق بسيط
+            if (fb && !fb.includes('.')) { showToast('رابط فيسبوك غير صحيح', true); return; }
+            if (insta && !insta.includes('.')) { showToast('رابط إنستغرام غير صحيح', true); return; }
             
             set(ref(db, 'socialLinks'), { facebook: fb, instagram: insta }).then(() => {
-                showToast('تم حفظ الروابط بنجاح');
-                loadSocialLinks(); // إعادة تحميل الروابط لتحديث الواجهة
-            }).catch(() => showToast('فشل الحفظ، تأكد من اتصالك بالإنترنت', true));
+                showToast('✅ تم حفظ الروابط بنجاح');
+                // إعادة تحميل الروابط لتحديث الواجهة فوراً
+                loadSocialLinks();
+            }).catch(() => showToast('❌ فشل الحفظ، تأكد من اتصالك بالإنترنت', true));
         }
 
         // ====== نبذة ======
@@ -1469,8 +1487,8 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ تم التحديث: إزالة واتساب وإصلاح روابط التواصل الاجتماعي');
-        console.log('📢 تأكد من حفظ الروابط من لوحة التحكم لتفعيلها');
+        console.log('✅ تم التحديث: إزالة واتساب وإصلاح روابط التواصل الاجتماعي نهائياً');
+        console.log('📢 تأكد من حفظ الروابط من لوحة التحكم، وستعمل فوراً.');
     </script>
 </body>
 </html>

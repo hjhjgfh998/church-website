@@ -18,7 +18,7 @@
         }
     </script>
     <style>
-        /* ===== جميع الأنماط كما هي، مع إضافة صغيرة لتنظيم الأزرار ===== */
+        /* ===== جميع الأنماط كما هي (تم اختصارها هنا لتوفير المساحة) ===== */
         :root {
             --color-primary: #1a2a3a;
             --color-primary-light: #2c4056;
@@ -224,7 +224,6 @@
         .auth-required p { font-size:1.3rem; margin-top:16px; }
         .reset-btn-wrapper .btn-primary { background:var(--color-primary); border-color:var(--color-primary); color:#fff; }
         .reset-btn-wrapper .btn-primary:hover { background:var(--color-primary-light); }
-        /* زر ثابت في الأسفل */
         .fixed-reset-btn { margin-top:20px; border-top:1px solid var(--border-color); padding-top:20px; }
     </style>
 </head>
@@ -293,7 +292,7 @@
             </div>
         </section>
 
-        <!-- ===== صفحة الأسئلة (تم تعديلها: زر "سؤال جديد" ثابت في الأسفل) ===== -->
+        <!-- ===== صفحة الأسئلة (مع زر "سؤال جديد" الثابت) ===== -->
         <section id="page-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">اسأل سؤالك</h2>
             <div id="questionFormContainer">
@@ -324,7 +323,7 @@
                         <p style="font-size:1.2rem; margin-top:10px;">تم استلام سؤالك بنجاح، شكرًا لتواصلك معنا.</p>
                     </div>
 
-                    <!-- ✅ زر "سؤال جديد" الثابت والدائم (موجود دائماً في أسفل البطاقة) -->
+                    <!-- ✅ زر "سؤال جديد" الثابت والدائم -->
                     <div class="fixed-reset-btn">
                         <button class="btn btn-primary" style="width:100%;" onclick="window.resetQuestionForm()">
                             <i class="fas fa-plus"></i> سؤال جديد
@@ -332,7 +331,6 @@
                     </div>
                 </div>
             </div>
-            <!-- رسالة تسجيل الدخول المطلوبة -->
             <div id="authRequiredMessage" style="display:none; text-align:center; padding:40px; background:var(--bg-card); border-radius:var(--radius-md); margin-top:30px;">
                 <i class="fas fa-lock" style="font-size:3rem; color:var(--color-gold);"></i>
                 <p style="font-size:1.3rem; margin-top:16px;">يجب تسجيل الدخول لطرح سؤال</p>
@@ -340,7 +338,7 @@
             </div>
         </section>
 
-        <!-- باقي الصفحات (my-questions, prayer, answered, announcements, about, contact, admin-login, admin) -->
+        <!-- باقي الصفحات -->
         <section id="page-my-questions" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">أسئلتي وطلباتي</h2>
             <div class="refresh-container">
@@ -392,13 +390,15 @@
             </div>
         </section>
 
+        <!-- ===== قسم "تواصل معنا" (تم حذف واتساب نهائياً) ===== -->
         <section id="page-contact" class="page">
             <h2 class="section-title text-center" style="display:block; text-align:center;">تواصل معنا</h2>
             <div class="text-center card" style="max-width:600px; margin:0 auto;">
-                <p style="margin-bottom:16px;">تواصل معنا عبر واتساب:</p>
-                <a href="#" id="whatsappLink" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i><span id="whatsappLabel">تواصل عبر واتساب</span></a>
-                <p style="margin-top:24px; margin-bottom:12px;">تابعونا على وسائل التواصل الاجتماعي:</p>
-                <div class="social-links"><a href="#" id="socialFacebook" target="_blank"><i class="fab fa-facebook"></i></a><a href="#" id="socialInstagram" target="_blank"><i class="fab fa-instagram"></i></a></div>
+                <p style="margin-bottom:12px;">تابعونا على وسائل التواصل الاجتماعي:</p>
+                <div class="social-links">
+                    <a href="#" id="socialFacebook" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="#" id="socialInstagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
             </div>
         </section>
 
@@ -447,10 +447,10 @@
                 <div class="admin-section">
                     <h3><i class="fas fa-share-alt" style="color:var(--color-gold);"></i> إدارة وسائل التواصل</h3>
                     <div class="card">
+                        <!-- تم حذف حقل واتساب نهائياً -->
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
                             <div class="form-group"><label for="socialFacebookInput">رابط فيسبوك</label><input type="url" id="socialFacebookInput" placeholder="https://facebook.com/..." /></div>
                             <div class="form-group"><label for="socialInstagramInput">رابط إنستغرام</label><input type="url" id="socialInstagramInput" placeholder="https://instagram.com/..." /></div>
-                            <div class="form-group" style="grid-column: 1 / -1;"><label for="whatsappInput">رقم واتساب (مع مفتاح الدولة)</label><input type="text" id="whatsappInput" placeholder="مثال: 201234567890" /><small style="color:var(--text-muted); font-size:0.8rem;">أدخل الرقم بدون + أو مسافات</small></div>
                         </div>
                         <button class="btn btn-success btn-sm" onclick="window.saveSocialLinks()"><i class="fas fa-save"></i> حفظ الروابط</button>
                     </div>
@@ -662,13 +662,12 @@
             if (page === 'admin' && !isAdmin) { showToast('غير مسموح', true); navigateTo('home'); return; }
         }
 
-        // ====== دوال إعادة تعيين النماذج (تم تحسينها) ======
+        // ====== دوال إعادة تعيين النماذج ======
         function resetQuestionForm() {
             const form = document.getElementById('questionForm');
-            form.reset(); // مسح جميع الحقول
+            form.reset();
             document.getElementById('questionSuccess').style.display = 'none';
             document.getElementById('questionForm').style.display = 'block';
-            // التأكد من أن زر "سؤال جديد" يظهر (موجود دائماً)
             showToast('تم مسح النموذج، يمكنك طرح سؤال جديد');
             document.getElementById('page-questions').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -867,27 +866,46 @@
             }
         }
 
-        // ====== وسائل التواصل ======
+        // ====== وسائل التواصل (تم تعديلها لحذف واتساب وإضافة تحسينات) ======
+        function formatUrl(url) {
+            url = url.trim();
+            if (!url) return '';
+            // إذا لم يبدأ بـ http:// أو https:// نضيف https://
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                return 'https://' + url;
+            }
+            return url;
+        }
+
         function loadSocialLinks() {
             get(ref(db, 'socialLinks')).then(snap => {
                 const data = snap.val();
                 if (data) {
-                    document.getElementById('socialFacebook').href = data.facebook || '#';
-                    document.getElementById('socialInstagram').href = data.instagram || '#';
-                    document.getElementById('whatsappLink').href = data.whatsapp ? `https://wa.me/${data.whatsapp}` : '#';
-                    document.getElementById('whatsappLabel').textContent = data.whatsapp ? 'تواصل عبر واتساب' : 'رقم غير متاح';
+                    document.getElementById('socialFacebook').href = formatUrl(data.facebook) || '#';
+                    document.getElementById('socialInstagram').href = formatUrl(data.instagram) || '#';
                     document.getElementById('socialFacebookInput').value = data.facebook || '';
                     document.getElementById('socialInstagramInput').value = data.instagram || '';
-                    document.getElementById('whatsappInput').value = data.whatsapp || '';
-                } else { set(ref(db, 'socialLinks'), { facebook: '#', instagram: '#', whatsapp: '' }).catch(()=>{}); }
+                } else {
+                    // إنشاء بيانات افتراضية إذا لم تكن موجودة
+                    set(ref(db, 'socialLinks'), { facebook: '', instagram: '' }).catch(()=>{});
+                    document.getElementById('socialFacebook').href = '#';
+                    document.getElementById('socialInstagram').href = '#';
+                }
             }).catch(()=>{});
         }
 
         function saveSocialLinks() {
             const fb = document.getElementById('socialFacebookInput').value.trim();
             const insta = document.getElementById('socialInstagramInput').value.trim();
-            const wa = document.getElementById('whatsappInput').value.trim();
-            set(ref(db, 'socialLinks'), { facebook: fb, instagram: insta, whatsapp: wa }).then(() => { showToast('تم الحفظ'); loadSocialLinks(); }).catch(() => showToast('فشل الحفظ', true));
+            
+            // تحقق بسيط من صحة الرابط
+            if (fb && !fb.includes('.')) { showToast('رابط فيسبوك غير صحيح (يجب أن يحتوي على نقطة)', true); return; }
+            if (insta && !insta.includes('.')) { showToast('رابط إنستغرام غير صحيح (يجب أن يحتوي على نقطة)', true); return; }
+            
+            set(ref(db, 'socialLinks'), { facebook: fb, instagram: insta }).then(() => {
+                showToast('تم حفظ الروابط بنجاح');
+                loadSocialLinks(); // إعادة تحميل الروابط لتحديث الواجهة
+            }).catch(() => showToast('فشل الحفظ، تأكد من اتصالك بالإنترنت', true));
         }
 
         // ====== نبذة ======
@@ -1292,7 +1310,6 @@
                 });
                 addUserNotification(currentUser.uid, 'question', `تم استلام سؤالك: "${text.substring(0,30)}..."`);
                 addNotification('question', `سؤال جديد من ${anonymous ? 'مجهول' : currentUser.displayName}: "${text.substring(0,30)}..."`);
-                // إخفاء النموذج وإظهار رسالة النجاح (زر "سؤال جديد" الثابت يبقى ظاهراً)
                 document.getElementById('questionForm').style.display = 'none';
                 document.getElementById('questionSuccess').style.display = 'block';
                 showToast('تم الإرسال');
@@ -1444,10 +1461,7 @@
         window.clearAllUserNotifs = clearAllUserNotifs;
         window.updateUserNotifUI = updateUserNotifUI;
 
-        console.log('✅ التطبيق جاهز بالكامل مع زر "سؤال جديد" الثابت والدائم');
-        console.log('📖 سيتم تحديث آية اليوم تلقائياً كل 24 ساعة');
-        console.log('📢 سيتم إرسال إشعارات للمستخدمين عند نشر إعلانات أو نشر أسئلة في أجوبة عامة');
-        console.log(`📧 البريد الإلكتروني للأدمن: ${ADMIN_EMAIL}`);
+        console.log('✅ تم التحديث: إزالة واتساب وإصلاح روابط التواصل الاجتماعي');
     </script>
 </body>
 </html>
